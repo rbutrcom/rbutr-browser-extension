@@ -1,0 +1,432 @@
+/* General. */
+
+* {
+    font-family: sans-serif;
+}
+
+body {
+    width: 450px;
+    overflow-x: hidden;
+}
+
+h1 {
+    margin: 0;
+    padding: 0;
+    color: #333;
+    font-size: 40px;
+    font-weight: normal;
+    letter-spacing: 0;
+    line-height: 1.3em;
+}
+
+h2 {
+    margin: 0 0 10px 0;
+    padding: 10px;
+    color: #777;
+    font-size: 22px;
+    font-weight: normal;
+    letter-spacing: 0;
+    line-height: 1.3em;
+    float: left;
+
+    &.status {
+        color: #c33;
+        float: left;
+        font-size: 26px;
+    }
+}
+
+
+.hover {
+    cursor: pointer;
+}
+
+.rebuttals {
+    font-size: 14px;
+    float: left;
+}
+
+p.rebuttals {
+    font-size: 12px;
+}
+
+#wholePopupDiv {
+    position: relative;
+}
+
+a {
+    color: #599bc5;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &.linkTitle {
+        font-size: 11px;
+    }
+
+    &.tagForSubmission {
+        background-color: #ccffe6;
+        background-image: url("http://rbutr.com/images/button-removetag.png");
+        background-position: 4% 50%;
+        background-repeat: no-repeat;
+        text-align: right;
+        padding: 3px 5px 3px 20px;
+        margin: 5px 5px;
+    }
+}
+
+
+.fakeLink {
+    font-size: 12px;
+    color: blue;
+    text-decoration: none;
+    padding: 2px 0;
+    cursor: pointer;
+}
+
+.button {
+    font-size: 12px;
+    padding: 5px 10px;
+    border: 0;
+    border-radius: 0;
+    background: -webkit-gradient(linear, left top, left bottom, from(#efefef), to(#e6e6e6));
+    background: -moz-linear-gradient(top, #efefef, #e6e6e6);
+    cursor: pointer;
+    margin: 0;
+    position: relative;
+}
+.direct {
+    margin: 20px auto 20px 5px;
+}
+.button:hover {
+    color: #c33;
+    text-decoration: none;
+}
+
+ul {
+    -webkit-padding-start: 30px;
+}
+
+.linkTitle {
+    font-size: 85%;
+}
+
+.linkUrl {
+    font-size: 60%;
+    color: gray;
+}
+
+.linkBlock {
+    padding: 3px 10px;
+    margin: 3px 2px;
+    background-color: #f3f3f3;
+}
+
+.sourceHeading {
+    color: #cc0000;
+    margin: 3px 3px;
+    float: left;
+    position: relative;
+}
+
+.rebuttalHeading {
+    color: #22AA22;
+    margin: 3px 3px;
+    float: left;
+    position: relative;
+    padding-top: 15px;
+}
+.CaptureCopy {
+    color: #A5A5A5;
+
+}
+.CaptureHeader {
+    color: #22AA22;
+    font-size: 14px;
+    font-weight: bold;
+    padding-top: 20px;
+}
+
+.cancelSubmissionLink {
+    float: right;
+    position: relative;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+#StartSubmissionDiv,
+#SubmitDiv {
+    margin: 0;
+    border-top: 0;
+}
+
+.firstHalf,
+.secondHalf {
+    width: 50%;
+    float: left;
+    position: relative;
+
+    .padding {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+
+        input {
+            width: 100%;
+        }
+    }
+}
+
+.firstHalf .padding {
+    margin: 0 30px 10px 10px;
+}
+
+.secondHalf .padding {
+    margin: 0 10px 10px 30px;
+}
+
+#swapUrlsLink {
+    position: absolute;
+    left: -30px;
+    top: 21px;
+    display: block;
+    width: 60px;
+    background-color: #c66;
+    color: fff;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px 0;
+}
+
+/* User options */
+
+.UserOptionsButton {
+    background-color: #fbfbfb;
+    border: 1px solid #e5e5e5;
+    color: #777;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    width: 30px;
+}
+
+.StartRebut {
+    float: left;
+    position: relative;
+    padding-right: 20px;
+}
+
+.StartRebutal {
+    float: left;
+    position: relative;
+    padding-right: 20px;
+}
+
+.StartRebutal2 {
+    float: left;
+    position: relative;
+    top: -2px;
+}
+.StartRebutal3 {
+    float: right;
+    position: relative;
+    top: -2px;
+
+}
+.Random {
+    float: right;
+    font-size: 12px;
+    right: 16px;
+    position: relative;
+}
+#startFromSubmission {
+    color: #cc0000 !important;
+    width: 100px;
+    padding-right: 40px;
+    padding-left: 40px;
+}
+#startToSubmission {
+    color: #126FCD;
+    width: 100px;
+    padding-right: 40px;
+    padding-left: 40px;
+}
+.Ryleandom {
+    float: right;
+    font-size: 12px;
+    margin: 10px;
+}
+
+.RebuttalsContainer {
+    width: 100%;
+
+    tr {
+        border-bottom: 15px #fff solid;
+    }
+
+    td {
+        padding: 10px;
+        background-color: #f3f3f3;
+        color: #a4a4a4;
+        vertical-align: top;
+
+        &.middle {
+            background-color: #cce5ff;
+            width: 42px;
+            color: #666;
+            font-size: 12px;
+            vertical-align: bottom;
+        }
+        a {
+            color: #06c;
+        }
+    }
+
+    thead td {
+        background-color: #fff !important;
+        padding: 0 10px;
+
+        h3 {
+            margin-bottom: 0;
+        }
+    }
+
+    .hoverUrlImage {
+        font-size: 11px;
+    }
+
+    .link {
+        background-image: url('http://rbutr.com/images/link.png');
+        display: block;
+        width: 20px;
+        height: 20px;
+        margin-bottom: 10px;
+    }
+
+    .comment {
+        padding-bottom: 3px;
+        font-size: 11px;
+        color: #209926;
+    }
+
+    .bottom {
+        float: left;
+        vertical-align: bottom;
+    }
+}
+
+
+
+.thumbsUp,
+.thumbsDown {
+    background-repeat: no-repeat;
+    display: block;
+    height: 23px;
+    margin-bottom: 10px;
+
+    a {
+        padding-left: 28px;
+        text-decoration: none;
+    }
+}
+
+.thumbsUp {
+    background-image: url('http://rbutr.com/images/thumbsUp.png');
+
+    a {
+        color: #3c0 !important;
+    }
+}
+
+.thumbsDown {
+    background-image: url('http://rbutr.com/images/thumbsDown.png');
+
+    a {
+        color: #f00 !important;
+    }
+}
+
+.tag {
+    background-color: #E6E6E6;
+    border-radius: 5px;
+    font-size: 10px;
+    display: block;
+    float: left;
+    margin-right: 3px;
+    padding: 2px 7px;
+}
+
+.address {
+    font-size: 10px;
+    position: relative;
+    top: -3px;
+    color: #a4a4a4 !important;
+}
+
+.linkBy {
+    float: right;
+    vertical-align: bottom;
+    font-size: 10px;
+}
+
+img.close {
+    float: right;
+}
+
+.typeahead-wrapper {
+    display: block;
+    margin: 50px 0;
+}
+
+.tt-dropdown-menu {
+    background-color: #fff;
+    border: 1px solid #000;
+    padding: 7px 7px;
+}
+
+.tt-suggestion.tt-is-under-cursor {
+    background-color: #ccc;
+}
+
+.triggered-events {
+    float: right;
+    width: 500px;
+    height: 300px;
+}
+
+#captureSourceButton {
+    position: relative;
+    top: 2px;
+    left: 5px;
+}
+
+#captureRebuttalButton {
+    position: relative;
+    top: 2px;
+    left: 5px;
+}
+#tagDiv {
+    top: 8px;
+    position: relative;
+}
+#tagHolder {
+    position: relative;
+    margin-top: 20px;
+}
+#notLoggedIn {
+    margin: 15px;
+}
+
+#cancelRequestLink,
+#cancelSubmissionLink,
+#swapUrlsLink {
+    cursor: pointer;
+}
+
+#popupContent {
+    border: none;
+    height: auto;
+    width: auto;
+}
