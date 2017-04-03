@@ -54,8 +54,34 @@ module.exports = function (grunt) {
       }
     },
 
+    htmlhint: {
+        options: {
+            htmlhintrc: '.htmlhintrc'
+        },
+        html: {
+            src: ['src/**/*.html']
+        }
+    },
+
+    csslint: {
+        options: {
+            csslintrc: '.csslintrc'
+        },
+        strict: {
+            options: {
+                import: 2
+            },
+            src: ['src/css/*.css']
+        }
+    },
+
     jshint: {
-      all: ['Gruntfile.js', 'background.js', 'contentScript.js', 'popup/popup.js']
+        options: {
+            csslintrc: '.csslintrc'
+        },
+        all: {
+            src: ['Gruntfile.js', 'src/background.js', 'src/contentScript.js', 'src/popup/popup.js']
+        }
     },
 
     copy: {
@@ -97,6 +123,7 @@ module.exports = function (grunt) {
   // load and register tasks
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-htmlhint');
   grunt.loadNpmTasks('grunt-contrib-csslint');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -104,7 +131,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-compress');
 
   grunt.registerTask('default', ['watch']);
-  grunt.registerTask('lint', ['csslint', 'jshint']);
+  grunt.registerTask('lint', ['htmlhint', 'csslint', 'jshint']);
   grunt.registerTask('minify', ['less:prod', 'uglify']);
   grunt.registerTask('build', ['minify', 'copy', 'compress:build']);
 };
