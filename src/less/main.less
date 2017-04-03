@@ -1,33 +1,30 @@
 /* General. */
 
-* {
-    font-family: sans-serif;
-}
-
 body {
-    width: 450px;
+    font-family: sans-serif;
     overflow-x: hidden;
+    width: 450px;
 }
 
 h1 {
-    margin: 0;
-    padding: 0;
     color: #333;
     font-size: 40px;
     font-weight: normal;
     letter-spacing: 0;
     line-height: 1.3em;
+    margin: 0;
+    padding: 0;
 }
 
 h2 {
-    margin: 0 0 10px 0;
-    padding: 10px;
     color: #777;
+    float: left;
     font-size: 22px;
     font-weight: normal;
     letter-spacing: 0;
     line-height: 1.3em;
-    float: left;
+    margin: 0 0 10px 0;
+    padding: 10px;
 
     &.status {
         color: #c33;
@@ -36,14 +33,13 @@ h2 {
     }
 }
 
-
 .hover {
     cursor: pointer;
 }
 
 .rebuttals {
-    font-size: 14px;
     float: left;
+    font-size: 14px;
 }
 
 p.rebuttals {
@@ -71,35 +67,36 @@ a {
         background-image: url("http://rbutr.com/images/button-removetag.png");
         background-position: 4% 50%;
         background-repeat: no-repeat;
-        text-align: right;
-        padding: 3px 5px 3px 20px;
         margin: 5px 5px;
+        padding: 3px 5px 3px 20px;
+        text-align: right;
     }
 }
 
-
 .fakeLink {
-    font-size: 12px;
     color: blue;
-    text-decoration: none;
-    padding: 2px 0;
     cursor: pointer;
+    font-size: 12px;
+    padding: 2px 0;
+    text-decoration: none;
 }
 
 .button {
-    font-size: 12px;
-    padding: 5px 10px;
-    border: 0;
-    border-radius: 0;
     background: -webkit-gradient(linear, left top, left bottom, from(#efefef), to(#e6e6e6));
     background: -moz-linear-gradient(top, #efefef, #e6e6e6);
+    border: 0;
+    border-radius: 0;
     cursor: pointer;
+    font-size: 12px;
     margin: 0;
+    padding: 5px 10px;
     position: relative;
 }
+
 .direct {
     margin: 20px auto 20px 5px;
 }
+
 .button:hover {
     color: #c33;
     text-decoration: none;
@@ -114,36 +111,37 @@ ul {
 }
 
 .linkUrl {
-    font-size: 60%;
     color: gray;
+    font-size: 60%;
 }
 
 .linkBlock {
-    padding: 3px 10px;
-    margin: 3px 2px;
     background-color: #f3f3f3;
+    margin: 3px 2px;
+    padding: 3px 10px;
 }
 
 .sourceHeading {
-    color: #cc0000;
-    margin: 3px 3px;
+    color: #c00;
     float: left;
+    margin: 3px 3px;
     position: relative;
 }
 
 .rebuttalHeading {
     color: #22AA22;
-    margin: 3px 3px;
     float: left;
-    position: relative;
+    margin: 3px 3px;
     padding-top: 15px;
+    position: relative;
 }
+
 .CaptureCopy {
     color: #A5A5A5;
 
 }
 .CaptureHeader {
-    color: #22AA22;
+    color: #2a2;
     font-size: 14px;
     font-weight: bold;
     padding-top: 20px;
@@ -151,27 +149,27 @@ ul {
 
 .cancelSubmissionLink {
     float: right;
-    position: relative;
     font-size: 12px;
+    position: relative;
     text-decoration: none;
 }
 
 #StartSubmissionDiv,
 #SubmitDiv {
-    margin: 0;
     border-top: 0;
+    margin: 0;
 }
 
 .firstHalf,
 .secondHalf {
-    width: 50%;
     float: left;
     position: relative;
+    width: 50%;
 
     .padding {
-        padding: 10px;
         border: 1px solid #ddd;
         border-radius: 5px;
+        padding: 10px;
 
         input {
             width: 100%;
@@ -188,16 +186,16 @@ ul {
 }
 
 #swapUrlsLink {
-    position: absolute;
-    left: -30px;
-    top: 21px;
-    display: block;
-    width: 60px;
     background-color: #c66;
-    color: fff;
+    color: #fff;
+    display: block;
     font-weight: bold;
-    text-align: center;
+    left: -30px;
     padding: 5px 0;
+    position: absolute;
+    text-align: center;
+    top: 21px;
+    width: 60px;
 }
 
 /* User options */
@@ -206,22 +204,22 @@ ul {
     background-color: #fbfbfb;
     border: 1px solid #e5e5e5;
     color: #777;
-    padding: 5px 10px;
     cursor: pointer;
     font-size: 12px;
+    padding: 5px 10px;
     width: 30px;
 }
 
 .StartRebut {
     float: left;
-    position: relative;
     padding-right: 20px;
+    position: relative;
 }
 
 .StartRebutal {
     float: left;
-    position: relative;
     padding-right: 20px;
+    position: relative;
 }
 
 .StartRebutal2 {
@@ -229,30 +227,34 @@ ul {
     position: relative;
     top: -2px;
 }
+
 .StartRebutal3 {
     float: right;
     position: relative;
     top: -2px;
-
 }
+
 .Random {
     float: right;
     font-size: 12px;
-    right: 16px;
     position: relative;
+    right: 16px;
 }
+
 #startFromSubmission {
-    color: #cc0000 !important;
-    width: 100px;
-    padding-right: 40px;
+    color: #c00 !important;
     padding-left: 40px;
+    padding-right: 40px;
+    width: 100px;
 }
+
 #startToSubmission {
     color: #126FCD;
-    width: 100px;
-    padding-right: 40px;
     padding-left: 40px;
+    padding-right: 40px;
+    width: 100px;
 }
+
 .Ryleandom {
     float: right;
     font-size: 12px;
@@ -267,18 +269,19 @@ ul {
     }
 
     td {
-        padding: 10px;
         background-color: #f3f3f3;
         color: #a4a4a4;
+        padding: 10px;
         vertical-align: top;
 
         &.middle {
             background-color: #cce5ff;
-            width: 42px;
             color: #666;
             font-size: 12px;
             vertical-align: bottom;
+            width: 42px;
         }
+
         a {
             color: #06c;
         }
@@ -300,15 +303,15 @@ ul {
     .link {
         background-image: url('http://rbutr.com/images/link.png');
         display: block;
-        width: 20px;
         height: 20px;
         margin-bottom: 10px;
+        width: 20px;
     }
 
     .comment {
-        padding-bottom: 3px;
-        font-size: 11px;
         color: #209926;
+        font-size: 11px;
+        padding-bottom: 3px;
     }
 
     .bottom {
@@ -316,8 +319,6 @@ ul {
         vertical-align: bottom;
     }
 }
-
-
 
 .thumbsUp,
 .thumbsDown {
@@ -351,24 +352,24 @@ ul {
 .tag {
     background-color: #E6E6E6;
     border-radius: 5px;
-    font-size: 10px;
     display: block;
     float: left;
+    font-size: 10px;
     margin-right: 3px;
     padding: 2px 7px;
 }
 
 .address {
+    color: #a4a4a4 !important;
     font-size: 10px;
     position: relative;
     top: -3px;
-    color: #a4a4a4 !important;
 }
 
 .linkBy {
     float: right;
-    vertical-align: bottom;
     font-size: 10px;
+    vertical-align: bottom;
 }
 
 img.close {
@@ -392,29 +393,32 @@ img.close {
 
 .triggered-events {
     float: right;
-    width: 500px;
     height: 300px;
+    width: 500px;
 }
 
 #captureSourceButton {
+    left: 5px;
     position: relative;
     top: 2px;
-    left: 5px;
 }
 
 #captureRebuttalButton {
+    left: 5px;
     position: relative;
     top: 2px;
-    left: 5px;
 }
+
 #tagDiv {
+    position: relative;
     top: 8px;
-    position: relative;
 }
+
 #tagHolder {
-    position: relative;
     margin-top: 20px;
+    position: relative;
 }
+
 #notLoggedIn {
     margin: 15px;
 }
