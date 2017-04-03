@@ -49,7 +49,7 @@ module.exports = function (grunt) {
         files: {
           'dist/background.min.js': 'src/background.js',
           'dist/contentScript.min.js': 'src/contentScript.js',
-          'dist/popup/popup.min.js': 'src/popup/popup.js',
+          'dist/popup/popup.min.js': 'src/popup/popup.js'
         }
       }
     },
@@ -89,20 +89,20 @@ module.exports = function (grunt) {
             expand: true,
             cwd: 'src/',
             src: ['*.html', '*.json'],
-            dest: 'dist/',
+            dest: 'dist/'
         },
         assets: {
             expand: true,
             cwd: 'src/',
             src: 'assets/*',
-            dest: 'dist/',
+            dest: 'dist/'
         },
         popup: {
             expand: true,
             cwd: 'src/popup/',
             src: ['*.html', '*.gif'],
-            dest: 'dist/popup/',
-        },
+            dest: 'dist/popup/'
+        }
     },
 
     compress: {
