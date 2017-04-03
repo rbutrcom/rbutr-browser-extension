@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 
     watch: {
       less: {
-        files: ['ext/less/*.less'],
+        files: ['src/less/*.less'],
         tasks: ['less:dev']
       }
     },
@@ -18,7 +18,7 @@ module.exports = function (grunt) {
       dev: {
         options: {},
         files: {
-          'ext/css/main.css': 'ext/less/main.less'
+          'src/css/main.css': 'src/less/main.less'
         }
       },
       prod: {
@@ -26,7 +26,7 @@ module.exports = function (grunt) {
           compress: true
         },
         files: {
-          'dist/css/main.min.css': 'ext/less/main.less'
+          'dist/css/main.min.css': 'src/less/main.less'
         }
       }
     },
@@ -42,14 +42,14 @@ module.exports = function (grunt) {
             preserveComments: 'all'
         },
         files: {
-          'dist/lib/lib.min.js': ['ext/lib/jquery.js', 'ext/lib/jquery.crypt.js', 'ext/lib/md5.js', 'ext/lib/typeahead.js']
+          'dist/lib/lib.min.js': ['src/lib/jquery.js', 'src/lib/jquery.crypt.js', 'src/lib/md5.js', 'src/lib/typeahead.js']
         }
       },
       sources: {
         files: {
-          'dist/background.min.js': 'ext/background.js',
-          'dist/contentScript.min.js': 'ext/contentScript.js',
-          'dist/popup/popup.min.js': 'ext/popup/popup.js',
+          'dist/background.min.js': 'src/background.js',
+          'dist/contentScript.min.js': 'src/contentScript.js',
+          'dist/popup/popup.min.js': 'src/popup/popup.js',
         }
       }
     },
@@ -61,19 +61,19 @@ module.exports = function (grunt) {
     copy: {
         main: {
             expand: true,
-            cwd: 'ext/',
+            cwd: 'src/',
             src: ['*.html', '*.json'],
             dest: 'dist/',
         },
         assets: {
             expand: true,
-            cwd: 'ext/',
+            cwd: 'src/',
             src: 'assets/*',
             dest: 'dist/',
         },
         popup: {
             expand: true,
-            cwd: 'ext/popup/',
+            cwd: 'src/popup/',
             src: ['*.html', '*.gif'],
             dest: 'dist/popup/',
         },
