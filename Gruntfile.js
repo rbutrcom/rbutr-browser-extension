@@ -77,7 +77,7 @@ module.exports = function (grunt) {
 
     jshint: {
         options: {
-            csslintrc: '.csslintrc'
+            jshintrc: true
         },
         all: {
             src: ['Gruntfile.js', 'src/background.js', 'src/contentScript.js', 'src/popup/popup.js']
