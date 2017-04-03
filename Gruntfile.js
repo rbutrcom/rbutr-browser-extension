@@ -55,7 +55,7 @@ module.exports = function (grunt) {
     },
 
     jshint: {
-      all: ['Gruntfile.js', 'adminBookmark.js']
+      all: ['Gruntfile.js', 'background.js', 'contentScript.js', 'popup/popup.js']
     },
 
     copy: {
