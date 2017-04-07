@@ -4,12 +4,18 @@
 
 
     function log(text) {
+
+        'use strict';
+
         chrome.extension.sendRequest({'action' : 'log', 'text' : text});
     }
 
 
 
     function error(text) {
+
+        'use strict';
+
         chrome.extension.sendRequest({'action' : 'error', 'text' : text});
     }
 
@@ -21,6 +27,9 @@
 
     chrome.extension.onRequest.addListener(
         function(request, sender, sendResponse) {
+
+            'use strict';
+
             if (shouldShowMessage(request.url)) {
                 $('body').append('<div id="rbutrfloatdiv" style="position:fixed; width:250px; height: 250px;top:10px;right:10px; ' +
                         'padding:16px;background:#FFFFFF;   border:2px solid #2266AA;   z-index:2147483647">' +
@@ -56,6 +65,9 @@
 
 
     function shouldShowMessage(url) {
+
+        'use strict';
+
         var result = !localStorage.getItem("rbutr.dontshow." + url);
         if (result === undefined || result === null) {
             result = true;

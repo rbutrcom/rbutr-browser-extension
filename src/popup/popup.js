@@ -11,6 +11,9 @@
 
 
     function log(text) {
+
+        'use strict';
+
         var offset = new Date().getTime() - start;
         console.log(text);
         chrome.extension.sendRequest({'action' : 'log', 'text' : String(offset) + " " + text});
@@ -19,6 +22,9 @@
 
 
     function error(text) {
+
+        'use strict';
+
         chrome.extension.sendRequest({'action' : 'error', 'text' : text});
     }
 
@@ -28,6 +34,9 @@
 
 
     function getPage(page) {
+
+        'use strict';
+
         $.get(page + ".html").success(function (data) {
             content[page] = data;
         });
@@ -42,6 +51,9 @@
 
 
     function setPage(page) {
+
+        'use strict';
+
         if (page == 'rebuttals') {
             $('#popupContent').html(bg.rebuttals[tabId]);
         } else {
@@ -52,6 +64,9 @@
 
 
     function appendPage(page) {
+
+        'use strict';
+
         $('#popupContent').append(content[page]);
     }
 
@@ -60,6 +75,9 @@
     /** @namespace bg.fromUrls */
     /** @namespace bg.toUrls */
     chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
+
+        'use strict';
+
         // This happens AFTER document.ready, so I'll do everything here, which means I get access to the URL
         tabId = tab[0].id;
         bg = chrome.extension.getBackgroundPage();
@@ -79,9 +97,13 @@
         .on('click', '#tagTo', toTagged)
         .on('click', '#tagFrom', fromTagged)
         .on('click', '#startToSubmission', function () {
+
+            'use strict';
             showSubmissionPopup('to');
         })
         .on('click', '#startFromSubmission', function () {
+
+            'use strict';
             showSubmissionPopup('from');
         })
         .on('click', '#clickable-down', voteDown)
@@ -94,25 +116,35 @@
         .on('click', '#cancelSubmissionLink', cancelSubmission)
         .on('click', '#cancelRequestLink', cancelRequestSubmission)
         .on('change', '#direct', function () {
+
+            'use strict';
             bg.direct = this.checked;
         })
         .on('click', '#requestRebuttals', requestRebuttals)  // Hook up the clickable stuff that might come back.
         .on('click', '#directShowLink', function () {
+
+            'use strict';
             $('#hiddenDirects').show();
             $('#directShower').hide();
             return false;
         })
         .on('click', '#generalShowLink', function () {
+
+            'use strict';
             $('#hiddenGenerals').show();
             $('#generalShower').hide();
             return false;
         })
         .on('click', '#directHideLink', function () {
+
+            'use strict';
             $('#hiddenDirects').hide();
             $('#directShower').show();
             return false;
         })
         .on('click', '#generalHideLink', function () {
+
+            'use strict';
             $('#hiddenGenerals').hide();
             $('#generalShower').show();
             return false;
@@ -120,12 +152,17 @@
         .on('click', '.UserOptionsButton', loadMenu)
         .on('click', '#captureSourceButton', fromTagged)
         .on('click', '#thanks', function () {
+
+            'use strict';
             window.close();
         });
 
 
 
     function setupCss() {
+
+        'use strict';
+
         $('.clickableImages').hover(function () {
             $(this).addClass('hover');
         }, function () {
@@ -143,18 +180,27 @@
 
     // Add endsWith function to String, as per http://stackoverflow.com/questions/280634/endswith-in-javascript
     String.prototype.endsWith = function (suffix) {
+
+        'use strict';
+
         return this.indexOf(suffix, this.length - suffix.length) !== -1;
     };
 
 
 
     function doingTutorial() {
+
+        'use strict';
+
         return bg.fromUrls[0] != null && bg.fromUrls[0].endsWith("/fauxNews.html");
     }
 
 
 
     function setupTagTypeahead() {
+
+        'use strict';
+
         $('#tagTypeahead').typeahead({
             name: 'tags',
             limit: 10,
@@ -179,6 +225,9 @@
 
 
     function displaySubmissionForm() {
+
+        'use strict';
+
         setPage("submission");
         refreshTags();
         if (doingTutorial()) { // The tutorial.  Note the tag RbutrTutorial is special, don't change the text.
@@ -193,6 +242,9 @@
 
 
     function recordTag(tagText) {
+
+        'use strict';
+
         // We are getting blank ones due to double ups of events. This is the easy fix.
         if (tagText === '') {
             return;
@@ -205,6 +257,9 @@
 
 
     function refreshTags() {
+
+        'use strict';
+
         $("#tagHolder").html(""); // Wipe and recreate
         for (var i = 0; i < bg.tags.length; i++) {
             $("#tagHolder").append('<a class="tagForSubmission" href="#">' + bg.tags[i] + '</a>');
@@ -220,6 +275,9 @@
 
 
     function displayVoteForm(recordedClick) {
+
+        'use strict';
+
         if (recordedClick.yourVote !== 0) {
             setPage('thankyou');
         } else {
@@ -230,6 +288,9 @@
 
 
     function showSubmissionPopup(fromTo) {
+
+        'use strict';
+
         if (!bg.loggedIn) {
             displayNotLoggedInMessage();
             return;
@@ -241,6 +302,9 @@
 
 
     function cancelSubmission() {
+
+        'use strict';
+
         bg.stopSubmission();
         window.close();
         // $('#ssubmitDiv').hide();
@@ -250,12 +314,18 @@
 
 
     function displayMessage(htmlMessage) {
+
+        'use strict';
+
         $("#wholePopupDiv").html(htmlMessage + '<p><a href="#" id="thanks" class="button">Ok (Esc)</a></p>');
     }
 
 
 
     function displayNotLoggedInMessage() {
+
+        'use strict';
+
         displayMessage("You are not logged in! rbutr requires you to be logged in to submit rebuttals and to vote. " +
             "Click <a target='_blank' href='http://rbutr.com/rbutr/LoginServlet'>here</a> to login or register.");
     }
@@ -263,6 +333,9 @@
 
 
     function requestRebuttals() {
+
+        'use strict';
+
         if (!bg.loggedIn) {
             displayNotLoggedInMessage();
             return;
@@ -278,6 +351,9 @@
 
 
     function submitRequestData() {
+
+        'use strict';
+
         if (bg.tags.length > 6) {
             document.forms['requestData'].submitLink.value = "Maximum of 6 tags, please fix before submitting.";
             document.forms['requestData'].submitLink.disabled = false;
@@ -304,6 +380,9 @@
 
 
     function toTagged() {
+
+        'use strict';
+
         if (bg.canonical_urls[tabId] === undefined || bg.alreadyExists(bg.canonical_urls[tabId])) {
             return;
         }
@@ -314,6 +393,9 @@
 
 
     function fromTagged() {
+
+        'use strict';
+
         if (bg.canonical_urls[tabId] === undefined || bg.alreadyExists(bg.canonical_urls[tabId])) {
             return;
         }
@@ -334,6 +416,9 @@
 
 
     function cancelRequestSubmission() {
+
+        'use strict';
+
         $('#StartSubmissionDiv').show();
         setPage('rebuttals');
     }
@@ -341,6 +426,9 @@
 
 
     function submitData() {
+
+        'use strict';
+
         if (bg.tags.length > 6) {
             bg.submitError = "Maximum of 6 tags, please fix before submitting.";
             return false;
@@ -357,6 +445,9 @@
 
 
     function refreshSubmissionData() {
+
+        'use strict';
+
         if (bg.fromUrls.length > 1) {
             $("#submitSources").html("<h3 class='sourceHeading'>Rebut these sources</h3><div class='UserOptionsButton StartRebutal3'>Menu</div><div style='clear:both'></div>");
         } else {
@@ -449,6 +540,9 @@
 
 
     function loadData() {
+
+        'use strict';
+
         // Loads the data from the background tab, which has likely already retrieved it.
         var recordedClick = bg.getRecordedClickByToUrl(bg.canonical_urls[tabId]);
         // bg.console.log('recordedClick[' + tabUrl + '] = ' + recordedClick);
@@ -479,6 +573,9 @@
 
 
     function vote(voteScore) {
+
+        'use strict';
+
         var recordedClick = bg.getRecordedClickByToUrl(bg.canonical_urls[tabId]);
         $.get('http://rbutr.com/rbutr/PluginServlet', {
             'linkId': recordedClick.linkId,
@@ -497,6 +594,9 @@
 
 
     function voteUp() {
+
+        'use strict';
+
         vote(1);
         // $("#voteDiv img.clickableImages").hide(); // Hide the buttons
         // $('#voteUpDiv').show();
@@ -505,6 +605,9 @@
 
 
     function voteDown() {
+
+        'use strict';
+
         vote(-1);
         // $("#voteDiv img.clickableImages").hide(); // Hide the buttons
         // $('#voteDownDiv').show();
@@ -522,6 +625,9 @@
 
 
     function submitIdeaData() {
+
+        'use strict';
+
         document.forms['ideaForm'].submitLink.value = "Please wait..";
         document.forms['ideaForm'].submitLink.disabled = true;
         $.post("http://rbutr.com/rbutr/PluginServlet", {
@@ -539,6 +645,9 @@
 
 
     function loadMenu() {
+
+        'use strict';
+
         $("#wholePopupDiv").html("Loading..");
         $.post("http://rbutr.com/rbutr/PluginServlet", {
             getMenu: true,
@@ -554,6 +663,9 @@
 
 
     function handleDelayOnLoadOfRebuttals() {
+
+        'use strict';
+
         // Recursively sleep until the rebuttal data is ready.
         setTimeout(function () {
             // not yet ready.
