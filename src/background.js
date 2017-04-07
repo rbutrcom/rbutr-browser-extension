@@ -1,4 +1,7 @@
 
+/*global chrome,console,$*/
+/*jslint browser: true */
+
     // Global
     // For submission
     var submittingRebuttal = false;
@@ -73,11 +76,15 @@
         }
     });
 
+
+
     // tab is going away, remove the canonical data for it
     chrome.tabs.onRemoved.addListener(function (tabId) {
         delete canonical_urls[tabId];
         delete plain_urls[tabId];
     });
+
+
 
     chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
         // ensure that the url data lives for the life of the page, not the tab
@@ -112,13 +119,13 @@
     }
 
     function alreadyExists(url) {
-        for ( i = 0 ; i < fromUrls.length ; i++ ) {
+        for (var i  = 0 ; i < fromUrls.length ; i++ ) {
             if (fromUrls[i] == url ) {
                 return true;
             }
         }
-        for ( i = 0 ; i < toUrls.length ; i++ ) {
-            if (toUrls[i] == url ) {
+        for (var j  = 0 ; j < toUrls.length ; j++ ) {
+            if (toUrls[j] == url ) {
                 return true;
             }
         }
@@ -133,6 +140,8 @@
         }
     }
 
+
+
     function getPopup() {
         var popups = chrome.extension.getViews({type: "popup"});
         if (popups.length > 0) {
@@ -141,6 +150,8 @@
             return null;
         }
     }
+
+
 
     function displayMessage(message) {
         var popup = getPopup();
@@ -158,14 +169,14 @@
         var canonicalFromPages = [];
         var canonicalToPages = [];
 
-        for (i = 0; i < toUrls.length; i++) {
+        for (var i  = 0; i < toUrls.length; i++) {
             toPageTitles[i] = page_title[toUrls[i]];
             canonicalToPages[i] = url_is_canonical[toUrls[i]];
         }
 
-        for (i = 0; i < fromUrls.length; i++) {
-            fromPageTitles[i] = page_title[fromUrls[i]];
-            canonicalFromPages[i] = url_is_canonical[fromUrls[i]];
+        for (var j  = 0; j < fromUrls.length; j++) {
+            fromPageTitles[j] = page_title[fromUrls[j]];
+            canonicalFromPages[j] = url_is_canonical[fromUrls[j]];
         }
 
         $.post("http://rbutr.com/rbutr/PluginServlet", {
@@ -228,6 +239,8 @@
         tags = [];
     }
 
+
+
     function stopSubmission() {
         submittingRebuttal = false;
         fromUrls = [];
@@ -255,12 +268,16 @@
         tags[tags.length] = tagText;
     }
 
+
+
     function removeTag(tagText) {
         var index = tags.indexOf(tagText);
         if (index >= 0 ) {
             tags.splice(index, 1);
         }
     }
+
+
 
     // For communicating with the content script for it to pop stuff up.
     function postMessage(tabId, titleMessage) {
@@ -271,13 +288,14 @@
         });
     }
 
+
+
     function tabLoaded(tabId, url) {
-        var req;
         rebuttals[tabId] = null;
         var vote = false;
         var recordedClick = getRecordedClickByToUrl(canonical_urls[tabId]);
         // Don't show voting after you've voted
-        if (recordedClick != null && recordedClick.yourVote == 0) {
+        if (recordedClick != null && recordedClick.yourVote === 0) {
             vote = true;
         }
 
@@ -342,6 +360,8 @@
         });
     }
 
+
+
     function recordLinkClick(fromTabId, linkId, linkFromUrl, linkToUrl, score, yourVote) {
         recordedClicks[linkToUrl] = {
             fromTabId: fromTabId,
@@ -353,12 +373,16 @@
         };
     }
 
+
+
     function getRecordedClickByToUrl(toUrl) {
         // for (var key in recordedClicks) {
         //     console.log('key is: ' + key + ', value is: ' + eval('myArray.' + key));
         // }
         return recordedClicks[toUrl];
     }
+
+
 
     function getCid() {
         var CID_KEY = "rbutr_cid";
@@ -375,6 +399,8 @@
 
     // This is based on code from https://github.com/kevmoo/chromeCanonicalExtension
     var simpleAbsoluteUrlMatch = '^[a-zA-Z]+://.*';
+
+
 
     // generate an absolute url (protocol, host, path) from a canonicalValue that might be relative
     function getCanonicalUrl(canonicalValue) {

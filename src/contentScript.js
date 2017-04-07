@@ -1,12 +1,19 @@
 
+/*global chrome,console,$,JSON*/
+/*jslint browser: true */
+
 
     function log(text) {
         chrome.extension.sendRequest({'action' : 'log', 'text' : text});
     }
 
+
+
     function error(text) {
         chrome.extension.sendRequest({'action' : 'error', 'text' : text});
     }
+
+
 
     var isInstalledNode = document.createElement('div');
     isInstalledNode.id = 'rbutr-extension-is-installed';
@@ -46,8 +53,10 @@
         }
     );
 
+
+
     function shouldShowMessage(url) {
-        result = !localStorage.getItem("rbutr.dontshow." + url);
+        var result = !localStorage.getItem("rbutr.dontshow." + url);
         if (result === undefined || result === null) {
             result = true;
         }

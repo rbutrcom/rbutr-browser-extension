@@ -1,9 +1,13 @@
 
+/*global chrome,console,$,MutationObserver*/
+/*jslint browser: true */
+
     var waitCount;
     var tabId;
     var bg;
 
     var start = new Date().getTime();
+
 
 
     function log(text) {
@@ -12,11 +16,16 @@
         chrome.extension.sendRequest({'action' : 'log', 'text' : String(offset) + " " + text});
     }
 
+
+
     function error(text) {
         chrome.extension.sendRequest({'action' : 'error', 'text' : text});
     }
 
+
     var content = {idea: null, request: null, submission: null, thankyou: null, vote: null};
+
+
 
     function getPage(page) {
         $.get(page + ".html").success(function (data) {
@@ -24,9 +33,13 @@
         });
     }
 
+
+
     for (page in content) {
         getPage(page);
     }
+
+
 
     function setPage(page) {
         if (page == 'rebuttals') {
@@ -36,9 +49,14 @@
         }
     }
 
+
+
     function appendPage(page) {
         $('#popupContent').append(content[page]);
     }
+
+
+
     /** @namespace bg.fromUrls */
     /** @namespace bg.toUrls */
     chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
@@ -52,6 +70,8 @@
         // This sets up everything.
         loadData();
     });
+
+
 
     // As per http://developer.chrome.com/extensions/contentSecurityPolicy.html
     // Set up the listeners here instead of in the HTML
@@ -104,6 +124,7 @@
         });
 
 
+
     function setupCss() {
         $('.clickableImages').hover(function () {
             $(this).addClass('hover');
@@ -120,9 +141,13 @@
         return this.indexOf(suffix, this.length - suffix.length) !== -1;
     };
 
+
+
     function doingTutorial() {
         return bg.fromUrls[0] != null && bg.fromUrls[0].endsWith("/fauxNews.html");
     }
+
+
 
     function setupTagTypeahead() {
         $('#tagTypeahead').typeahead({
@@ -146,6 +171,8 @@
         });
     }
 
+
+
     function displaySubmissionForm() {
         setPage("submission");
         refreshTags();
@@ -158,15 +185,19 @@
         refreshSubmissionData();
     }
 
+
+
     function recordTag(tagText) {
         // We are getting blank ones due to double ups of events. This is the easy fix.
-        if (tagText == "") {
+        if (tagText === '') {
             return;
         }
         bg.addTag(tagText);
         refreshTags();
         refreshSubmissionData();
     }
+
+
 
     function refreshTags() {
         $("#tagHolder").html(""); // Wipe and recreate
@@ -181,13 +212,17 @@
         });
     }
 
+
+
     function displayVoteForm(recordedClick) {
-        if (recordedClick.yourVote != 0) {
+        if (recordedClick.yourVote !== 0) {
             setPage('thankyou');
         } else {
             setPage('vote');
         }
     }
+
+
 
     function showSubmissionPopup(fromTo) {
         if (!bg.loggedIn) {
@@ -198,6 +233,8 @@
         displaySubmissionForm();
     }
 
+
+
     function cancelSubmission() {
         bg.stopSubmission();
         window.close();
@@ -205,14 +242,20 @@
         // $('#StartSubmissionDiv').show();
     }
 
+
+
     function displayMessage(htmlMessage) {
         $("#wholePopupDiv").html(htmlMessage + '<p><a href="#" id="thanks" class="button">Ok (Esc)</a></p>');
     }
+
+
 
     function displayNotLoggedInMessage() {
         displayMessage("You are not logged in! rbutr requires you to be logged in to submit rebuttals and to vote. " +
             "Click <a target='_blank' href='http://rbutr.com/rbutr/LoginServlet'>here</a> to login or register.");
     }
+
+
 
     function requestRebuttals() {
         if (!bg.loggedIn) {
@@ -227,6 +270,8 @@
         $('#StartSubmissionDiv').hide();
     }
 
+
+
     function submitRequestData() {
         if (bg.tags.length > 6) {
             document.forms['requestData'].submitLink.value = "Maximum of 6 tags, please fix before submitting.";
@@ -236,7 +281,7 @@
         $.post("http://rbutr.com/rbutr/PluginServlet", {subscribeToPage: bg.canonical_urls[tabId],
             title: bg.page_title[bg.canonical_urls[tabId]],
             tags: bg.tags,
-            pageIsCanonical: bg.url_is_canonical[bc.canonical_urls[tabId]],
+            pageIsCanonical: bg.url_is_canonical[bg.canonical_urls[tabId]],
             cid: bg.cid
         }, function (data) {
             console.log("Success : ", data);
@@ -251,16 +296,20 @@
         });
     }
 
+
+
     function toTagged() {
-        if (bg.canonical_urls[tabId] == undefined || bg.alreadyExists(bg.canonical_urls[tabId])) {
+        if (bg.canonical_urls[tabId] === undefined || bg.alreadyExists(bg.canonical_urls[tabId])) {
             return;
         }
         bg.toUrls[bg.toUrls.length] = bg.canonical_urls[tabId];
         refreshSubmissionData();
     }
 
+
+
     function fromTagged() {
-        if (bg.canonical_urls[tabId] == undefined || bg.alreadyExists(bg.canonical_urls[tabId])) {
+        if (bg.canonical_urls[tabId] === undefined || bg.alreadyExists(bg.canonical_urls[tabId])) {
             return;
         }
         if (doingTutorial()) {
@@ -284,12 +333,14 @@
         setPage('rebuttals');
     }
 
+
+
     function submitData() {
         if (bg.tags.length > 6) {
             bg.submitError = "Maximum of 6 tags, please fix before submitting.";
             return false;
         }
-        if (bg.tags.length == 0) {
+        if (bg.tags.length === 0) {
             bg.submitError = "Please enter at least one tag for this rebuttal.";
             return false;
         }
@@ -297,6 +348,8 @@
             bg.submitRebuttals(tab);
         });
     }
+
+
 
     function refreshSubmissionData() {
         if (bg.fromUrls.length > 1) {
@@ -388,6 +441,8 @@
         }
     }
 
+
+
     function loadData() {
         // Loads the data from the background tab, which has likely already retrieved it.
         var recordedClick = bg.getRecordedClickByToUrl(bg.canonical_urls[tabId]);
@@ -416,6 +471,8 @@
         // }
     }
 
+
+
     function vote(voteScore) {
         var recordedClick = bg.getRecordedClickByToUrl(bg.canonical_urls[tabId]);
         $.get('http://rbutr.com/rbutr/PluginServlet', {
@@ -432,11 +489,15 @@
         setPage('thankyou');
     }
 
+
+
     function voteUp() {
         vote(1);
         // $("#voteDiv img.clickableImages").hide(); // Hide the buttons
         // $('#voteUpDiv').show();
     }
+
+
 
     function voteDown() {
         vote(-1);
@@ -464,6 +525,8 @@
         });
     }
 
+
+
     function loadMenu() {
         $("#wholePopupDiv").html("Loading..");
         $.post("http://rbutr.com/rbutr/PluginServlet", {
@@ -476,6 +539,8 @@
             $("#wholePopupDiv").html(msg.responseText);
         });
     }
+
+
 
     function handleDelayOnLoadOfRebuttals() {
         // Recursively sleep until the rebuttal data is ready.
