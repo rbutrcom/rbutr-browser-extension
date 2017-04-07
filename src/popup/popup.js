@@ -132,9 +132,14 @@
             $(this).removeClass('hover');
         });
     }
+
+
+/*
+//NOT USED
     function loadRebuttal(url) {
         chrome.tabs.create({"url":url, "selected":true});
     }
+*/
 
     // Add endsWith function to String, as per http://stackoverflow.com/questions/280634/endswith-in-javascript
     String.prototype.endsWith = function (suffix) {
@@ -505,10 +510,16 @@
         // $('#voteDownDiv').show();
     }
 
+
+/*
+//NOT USED
     function submitIdea() {
         document.forms['ideaForm'].url.value = bg.canonical_urls[tabId];
         setPage('idea');
     }
+*/
+
+
 
     function submitIdeaData() {
         document.forms['ideaForm'].submitLink.value = "Please wait..";
@@ -564,6 +575,10 @@
         }, 100);
     }
 
+
+/*
+//NOT USED
     function recordLinkClick(linkId, fromLinkUrl, toLinkUrl, score, yourVote) {
         bg.recordLinkClick(tabId, linkId, fromLinkUrl, toLinkUrl, score, yourVote);
     }
+*/
