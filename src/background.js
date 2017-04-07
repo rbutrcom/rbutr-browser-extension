@@ -49,6 +49,9 @@
 
 
     chrome.extension.onRequest.addListener(function (request, sender, callback) {
+
+        'use strict';
+
         if (request.action) {
             if (request.action == 'log') {
                 console.log(request.text);
@@ -85,6 +88,9 @@
 
     // tab is going away, remove the canonical data for it
     chrome.tabs.onRemoved.addListener(function (tabId) {
+
+        'use strict';
+
         delete canonical_urls[tabId];
         delete plain_urls[tabId];
     });
@@ -92,6 +98,9 @@
 
 
     chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+
+        'use strict';
+
         // ensure that the url data lives for the life of the page, not the tab
         if (changeInfo.status == "loading") {
             if (tab.url == plain_urls[tabId] ) {
@@ -130,6 +139,9 @@
 
 
     function alreadyExists(url) {
+
+        'use strict';
+
         for (var i  = 0 ; i < fromUrls.length ; i++ ) {
             if (fromUrls[i] == url ) {
                 return true;
@@ -146,6 +158,9 @@
 
 
     function getPageTitle(url) {
+
+        'use strict';
+
         if (page_title[url] ) {
             return page_title[url];
         } else {
@@ -156,6 +171,9 @@
 
 
     function getPopup() {
+
+        'use strict';
+
         var popups = chrome.extension.getViews({type: "popup"});
         if (popups.length > 0) {
             return popups[0];
@@ -167,6 +185,9 @@
 
 
     function displayMessage(message) {
+
+        'use strict';
+
         var popup = getPopup();
 
         if (popup == null ) {
@@ -177,6 +198,9 @@
     }
 
     function submitRebuttals(tabId) {
+
+        'use strict';
+
         var fromPageTitles = [];
         var toPageTitles = [];
         var canonicalFromPages = [];
@@ -244,6 +268,9 @@
 
 
     function startSubmission(tabId, fromTo) {
+
+        'use strict';
+
         submittingRebuttal = true;
         if (fromTo == "from") {
             fromUrls[0] = canonical_urls[tabId];
@@ -260,6 +287,9 @@
 
 
     function stopSubmission() {
+
+        'use strict';
+
         submittingRebuttal = false;
         fromUrls = [];
         toUrls = [];
@@ -279,6 +309,9 @@
     // });
 
     function addTag(tagText) {
+
+        'use strict';
+
         if (tags.length >= 6 ) {
             return;
         }
@@ -289,6 +322,9 @@
 
 
     function removeTag(tagText) {
+
+        'use strict';
+
         var index = tags.indexOf(tagText);
         if (index >= 0 ) {
             tags.splice(index, 1);
@@ -299,6 +335,9 @@
 
     // For communicating with the content script for it to pop stuff up.
     function postMessage(tabId, titleMessage) {
+
+        'use strict';
+
         chrome.tabs.getSelected(null, function (tab) {
             chrome.tabs.sendRequest(tabId, { message: titleMessage, url: canonical_urls[tabId] }, function (response) {
                 console.log(response);
@@ -309,6 +348,9 @@
 
 
     function tabLoaded(tabId, url) {
+
+        'use strict';
+
         rebuttals[tabId] = null;
         var vote = false;
         var recordedClick = getRecordedClickByToUrl(canonical_urls[tabId]);
@@ -381,6 +423,9 @@
 
 
     function recordLinkClick(fromTabId, linkId, linkFromUrl, linkToUrl, score, yourVote) {
+
+        'use strict';
+
         recordedClicks[linkToUrl] = {
             fromTabId: fromTabId,
             linkId: linkId,
@@ -394,6 +439,9 @@
 
 
     function getRecordedClickByToUrl(toUrl) {
+
+        'use strict';
+
         // for (var key in recordedClicks) {
         //     console.log('key is: ' + key + ', value is: ' + eval('myArray.' + key));
         // }
@@ -403,6 +451,9 @@
 
 
     function getCid() {
+
+        'use strict';
+
         var CID_KEY = "rbutr_cid";
         var cid = localStorage.getItem(CID_KEY);
         if (!cid) {
@@ -422,6 +473,9 @@
 
     // generate an absolute url (protocol, host, path) from a canonicalValue that might be relative
     function getCanonicalUrl(canonicalValue) {
+
+        'use strict';
+
         if (canonicalValue) {
             if (canonicalValue.match(simpleAbsoluteUrlMatch)) {
                 // canonicalValue is a full url
