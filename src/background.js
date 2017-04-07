@@ -31,6 +31,9 @@
     var page_title = {};
     console.log("background initialised " + new Date());
 
+
+/*
+//NOT USED
     var linkContextId = chrome.contextMenus.create({
         title: "Submit as rebutted by current page",
         contexts: ["link"],
@@ -42,6 +45,8 @@
         contexts: ["selection"],
         onclick: contextTextSelected
     });
+*/
+
 
     chrome.extension.onRequest.addListener(function (request, sender, callback) {
         if (request.action) {
@@ -103,6 +108,9 @@
 
     // END OF STARTUP CODE (should only be functions from here down).
 
+
+/*
+//NOT USED
     function contextLinkSelected(info, tab) {
         if (!alreadyExists(info.linkUrl)) {
             fromUrls[fromUrls.length] = info.linkUrl;
@@ -117,6 +125,9 @@
             submittingRebuttal = true;
         }
     }
+*/
+
+
 
     function alreadyExists(url) {
         for (var i  = 0 ; i < fromUrls.length ; i++ ) {
@@ -131,6 +142,8 @@
         }
         return false;
     }
+
+
 
     function getPageTitle(url) {
         if (page_title[url] ) {
@@ -212,6 +225,8 @@
 
 
 
+/*
+//NOT USED
     function contextTextSelected(info, tab) {
         // console.log("item " + info.menuItemId + " was clicked");
         // console.log("info: " + JSON.stringify(info));
@@ -224,6 +239,9 @@
         }
         comment[0] = info.selectionText;
     }
+*/
+
+
 
     function startSubmission(tabId, fromTo) {
         submittingRebuttal = true;
