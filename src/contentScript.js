@@ -21,6 +21,19 @@
 
 
 
+    function shouldShowMessage(url) {
+
+        'use strict';
+
+        var result = !localStorage.getItem("rbutr.dontshow." + url);
+        if (result === undefined || result === null) {
+            result = true;
+        }
+        return result;
+    }
+
+
+
     var isInstalledNode = document.createElement('div');
     isInstalledNode.id = 'rbutr-extension-is-installed';
     document.body.appendChild(isInstalledNode);
@@ -61,19 +74,6 @@
             }
         }
     );
-
-
-
-    function shouldShowMessage(url) {
-
-        'use strict';
-
-        var result = !localStorage.getItem("rbutr.dontshow." + url);
-        if (result === undefined || result === null) {
-            result = true;
-        }
-        return result;
-    }
 
     //chrome.extension.onRequest.addListener(
     //  function(request, sender, sendResponse) {
