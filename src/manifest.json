@@ -15,13 +15,13 @@
   ],
 
   "content_scripts": [{
-      "js": ["./lib/lib.min.js", "./contentScript.min.js"],
+      "js": ["./lib/jquery.js", "./contentScript.js"],
       "matches": ["*://*/*"],
       "run_at": "document_end"
   }],
 
   "background": {
-    "scripts": ["./lib/lib.min.js", "background.min.js"]
+    "scripts": ["./lib/jquery.js", "./lib/md5.js", "./background.js"]
   },
 
   "browser_action": {
@@ -32,6 +32,6 @@
   },
 
   "web_accessible_resources": [
-      "./popup/*.html"
+      "./popup/*.html "
   ]
 }
