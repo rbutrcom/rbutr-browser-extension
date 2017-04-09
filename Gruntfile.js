@@ -10,46 +10,15 @@ module.exports = function (grunt) {
     watch: {
       less: {
         files: ['src/less/*.less'],
-        tasks: ['less:dev']
+        tasks: ['less', 'lint']
       }
     },
 
     less: {
-      dev: {
+      prod: {
         options: {},
         files: {
-          'src/css/main.css': 'src/less/main.less'
-        }
-      },
-      prod: {
-        options: {
-          compress: true
-        },
-        files: {
-          'dist/css/main.min.css': 'src/less/main.less'
-        }
-      }
-    },
-
-
-    uglify: {
-      options: {
-        quoteStyle: 1,
-        screwIE8: true
-      },
-      library: {
-        options: {
-            preserveComments: 'all'
-        },
-        files: {
-          'dist/lib/lib.min.js': ['src/lib/jquery.js', 'src/lib/jquery.crypt.js', 'src/lib/md5.js', 'src/lib/typeahead.js']
-        }
-      },
-      sources: {
-        files: {
-          'dist/background.min.js': 'src/background.js',
-          'dist/contentScript.min.js': 'src/contentScript.js',
-          'dist/popup/popup.min.js': 'src/popup/popup.js'
+          'dist/css/main.css': 'src/less/main.less'
         }
       }
     },
@@ -67,11 +36,8 @@ module.exports = function (grunt) {
         options: {
             csslintrc: '.csslintrc'
         },
-        strict: {
-            options: {
-                import: 2
-            },
-            src: ['src/css/*.css']
+        css: {
+            src: ['dist/css/*.css']
         }
     },
 
@@ -88,7 +54,7 @@ module.exports = function (grunt) {
         main: {
             expand: true,
             cwd: 'src/',
-            src: ['*.html', '*.json'],
+            src: ['*.html', '*.js', '*.json'],
             dest: 'dist/'
         },
         assets: {
@@ -97,10 +63,16 @@ module.exports = function (grunt) {
             src: 'assets/*',
             dest: 'dist/'
         },
+        scripts: {
+            expand: true,
+            cwd: 'src/lib',
+            src: '*',
+            dest: 'dist/lib'
+        },
         popup: {
             expand: true,
             cwd: 'src/popup/',
-            src: ['*.html', '*.gif'],
+            src: '*',
             dest: 'dist/popup/'
         }
     },
@@ -132,6 +104,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', ['watch']);
   grunt.registerTask('lint', ['htmlhint', 'csslint', 'jshint']);
-  grunt.registerTask('minify', ['less:prod', 'uglify']);
-  grunt.registerTask('build', ['minify', 'copy', 'compress:build']);
+  grunt.registerTask('compile', ['less']);
+  grunt.registerTask('build', ['compile', 'copy', 'compress:build']);
 };
