@@ -2,12 +2,17 @@
 /*global chrome,console,$,JSON*/
 /*jslint browser: true */
 
+    window.browser = (function () {
+        return window.msBrowser ||
+        window.browser ||
+        window.chrome;
+    })();
 
     function log(text) {
 
         'use strict';
 
-        chrome.extension.sendRequest({'action' : 'log', 'text' : text});
+        browser.runtime.sendMessage({'action' : 'log', 'text' : text});
     }
 
 
@@ -16,7 +21,7 @@
 
         'use strict';
 
-        chrome.extension.sendRequest({'action' : 'error', 'text' : text});
+        browser.runtime.sendMessage({'action' : 'error', 'text' : text});
     }
 
 
@@ -38,7 +43,7 @@
     isInstalledNode.id = 'rbutr-extension-is-installed';
     document.body.appendChild(isInstalledNode);
 
-    chrome.extension.onRequest.addListener(
+    browser.runtime.onMessage.addListener(
         function(request, sender, sendResponse) {
 
             'use strict';
@@ -75,7 +80,7 @@
         }
     );
 
-    //chrome.extension.onRequest.addListener(
+    //browser.runtime.onMessage.addListener(
     //  function(request, sender, sendResponse) {
     //    console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
     //    if (request.messageForContent == "true")
@@ -89,11 +94,11 @@
     // When the user clicks through from our webpage, rather than the plugin, we hide the click details in the re-direct page.
     if ( $("#clickDataForRbutrPlugin").length ) { // jQuery never returns null.. http://stackoverflow.com/questions/477667/how-to-check-null-objects-in-jquery
         var click = JSON.parse($("#clickDataForRbutrPlugin").text());
-        chrome.extension.sendRequest({'action': 'setClick', 'click' : click});
+        browser.runtime.sendMessage({'action': 'setClick', 'click' : click});
         // alert($("#dataForRbutrPlugin").text());
         // alert(click);
     }
 
-    chrome.extension.sendRequest({'action': 'setCanonical', 'url': canonicalValue || location.href, 'title': title});
+    browser.runtime.sendMessage({'action': 'setCanonical', 'url': canonicalValue || location.href, 'title': title});
 
     $('body').append('<div style="display: none;" class="rbutrInstalled"></div>');
