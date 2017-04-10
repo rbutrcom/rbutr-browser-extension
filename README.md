@@ -21,22 +21,22 @@ Click here for more information and screenshots
 
 ## How do I install it?
 
-To build the plugin you will need https://gruntjs.com/ and https://nodejs.org on your machine.
+To build the plugin you will need https://gruntjs.com/ and https://yarnpkg.com your machine.
 
 **Caution!**
 
 If you are using Windows, you might have to do the following steps before.
 *Need to be executed with Administrator permission*
 
-`$ npm install --global --production windows-build-tools`
+`$ yarn global install --production windows-build-tools`
 
-`$ npm install --global node-gyp`
+`$ yarn global install node-gyp`
 
 For details, see the full answer at [StackOverflow](http://stackoverflow.com/questions/21365714/nodejs-error-installing-with-npm)
 
 Install dependencies
 
-`$ npm install`
+`$ yarn install`
 
 Build with grunt
 
