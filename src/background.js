@@ -35,15 +35,21 @@
     var simpleAbsoluteUrlMatch = '^[a-zA-Z]+://.*';
 
 
+    window.browser = (function () {
+        return window.msBrowser ||
+        window.browser ||
+        window.chrome;
+    })();
+
 /*
 //NOT USED
-    var linkContextId = chrome.contextMenus.create({
+    var linkContextId = browser.contextMenus.create({
         title: "Submit as rebutted by current page",
         contexts: ["link"],
         onclick: contextLinkSelected
     });
 
-    var textContextId = chrome.contextMenus.create({
+    var textContextId = browser.contextMenus.create({
         title: "Use text as rebuttal comment.",
         contexts: ["selection"],
         onclick: contextTextSelected
@@ -124,7 +130,7 @@
 
         'use strict';
 
-        var popups = chrome.extension.getViews({type: "popup"});
+        var popups = browser.extension.getViews({type: "popup"});
         if (popups.length > 0) {
             return popups[0];
         } else {
@@ -154,11 +160,17 @@
 
         'use strict';
 
-        chrome.tabs.getSelected(null, function (tab) {
-            chrome.tabs.sendRequest(tabId, { message: titleMessage, url: canonical_urls[tabId] }, function (response) {
+        // Get the current active tab in the lastly focused window
+        browser.tabs.query({
+            active: true,
+            lastFocusedWindow: true
+        }, function(tabs) {
+            browser.tabs.sendMessage(tabId, { message: titleMessage, url: canonical_urls[tabId] }, function (response) {
                 console.log(response);
             });
         });
+
+
     }
 
 
@@ -191,7 +203,7 @@
         $.get('http://rbutr.com/rbutr/PluginServlet', {
             getLinks: true,
             fromPageUrlHash: urlHash,
-            version: chrome.app.getDetails().version,
+            version: browser.runtime.getManifest().version,
             cid: getCid()
         }, function (data) {
             rebuttals[tabId] = data;
@@ -204,21 +216,21 @@
             if (rebuttals[tabId].indexOf('<h2 class="status">No Rebuttals</h2><br style="clear:left;">') != -1 ) {
                 rebuttalCount[tabId] = 0;
                 // No rebuttals
-                chrome.browserAction.setBadgeText({ text: "", tabId: tabId});
+                browser.browserAction.setBadgeText({ text: "", tabId: tabId});
                 if (vote && loggedIn) {
-                    chrome.browserAction.setBadgeText({ text: "Vote", tabId: tabId});
-                    chrome.browserAction.setBadgeBackgroundColor({ color: [255, 255, 0, 255], tabId: tabId});
+                    browser.browserAction.setBadgeText({ text: "Vote", tabId: tabId});
+                    browser.browserAction.setBadgeBackgroundColor({ color: [255, 255, 0, 255], tabId: tabId});
                     titleMessage = "You can vote on this.";
-                    chrome.browserAction.setTitle({tabId: tabId, title: titleMessage});
+                    browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
                     postMessage(tabId, titleMessage);
                 } else {
-                    chrome.browserAction.setTitle({tabId: tabId, title: "RbutR - There are no rebuttals to this page, do you know of one?"});
+                    browser.browserAction.setTitle({tabId: tabId, title: "RbutR - There are no rebuttals to this page, do you know of one?"});
                 }
                 // } else if (rebuttals[tabId].indexOf("You are not logged in") != -1 ) {
                 //     loggedIn = false;
-                //     chrome.browserAction.setBadgeText({ text: "NOTE", tabId: tabId});
-                //     chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255], tabId: tabId});
-                //     chrome.browserAction.setTitle({tabId: tabId, title: "You are not logged in! rbutr requires you to be logged in."});
+                //     browser.browserAction.setBadgeText({ text: "NOTE", tabId: tabId});
+                //     browser.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255], tabId: tabId});
+                //     browser.browserAction.setTitle({tabId: tabId, title: "You are not logged in! rbutr requires you to be logged in."});
             } else {
                 var matches = rebuttals[tabId].match(/class="thumbsUp"/g);
                 var count = Number( matches == null ? 0 : matches.length ).toString();
@@ -230,15 +242,15 @@
                 }
 
                 if (vote && loggedIn) {
-                    chrome.browserAction.setBadgeText({ text: "V " + count, tabId: tabId});
-                    chrome.browserAction.setBadgeBackgroundColor({ color: [255, 100, 100, 255], tabId: tabId});
+                    browser.browserAction.setBadgeText({ text: "V " + count, tabId: tabId});
+                    browser.browserAction.setBadgeBackgroundColor({ color: [255, 100, 100, 255], tabId: tabId});
                     titleMessage = "You can vote on this, and there is also " + count + " " + rebuttal_plural + ".";
-                    chrome.browserAction.setTitle({tabId: tabId, title: titleMessage});
+                    browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
                 } else {
-                    chrome.browserAction.setBadgeText({ text: count, tabId: tabId});
-                    chrome.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255], tabId: tabId});
+                    browser.browserAction.setBadgeText({ text: count, tabId: tabId});
+                    browser.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255], tabId: tabId});
                     titleMessage = "This page has " + count + " " + rebuttal_plural + ".";
-                    chrome.browserAction.setTitle({tabId: tabId, title: titleMessage});
+                    browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
                 }
 
                 postMessage(tabId, titleMessage);
@@ -351,13 +363,13 @@
     }
 
     // This is now called above after canonical is set.
-    // chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    // browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     //     if (changeInfo.status == "loading") {
     //         tabLoaded(tab,tabId);
-    //         chrome.tabs.sendRequest(tab.id, {greeting: tab.url}, function (response) {
+    //         browser.tabs.sendRequest(tab.id, {greeting: tab.url}, function (response) {
     //             console.log(response.farewell);
     //         });
-    //        chrome.tabs.executeScript(tabId, { code: "alert('Hello World " + tablink + "')" });
+    //        browser.tabs.executeScript(tabId, { code: "alert('Hello World " + tablink + "')" });
     //     }
     // });
 
@@ -427,7 +439,7 @@
 
 
 
-    chrome.extension.onRequest.addListener(function (request, sender, callback) {
+    browser.runtime.onMessage.addListener(function (request, sender, callback) {
 
         'use strict';
 
@@ -466,7 +478,7 @@
 
 
     // tab is going away, remove the canonical data for it
-    chrome.tabs.onRemoved.addListener(function (tabId) {
+    browser.tabs.onRemoved.addListener(function (tabId) {
 
         'use strict';
 
@@ -476,7 +488,7 @@
 
 
 
-    chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
         'use strict';
 
