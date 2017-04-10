@@ -9,14 +9,20 @@
     var start = new Date().getTime();
 
 
+    window.browser = (function () {
+        return window.msBrowser ||
+        window.browser ||
+        window.chrome;
+    })();
 
     function log(text) {
 
         'use strict';
 
+
         var offset = new Date().getTime() - start;
         console.log(text);
-        chrome.extension.sendRequest({'action' : 'log', 'text' : String(offset) + " " + text});
+        browser.runtime.sendMessage({'action' : 'log', 'text' : String(offset) + " " + text});
     }
 
 
@@ -25,7 +31,7 @@
 
         'use strict';
 
-        chrome.extension.sendRequest({'action' : 'error', 'text' : text});
+        browser.runtime.sendMessage({'action' : 'error', 'text' : text});
     }
 
 
@@ -88,7 +94,7 @@
 /*
 //NOT USED
     function loadRebuttal(url) {
-        chrome.tabs.create({"url":url, "selected":true});
+        browser.tabs.create({"url":url, "selected":true});
     }
 */
 
@@ -438,7 +444,7 @@
             bg.submitError = "Please enter at least one tag for this rebuttal.";
             return false;
         }
-        chrome.tabs.get(tabId, function (tab) {
+        browser.tabs.get(tabId, function (tab) {
             bg.submitRebuttals(tab);
         });
     }
@@ -584,7 +590,7 @@
         $("#wholePopupDiv").html("Loading..");
         $.post("http://rbutr.com/rbutr/PluginServlet", {
             getMenu: true,
-            version: chrome.app.getDetails().version,
+            version: browser.runtime.getManifest().version,
             cid: bg.getCid()
         }).success(function (data) {
             $("#wholePopupDiv").html(data);
@@ -603,7 +609,7 @@
 
 
 
-    // As per http://developer.chrome.com/extensions/contentSecurityPolicy.html
+    // As per http://developer.browser.com/extensions/contentSecurityPolicy.html
     // Set up the listeners here instead of in the HTML
     $(document)
         .on('click', '#tagTo', toTagged)
@@ -673,15 +679,15 @@
 
     /** @namespace bg.fromUrls */
     /** @namespace bg.toUrls */
-    chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
+    browser.tabs.query({currentWindow: true, active: true}, function (tab) {
 
         'use strict';
 
         // This happens AFTER document.ready, so I'll do everything here, which means I get access to the URL
         tabId = tab[0].id;
-        bg = chrome.extension.getBackgroundPage();
+        bg = browser.extension.getBackgroundPage();
         if (!bg.canonical_urls[tabId]) {
-            chrome.extension.sendRequest({action: 'setCanonical', tab: tab[0]});
+            browser.runtime.sendMessage({action: 'setCanonical', tab: tab[0]});
         }
         setupCss();
         // This sets up everything.
