@@ -12,7 +12,6 @@
     var loggedIn;
     var submitError;
     var direct = false;
-    var cid = getCid();
     // Other globals
     var recordedClicks = {};
     // var voteUpDiv;
@@ -193,7 +192,7 @@
             getLinks: true,
             fromPageUrlHash: urlHash,
             version: chrome.app.getDetails().version,
-            cid: cid
+            cid: getCid()
         }, function (data) {
             rebuttals[tabId] = data;
             loggedIn = true;
@@ -281,7 +280,7 @@
             canonicalToPages: canonicalToPages,
             direct: direct,
             tags: tags,
-            cid: cid
+            cid: getCid()
         }, function (data) {
             console.log("sucess status " + data.status);
             displayMessage('<b>' + data.result + '</b>');

@@ -364,7 +364,7 @@
             title: bg.page_title[bg.canonical_urls[tabId]],
             tags: bg.tags,
             pageIsCanonical: bg.url_is_canonical[bg.canonical_urls[tabId]],
-            cid: bg.cid
+            cid: bg.getCid()
         }, function (data) {
             console.log("Success : ", data);
             $("#wholePopupDiv").html(data);
@@ -513,7 +513,7 @@
         $.get('http://rbutr.com/rbutr/PluginServlet', {
             'linkId': recordedClick.linkId,
             vote: voteScore,
-            cid: bg.cid
+            cid: bg.getCid()
         }, function (data) {
             $('#currentScore').html(data);
         });
@@ -567,7 +567,7 @@
             url: bg.canonical_urls[tabId],
             title: bg.page_title[bg.canonical_urls[tabId]],
             idea: document.forms['ideaForm'].idea.value,
-            cid: bg.cid
+            cid: bg.getCid()
         }).success(function (data) {
             $("#wholePopupDiv").html(data);
         }).error(function (msg){
@@ -585,7 +585,7 @@
         $.post("http://rbutr.com/rbutr/PluginServlet", {
             getMenu: true,
             version: chrome.app.getDetails().version,
-            cid: bg.cid
+            cid: bg.getCid()
         }).success(function (data) {
             $("#wholePopupDiv").html(data);
         }).error(function (msg) {
