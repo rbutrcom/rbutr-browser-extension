@@ -40,18 +40,19 @@ window.browser = (function () {
         window.chrome;
 })();
 
+
 /*
  //NOT USED
  var linkContextId = browser.contextMenus.create({
- title: "Submit as rebutted by current page",
- contexts: ["link"],
- onclick: contextLinkSelected
+    title: "Submit as rebutted by current page",
+    contexts: ["link"],
+    onclick: contextLinkSelected
  });
 
  var textContextId = browser.contextMenus.create({
- title: "Use text as rebuttal comment.",
- contexts: ["selection"],
- onclick: contextTextSelected
+    title: "Use text as rebuttal comment.",
+    contexts: ["selection"],
+    onclick: contextTextSelected
  });
  */
 
@@ -59,20 +60,21 @@ window.browser = (function () {
 /*
  //NOT USED
  function contextLinkSelected(info, tab) {
- if (!alreadyExists(info.linkUrl)) {
- fromUrls[fromUrls.length] = info.linkUrl;
- }
- if (!alreadyExists(canonical_urls[tab.id]) ) {
- toUrls[toUrls.length] = canonical_urls[tab.id];
- }
- if (!submittingRebuttal ) {
- comment = [];
- tags = [];
- submitError = "";
- submittingRebuttal = true;
- }
+    if (!alreadyExists(info.linkUrl)) {
+        fromUrls[fromUrls.length] = info.linkUrl;
+    }
+    if (!alreadyExists(canonical_urls[tab.id]) ) {
+        toUrls[toUrls.length] = canonical_urls[tab.id];
+    }
+    if (!submittingRebuttal ) {
+        comment = [];
+        tags = [];
+        submitError = "";
+        submittingRebuttal = true;
+    }
  }
  */
+
 
 
 function getCid() {
@@ -89,6 +91,7 @@ function getCid() {
     }
     return cid;
 }
+
 
 
 function alreadyExists(url) {
@@ -109,6 +112,7 @@ function alreadyExists(url) {
 }
 
 
+
 function getPageTitle(url) {
 
     'use strict';
@@ -119,6 +123,7 @@ function getPageTitle(url) {
         return "No title";
     }
 }
+
 
 
 function getPopup() {
@@ -148,6 +153,7 @@ function displayMessage(message) {
 }
 
 
+
 // For communicating with the content script for it to pop stuff up.
 function postMessage(tabId, titleMessage) {
 
@@ -162,9 +168,8 @@ function postMessage(tabId, titleMessage) {
             console.log(response);
         });
     });
-
-
 }
+
 
 
 function getRecordedClickByToUrl(toUrl) {
@@ -176,6 +181,7 @@ function getRecordedClickByToUrl(toUrl) {
     // }
     return recordedClicks[toUrl];
 }
+
 
 
 function tabLoaded(tabId, url) {
@@ -255,6 +261,7 @@ function tabLoaded(tabId, url) {
 }
 
 
+
 function submitRebuttals(tabId) {
 
     'use strict';
@@ -306,6 +313,7 @@ function submitRebuttals(tabId) {
 }
 
 
+
 /*
  //NOT USED
  function contextTextSelected(info, tab) {
@@ -321,6 +329,7 @@ function submitRebuttals(tabId) {
  comment[0] = info.selectionText;
  }
  */
+
 
 
 function startSubmission(tabId, fromTo) {
@@ -341,6 +350,7 @@ function startSubmission(tabId, fromTo) {
 }
 
 
+
 function stopSubmission() {
 
     'use strict';
@@ -351,6 +361,8 @@ function stopSubmission() {
     comment = [];
     tags = [];
 }
+
+
 
 // This is now called above after canonical is set.
 // browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -364,6 +376,7 @@ function stopSubmission() {
 // });
 
 
+
 function removeTag(tagText) {
 
     'use strict';
@@ -373,6 +386,7 @@ function removeTag(tagText) {
         tags.splice(index, 1);
     }
 }
+
 
 
 function addTag(tagText) {
@@ -385,6 +399,7 @@ function addTag(tagText) {
     removeTag(tagText); // Avoid duplicates.
     tags[tags.length] = tagText;
 }
+
 
 
 function recordLinkClick(fromTabId, linkId, linkFromUrl, linkToUrl, score, yourVote) {
@@ -400,6 +415,7 @@ function recordLinkClick(fromTabId, linkId, linkFromUrl, linkToUrl, score, yourV
         yourVote: yourVote
     };
 }
+
 
 
 // generate an absolute url (protocol, host, path) from a canonicalValue that might be relative
@@ -422,6 +438,7 @@ function getCanonicalUrl(canonicalValue) {
         return null;
     }
 }
+
 
 
 browser.runtime.onMessage.addListener(function (request, sender, callback) {
@@ -461,6 +478,7 @@ browser.runtime.onMessage.addListener(function (request, sender, callback) {
 });
 
 
+
 // tab is going away, remove the canonical data for it
 browser.tabs.onRemoved.addListener(function (tabId) {
 
@@ -469,6 +487,7 @@ browser.tabs.onRemoved.addListener(function (tabId) {
     delete canonical_urls[tabId];
     delete plain_urls[tabId];
 });
+
 
 
 browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
