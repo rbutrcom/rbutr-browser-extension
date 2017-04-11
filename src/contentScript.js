@@ -7,6 +7,8 @@ window.browser = (function () {
         window.chrome;
 })();
 
+
+
 function log(text) {
 
     'use strict';
@@ -15,12 +17,14 @@ function log(text) {
 }
 
 
+
 function error(text) {
 
     'use strict';
 
     browser.runtime.sendMessage({'action': 'error', 'text': text});
 }
+
 
 
 function shouldShowMessage(url) {
@@ -35,9 +39,12 @@ function shouldShowMessage(url) {
 }
 
 
+
 var isInstalledNode = document.createElement('div');
 isInstalledNode.id = 'rbutr-extension-is-installed';
 document.body.appendChild(isInstalledNode);
+
+
 
 browser.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
@@ -76,6 +83,8 @@ browser.runtime.onMessage.addListener(
     }
 );
 
+
+
 //browser.runtime.onMessage.addListener(
 //  function(request, sender, sendResponse) {
 //    console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
@@ -84,8 +93,12 @@ browser.runtime.onMessage.addListener(
 //      sendResponse({farewell: "ack"});
 //  });
 
+
+
 var canonicalValue = $('head link[rel=canonical]').attr('href');
 var title = $("title").text();
+
+
 
 // When the user clicks through from our webpage, rather than the plugin, we hide the click details in the re-direct page.
 if ($("#clickDataForRbutrPlugin").length) { // jQuery never returns null.. http://stackoverflow.com/questions/477667/how-to-check-null-objects-in-jquery
@@ -95,6 +108,8 @@ if ($("#clickDataForRbutrPlugin").length) { // jQuery never returns null.. http:
     // alert(click);
 }
 
+
 browser.runtime.sendMessage({'action': 'setCanonical', 'url': canonicalValue || location.href, 'title': title});
+
 
 $('body').append('<div style="display: none;" class="rbutrInstalled"></div>');
