@@ -10,6 +10,9 @@ var start = new Date().getTime();
 
 
 window.browser = (function () {
+
+    'use strict';
+
     return window.msBrowser ||
         window.browser ||
         window.chrome;
