@@ -2,6 +2,9 @@
 /*jslint browser: true */
 
 window.browser = (function () {
+
+    'use strict';
+
     return window.msBrowser ||
         window.browser ||
         window.chrome;
@@ -31,7 +34,7 @@ function shouldShowMessage(url) {
 
     'use strict';
 
-    var result = !localStorage.getItem("rbutr.dontshow." + url);
+    var result = !localStorage.getItem('rbutr.dontshow.' + url);
     if (result === undefined || result === null) {
         result = true;
     }
@@ -66,7 +69,7 @@ browser.runtime.onMessage.addListener(
             window.setTimeout(function () {
                 $('#rbutrfloatdiv').remove();
             }, 5000);
-            //    $("body").qtip({
+            //    $('body').qtip({
             //        content: {
             //            text: 'Short hand notation'
             //        },
@@ -74,10 +77,10 @@ browser.runtime.onMessage.addListener(
             //            target: [10,10]
             //        }
             //    });
-            //    $("body").qtip("show");
+            //    $('body').qtip('show');
 
             $('#dontShowAgain').css('cursor', 'pointer').click(function () {
-                localStorage.setItem("rbutr.dontshow." + request.url, $('#dontShowAgain')[0].checked);
+                localStorage.setItem('rbutr.dontshow.' + request.url, $('#dontShowAgain')[0].checked);
             });
         }
     }
@@ -87,24 +90,24 @@ browser.runtime.onMessage.addListener(
 
 //browser.runtime.onMessage.addListener(
 //  function(request, sender, sendResponse) {
-//    console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
-//    if (request.messageForContent == "true")
+//    console.log(sender.tab ? 'from a content script:' + sender.tab.url : 'from the extension');
+//    if (request.messageForContent == 'true')
 //      $()
-//      sendResponse({farewell: "ack"});
+//      sendResponse({farewell: 'ack'});
 //  });
 
 
 
 var canonicalValue = $('head link[rel=canonical]').attr('href');
-var title = $("title").text();
+var title = $('title').text();
 
 
 
 // When the user clicks through from our webpage, rather than the plugin, we hide the click details in the re-direct page.
-if ($("#clickDataForRbutrPlugin").length) { // jQuery never returns null.. http://stackoverflow.com/questions/477667/how-to-check-null-objects-in-jquery
-    var click = JSON.parse($("#clickDataForRbutrPlugin").text());
+if ($('#clickDataForRbutrPlugin').length) { // jQuery never returns null.. http://stackoverflow.com/questions/477667/how-to-check-null-objects-in-jquery
+    var click = JSON.parse($('#clickDataForRbutrPlugin').text());
     browser.runtime.sendMessage({'action': 'setClick', 'click': click});
-    // alert($("#dataForRbutrPlugin").text());
+    // alert($('#dataForRbutrPlugin').text());
     // alert(click);
 }
 

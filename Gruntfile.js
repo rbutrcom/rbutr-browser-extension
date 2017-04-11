@@ -18,7 +18,7 @@ module.exports = function (grunt) {
       prod: {
         options: {},
         files: {
-          'dist/css/main.css': 'src/less/main.less'
+          'dist/css/rbutr.css': 'src/less/rbutr.less'
         }
       }
     },

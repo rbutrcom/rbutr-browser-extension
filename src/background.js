@@ -27,7 +27,7 @@ var canonical_urls = {};
 var plain_urls = {};
 var url_is_canonical = {};
 var page_title = {};
-console.log("background initialised " + new Date());
+console.log('background initialised ' + new Date());
 
 
 // This is based on code from https://github.com/kevmoo/chromeCanonicalExtension
@@ -35,6 +35,9 @@ var simpleAbsoluteUrlMatch = '^[a-zA-Z]+://.*';
 
 
 window.browser = (function () {
+
+    'use strict';
+
     return window.msBrowser ||
         window.browser ||
         window.chrome;
@@ -44,14 +47,14 @@ window.browser = (function () {
 /*
  //NOT USED
  var linkContextId = browser.contextMenus.create({
-    title: "Submit as rebutted by current page",
-    contexts: ["link"],
+    title: 'Submit as rebutted by current page',
+    contexts: ['link'],
     onclick: contextLinkSelected
  });
 
  var textContextId = browser.contextMenus.create({
-    title: "Use text as rebuttal comment.",
-    contexts: ["selection"],
+    title: 'Use text as rebuttal comment.',
+    contexts: ['selection'],
     onclick: contextTextSelected
  });
  */
@@ -69,7 +72,7 @@ window.browser = (function () {
     if (!submittingRebuttal ) {
         comment = [];
         tags = [];
-        submitError = "";
+        submitError = '';
         submittingRebuttal = true;
     }
  }
@@ -81,12 +84,12 @@ function getCid() {
 
     'use strict';
 
-    var CID_KEY = "rbutr_cid";
+    var CID_KEY = 'rbutr_cid';
     var cid = localStorage.getItem(CID_KEY);
     if (!cid) {
         var ms = new Date().getTime();
         var rnd = Math.floor((Math.random() * 1000) + 1);
-        cid = ms + ("0000" + rnd).slice(-4);
+        cid = ms + ('0000' + rnd).slice(-4);
         localStorage.setItem(CID_KEY, cid);
     }
     return cid;
@@ -120,7 +123,7 @@ function getPageTitle(url) {
     if (page_title[url]) {
         return page_title[url];
     } else {
-        return "No title";
+        return 'No title';
     }
 }
 
@@ -130,7 +133,7 @@ function getPopup() {
 
     'use strict';
 
-    var popups = browser.extension.getViews({type: "popup"});
+    var popups = browser.extension.getViews({type: 'popup'});
     if (popups.length > 0) {
         return popups[0];
     } else {
@@ -146,7 +149,7 @@ function displayMessage(message) {
     var popup = getPopup();
 
     if (popup == null) {
-        console.error("Popup was null, couldn't display : " + message);
+        console.error('Popup was null, couldn\'t display : ' + message);
     } else {
         popup.displayMessage(message);
     }
@@ -213,43 +216,43 @@ function tabLoaded(tabId, url) {
         if (rebuttals[tabId].indexOf('<h2 class="status">No Rebuttals</h2><br style="clear:left;">') != -1) {
             rebuttalCount[tabId] = 0;
             // No rebuttals
-            browser.browserAction.setBadgeText({text: "", tabId: tabId});
+            browser.browserAction.setBadgeText({text: '', tabId: tabId});
             if (vote && loggedIn) {
-                browser.browserAction.setBadgeText({text: "Vote", tabId: tabId});
+                browser.browserAction.setBadgeText({text: 'Vote', tabId: tabId});
                 browser.browserAction.setBadgeBackgroundColor({color: [255, 255, 0, 255], tabId: tabId});
-                titleMessage = "You can vote on this.";
+                titleMessage = 'You can vote on this.';
                 browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
                 postMessage(tabId, titleMessage);
             } else {
                 browser.browserAction.setTitle({
                     tabId: tabId,
-                    title: "RbutR - There are no rebuttals to this page, do you know of one?"
+                    title: 'RbutR - There are no rebuttals to this page, do you know of one?'
                 });
             }
-            // } else if (rebuttals[tabId].indexOf("You are not logged in") != -1 ) {
+            // } else if (rebuttals[tabId].indexOf('You are not logged in') != -1 ) {
             //     loggedIn = false;
-            //     browser.browserAction.setBadgeText({ text: "NOTE", tabId: tabId});
+            //     browser.browserAction.setBadgeText({ text: 'NOTE', tabId: tabId});
             //     browser.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255], tabId: tabId});
-            //     browser.browserAction.setTitle({tabId: tabId, title: "You are not logged in! rbutr requires you to be logged in."});
+            //     browser.browserAction.setTitle({tabId: tabId, title: 'You are not logged in! rbutr requires you to be logged in.'});
         } else {
             var matches = rebuttals[tabId].match(/class="thumbsUp"/g);
             var count = Number(matches == null ? 0 : matches.length).toString();
             rebuttalCount[tabId] = count;
-            var rebuttal_plural = "rebuttals";
+            var rebuttal_plural = 'rebuttals';
 
             if (count == 1) {
-                rebuttal_plural = "rebuttal";
+                rebuttal_plural = 'rebuttal';
             }
 
             if (vote && loggedIn) {
-                browser.browserAction.setBadgeText({text: "V " + count, tabId: tabId});
+                browser.browserAction.setBadgeText({text: 'V ' + count, tabId: tabId});
                 browser.browserAction.setBadgeBackgroundColor({color: [255, 100, 100, 255], tabId: tabId});
-                titleMessage = "You can vote on this, and there is also " + count + " " + rebuttal_plural + ".";
+                titleMessage = 'You can vote on this, and there is also ' + count + ' ' + rebuttal_plural + '.';
                 browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
             } else {
                 browser.browserAction.setBadgeText({text: count, tabId: tabId});
                 browser.browserAction.setBadgeBackgroundColor({color: [255, 0, 0, 255], tabId: tabId});
-                titleMessage = "This page has " + count + " " + rebuttal_plural + ".";
+                titleMessage = 'This page has ' + count + ' ' + rebuttal_plural + '.';
                 browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
             }
 
@@ -281,7 +284,7 @@ function submitRebuttals(tabId) {
         canonicalFromPages[j] = url_is_canonical[fromUrls[j]];
     }
 
-    $.post("http://rbutr.com/rbutr/PluginServlet", {
+    $.post('http://rbutr.com/rbutr/PluginServlet', {
         submitLinks: true,
         fromUrls: fromUrls,
         toUrls: toUrls,
@@ -294,22 +297,22 @@ function submitRebuttals(tabId) {
         tags: tags,
         cid: getCid()
     }, function (data) {
-        console.log("sucess status " + data.status);
+        console.log('sucess status ' + data.status);
         displayMessage('<b>' + data.result + '</b>');
         window.open(data.redirectUrl);
         getPopup().cancelSubmission(); // Clear the data now that it's submitted.
         tabLoaded(tabId, canonical_urls[tabId]); // This will reload the for the tab, and set the badge.
     }, 'json').done(function (msg) {
-        console.log("done status " + msg.status);
+        console.log('done status ' + msg.status);
     }).fail(function (msg, arg2, arg3) {
-        displayMessage("Failed to submit : " + msg.responseText);
-        console.log("fail status " + msg.status);
-        console.log("msg = ", msg);
-        console.log("arg2 = ", arg2);
-        console.log("arg3 = ", arg3);
+        displayMessage('Failed to submit : ' + msg.responseText);
+        console.log('fail status ' + msg.status);
+        console.log('msg = ', msg);
+        console.log('arg2 = ', arg2);
+        console.log('arg3 = ', arg3);
     });
-    // console.log("immediate status " + jqxhr.status);
-    // console.log("jqxhr = " , jqxhr);
+    // console.log('immediate status ' + jqxhr.status);
+    // console.log('jqxhr = ' , jqxhr);
 }
 
 
@@ -317,13 +320,13 @@ function submitRebuttals(tabId) {
 /*
  //NOT USED
  function contextTextSelected(info, tab) {
- // console.log("item " + info.menuItemId + " was clicked");
- // console.log("info: " + JSON.stringify(info));
- // console.log("tab: " + JSON.stringify(tab));
+ // console.log('item ' + info.menuItemId + ' was clicked');
+ // console.log('info: ' + JSON.stringify(info));
+ // console.log('tab: ' + JSON.stringify(tab));
  if (!submittingRebuttal) {
  comment = [];
  tags = [];
- submitError = "";
+ submitError = '';
  submittingRebuttal = true;
  }
  comment[0] = info.selectionText;
@@ -337,15 +340,15 @@ function startSubmission(tabId, fromTo) {
     'use strict';
 
     submittingRebuttal = true;
-    if (fromTo == "from") {
+    if (fromTo == 'from') {
         fromUrls[0] = canonical_urls[tabId];
-        // toUrl = "Please navigate to the rebuttal page and select using above link";
+        // toUrl = 'Please navigate to the rebuttal page and select using above link';
     } else {
         toUrls[0] = canonical_urls[tabId];
-        // fromUrl = "Please navigate to the source page and select using above link";
+        // fromUrl = 'Please navigate to the source page and select using above link';
     }
     comment = [];
-    submitError = "";
+    submitError = '';
     tags = [];
 }
 
@@ -366,12 +369,12 @@ function stopSubmission() {
 
 // This is now called above after canonical is set.
 // browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-//     if (changeInfo.status == "loading") {
+//     if (changeInfo.status == 'loading') {
 //         tabLoaded(tab,tabId);
 //         browser.tabs.sendRequest(tab.id, {greeting: tab.url}, function (response) {
 //             console.log(response.farewell);
 //         });
-//        browser.tabs.executeScript(tabId, { code: "alert('Hello World " + tablink + "')" });
+//        browser.tabs.executeScript(tabId, { code: 'alert("Hello World ' + tablink + '")' });
 //     }
 // });
 
@@ -466,13 +469,13 @@ browser.runtime.onMessage.addListener(function (request, sender, callback) {
             plain_urls[tab.id] = tab.url;
 
             page_title[url] = tab.title;
-            // console.log("tab[" + tab.id + "] set canonical_url " + tab.url + " to " + canonicalUrl);
+            // console.log('tab[' + tab.id + '] set canonical_url ' + tab.url + ' to ' + canonicalUrl);
             tabLoaded(tab.id, url);
 
         } else if (request.action == 'setClick') {
             var click = request.click;
             recordLinkClick(null, click.linkId, click.linkFromUrl, click.linkToUrl, click.score, click.yourVote);
-            console.log("click recorded : " + click.linkToUrl);
+            console.log('click recorded : ' + click.linkToUrl);
         }
     }
 });
@@ -495,13 +498,13 @@ browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     'use strict';
 
     // ensure that the url data lives for the life of the page, not the tab
-    if (changeInfo.status == "loading") {
+    if (changeInfo.status == 'loading') {
         if (tab.url == plain_urls[tabId]) {
-            // console.log("Skipping clearing canonical_url IT HASN'T CHANGED : "  + canonical_urls[tabId]);
+            // console.log('Skipping clearing canonical_url IT HASN'T CHANGED : '  + canonical_urls[tabId]);
             return;
         }
-        // console.log("tab[" + tabId + "] loading - clearing canonical_url : was "  + canonical_urls[tabId]);
-        // console.log("tab[" + tabId + "] = " , tab);
+        // console.log('tab[' + tabId + '] loading - clearing canonical_url : was '  + canonical_urls[tabId]);
+        // console.log('tab[' + tabId + '] = ' , tab);
         delete canonical_urls[tabId];
         delete plain_urls[tabId];
     }
