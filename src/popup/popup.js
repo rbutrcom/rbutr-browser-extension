@@ -8,11 +8,14 @@ var bg;
 var start = new Date().getTime();
 
 
+
 window.browser = (function () {
     return window.msBrowser ||
         window.browser ||
         window.chrome;
 })();
+
+
 
 function log(text) {
 
@@ -25,6 +28,7 @@ function log(text) {
 }
 
 
+
 function error(text) {
 
     'use strict';
@@ -33,7 +37,9 @@ function error(text) {
 }
 
 
+
 var content = {idea: null, request: null, submission: null, thankyou: null, vote: null};
+
 
 
 function getPage(page) {
@@ -46,9 +52,11 @@ function getPage(page) {
 }
 
 
+
 for (page in content) {
     getPage(page);
 }
+
 
 
 function setPage(page) {
@@ -63,12 +71,14 @@ function setPage(page) {
 }
 
 
+
 function appendPage(page) {
 
     'use strict';
 
     $('#popupContent').append(content[page]);
 }
+
 
 
 function setupCss() {
@@ -83,12 +93,14 @@ function setupCss() {
 }
 
 
+
 /*
  //NOT USED
  function loadRebuttal(url) {
- browser.tabs.create({"url":url, "selected":true});
+    browser.tabs.create({"url":url, "selected":true});
  }
  */
+
 
 
 function doingTutorial() {
@@ -97,6 +109,7 @@ function doingTutorial() {
 
     return bg.fromUrls[0] != null && bg.fromUrls[0].endsWith("/fauxNews.html");
 }
+
 
 
 function refreshSubmissionData() {
@@ -193,6 +206,7 @@ function refreshSubmissionData() {
 }
 
 
+
 function refreshTags() {
 
     'use strict';
@@ -210,6 +224,7 @@ function refreshTags() {
 }
 
 
+
 function recordTag(tagText) {
 
     'use strict';
@@ -222,6 +237,7 @@ function recordTag(tagText) {
     refreshTags();
     refreshSubmissionData();
 }
+
 
 
 function setupTagTypeahead() {
@@ -250,6 +266,7 @@ function setupTagTypeahead() {
 }
 
 
+
 function displaySubmissionForm() {
 
     'use strict';
@@ -266,6 +283,7 @@ function displaySubmissionForm() {
 }
 
 
+
 function displayVoteForm(recordedClick) {
 
     'use strict';
@@ -278,12 +296,14 @@ function displayVoteForm(recordedClick) {
 }
 
 
+
 function displayMessage(htmlMessage) {
 
     'use strict';
 
     $("#wholePopupDiv").html(htmlMessage + '<p><a href="#" id="thanks" class="button">Ok (Esc)</a></p>');
 }
+
 
 
 function displayNotLoggedInMessage() {
@@ -293,6 +313,7 @@ function displayNotLoggedInMessage() {
     displayMessage("You are not logged in! rbutr requires you to be logged in to submit rebuttals and to vote. " +
         "Click <a target='_blank' href='http://rbutr.com/rbutr/LoginServlet'>here</a> to login or register.");
 }
+
 
 
 function showSubmissionPopup(fromTo) {
@@ -308,6 +329,7 @@ function showSubmissionPopup(fromTo) {
 }
 
 
+
 function cancelSubmission() {
 
     'use strict';
@@ -317,6 +339,7 @@ function cancelSubmission() {
     // $('#ssubmitDiv').hide();
     // $('#StartSubmissionDiv').show();
 }
+
 
 
 function requestRebuttals() {
@@ -334,6 +357,7 @@ function requestRebuttals() {
     console.log("bg = " + bg.canonical_urls[tabId]);
     $('#StartSubmissionDiv').hide();
 }
+
 
 
 function submitRequestData() {
@@ -365,6 +389,7 @@ function submitRequestData() {
 }
 
 
+
 function toTagged() {
 
     'use strict';
@@ -375,6 +400,7 @@ function toTagged() {
     bg.toUrls[bg.toUrls.length] = bg.canonical_urls[tabId];
     refreshSubmissionData();
 }
+
 
 
 function fromTagged() {
@@ -392,12 +418,14 @@ function fromTagged() {
 }
 
 
+
 //function swapUrls() {
 //     var tmp = bg.fromUrl;
 //     bg.fromUrl = bg.toUrl;
 //     bg.toUrl = tmp;
 //     refreshSubmissionData();
 //}
+
 
 
 function cancelRequestSubmission() {
@@ -407,6 +435,7 @@ function cancelRequestSubmission() {
     $('#StartSubmissionDiv').show();
     setPage('rebuttals');
 }
+
 
 
 function submitData() {
@@ -425,6 +454,7 @@ function submitData() {
         bg.submitRebuttals(tab);
     });
 }
+
 
 
 function handleDelayOnLoadOfRebuttals() {
@@ -451,6 +481,7 @@ function handleDelayOnLoadOfRebuttals() {
         }
     }, 100);
 }
+
 
 
 function loadData() {
@@ -485,6 +516,7 @@ function loadData() {
 }
 
 
+
 function vote(voteScore) {
 
     'use strict';
@@ -505,6 +537,7 @@ function vote(voteScore) {
 }
 
 
+
 function voteUp() {
 
     'use strict';
@@ -513,6 +546,7 @@ function voteUp() {
     // $("#voteDiv img.clickableImages").hide(); // Hide the buttons
     // $('#voteUpDiv').show();
 }
+
 
 
 function voteDown() {
@@ -525,13 +559,15 @@ function voteDown() {
 }
 
 
+
 /*
  //NOT USED
  function submitIdea() {
- document.forms['ideaForm'].url.value = bg.canonical_urls[tabId];
- setPage('idea');
+    document.forms['ideaForm'].url.value = bg.canonical_urls[tabId];
+    setPage('idea');
  }
  */
+
 
 
 function submitIdeaData() {
@@ -553,6 +589,7 @@ function submitIdeaData() {
 }
 
 
+
 function loadMenu() {
 
     'use strict';
@@ -568,6 +605,7 @@ function loadMenu() {
         $("#wholePopupDiv").html(msg.responseText);
     });
 }
+
 
 
 /*
@@ -646,6 +684,7 @@ $(document)
     });
 
 
+
 /** @namespace bg.fromUrls */
 /** @namespace bg.toUrls */
 browser.tabs.query({currentWindow: true, active: true}, function (tab) {
@@ -662,6 +701,7 @@ browser.tabs.query({currentWindow: true, active: true}, function (tab) {
     // This sets up everything.
     loadData();
 });
+
 
 
 // Add endsWith function to String, as per http://stackoverflow.com/questions/280634/endswith-in-javascript
