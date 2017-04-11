@@ -2,6 +2,9 @@
 /*jslint browser: true */
 
 window.browser = (function () {
+
+    'use strict';
+
     return window.msBrowser ||
         window.browser ||
         window.chrome;

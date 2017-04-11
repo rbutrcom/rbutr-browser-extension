@@ -35,6 +35,9 @@ var simpleAbsoluteUrlMatch = '^[a-zA-Z]+://.*';
 
 
 window.browser = (function () {
+
+    'use strict';
+
     return window.msBrowser ||
         window.browser ||
         window.chrome;
