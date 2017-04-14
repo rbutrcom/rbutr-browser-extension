@@ -44,9 +44,9 @@ function setPage(page) {
     console.log('[RBUTR] show page: ' + page);
 
     if (page === 'rebuttals') {
-        $('#popupContent').html(bg.rebuttals[tabId]);
+        $('#message').html(bg.rebuttals[tabId]);
     } else {
-        document.querySelector('#popupContent > div').setAttribute('class', 'hide');
+        document.querySelectorAll('#popupContent > div').forEach( x=> x.setAttribute('class','hide'));
         document.querySelector('#view-'  + page).removeAttribute('class', 'hide');
     }
 }
@@ -452,10 +452,10 @@ function handleDelayOnLoadOfRebuttals() {
                 return;
             }
             if (!bg.canonical_urls[tabId]) {
-                $('#popupContent').html('This doesn\'t look like a real web page.');
+                $('#message').html('This doesn\'t look like a real web page.');
                 return;
             }
-            $('#popupContent').html('Server connection timed out, try again.');
+            $('#message').html('Server connection timed out, try again.');
         } else {
             setPage('rebuttals');
         }
