@@ -21,7 +21,7 @@ Click here for more information and screenshots
 
 ## How do I install it?
 
-To build the plugin you will need https://gruntjs.com/ and https://yarnpkg.com your machine.
+First install https://yarnpkg.com on your machine.
 
 **Caution!**
 
@@ -38,9 +38,14 @@ Install dependencies
 
 `$ yarn install`
 
-Build with grunt
+Build sass with
 
-`$ grunt build`
+`$ npm sass`
+
+or with watcher
+
+
+`$ npm watch:sass`
 
 
 ## How do I test it?
