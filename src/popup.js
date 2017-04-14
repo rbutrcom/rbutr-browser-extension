@@ -43,6 +43,10 @@ function setPage(page) {
     'use strict';
     console.log('[RBUTR] show page: ' + page);
 
+    // clear all message
+    document.querySelector('#message').innerHTML = "";
+
+
     if (page === 'rebuttals') {
         $('#message').html(bg.rebuttals[tabId]);
     } else {
@@ -281,7 +285,7 @@ function displayMessage(htmlMessage) {
 
     'use strict';
 
-    $('#wholePopupDiv').html(htmlMessage + '<p><a href="#" id="thanks" class="button">Ok (Esc)</a></p>');
+    $('#message').html(htmlMessage + '<p><a href="#" id="thanks" class="button">Ok (Esc)</a></p>');
 }
 
 
@@ -357,7 +361,7 @@ function submitRequestData() {
         cid: bg.getCid()
     }, function (data) {
         console.log('[RBUTR] Success : ', data);
-        $('#wholePopupDiv').html(data);
+        $('#message').html(data);
     }).fail(function (msg, arg2, arg3) {
         console.log('[RBUTR] fail : ', msg);
         console.log('[RBUTR] fail status ' + msg.status);
@@ -562,9 +566,9 @@ function submitIdeaData() {
         idea: document.forms['ideaForm'].idea.value,
         cid: bg.getCid()
     }).success(function (data) {
-        $('#wholePopupDiv').html(data);
+        $('#message').html(data);
     }).error(function (msg) {
-        $('#wholePopupDiv').html(msg.responseText);
+        $('#message').html(msg.responseText);
     });
 }
 
@@ -574,15 +578,15 @@ function loadMenu() {
 
     'use strict';
 
-    $('#wholePopupDiv').html('Loading..');
+    $('#message').html('Loading..');
     $.post('http://rbutr.com/rbutr/PluginServlet', {
         getMenu: true,
         version: browser.runtime.getManifest().version,
         cid: bg.getCid()
     }).success(function (data) {
-        $('#wholePopupDiv').html(data);
+        $('#message').html(data);
     }).error(function (msg) {
-        $('#wholePopupDiv').html(msg.responseText);
+        $('#message').html(msg.responseText);
     });
 }
 

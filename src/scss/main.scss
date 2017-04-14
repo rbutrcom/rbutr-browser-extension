@@ -3,7 +3,7 @@
 body {
     font-family: sans-serif;
     overflow-x: hidden;
-    width: 450px;
+    width: 500px;
 }
 
 h1 {
@@ -216,18 +216,18 @@ ul {
 
 .StartRebut {
     float: left;
-    padding-right: 20px;
+    padding-right: 10px;
     position: relative;
 }
 
 .StartRebutal {
     float: left;
-    padding-right: 20px;
+    padding-right: 10px;
     position: relative;
 }
 
 .StartRebutal2 {
-    float: left;
+    float: right;
     position: relative;
     top: -2px;
 }
@@ -239,10 +239,9 @@ ul {
 }
 
 .Random {
-    float: right;
+    text-align: right;
     font-size: 12px;
-    position: relative;
-    right: 16px;
+    clear: both;
 }
 
 #startFromSubmission {
