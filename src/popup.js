@@ -24,7 +24,6 @@ function log(text) {
 
     'use strict';
 
-
     var offset = new Date().getTime() - start;
     console.log(text);
     browser.runtime.sendMessage({'action': 'log', 'text': String(offset) + ' ' + text});
@@ -33,31 +32,8 @@ function log(text) {
 
 
 function error(text) {
-
     'use strict';
-
     browser.runtime.sendMessage({'action': 'error', 'text': text});
-}
-
-
-
-var content = {idea: null, request: null, submission: null, thankyou: null, vote: null};
-
-
-
-function getPage(page) {
-
-    'use strict';
-
-    $.get(page + '.html').success(function (data) {
-        content[page] = data;
-    });
-}
-
-
-
-for (page in content) {
-    getPage(page);
 }
 
 
@@ -66,10 +42,11 @@ function setPage(page) {
 
     'use strict';
 
-    if (page == 'rebuttals') {
+    if (page === 'rebuttals') {
         $('#popupContent').html(bg.rebuttals[tabId]);
     } else {
-        $('#popupContent').html(content[page]);
+        document.querySelector('#popupContent > div').setAttribute('class', 'hide');
+        document.querySelector('#popupContent > ' + '.view-'  + page).removeAttribute('class', 'hide');
     }
 }
 
@@ -78,8 +55,7 @@ function setPage(page) {
 function appendPage(page) {
 
     'use strict';
-
-    $('#popupContent').append(content[page]);
+    document.querySelector('#popupContent > ' + '.view-'  + page).removeAttribute('class', 'hide');
 }
 
 
