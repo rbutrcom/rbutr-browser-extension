@@ -25,7 +25,7 @@ function log(text) {
     'use strict';
 
     var offset = new Date().getTime() - start;
-    console.log(text);
+    console.log('[RBUTR] ' + text);
     browser.runtime.sendMessage({'action': 'log', 'text': String(offset) + ' ' + text});
 }
 
@@ -41,12 +41,13 @@ function error(text) {
 function setPage(page) {
 
     'use strict';
+    console.log('[RBUTR] show page: ' + page);
 
     if (page === 'rebuttals') {
         $('#popupContent').html(bg.rebuttals[tabId]);
     } else {
         document.querySelector('#popupContent > div').setAttribute('class', 'hide');
-        document.querySelector('#popupContent > ' + '.view-'  + page).removeAttribute('class', 'hide');
+        document.querySelector('#view-'  + page).removeAttribute('class', 'hide');
     }
 }
 
@@ -231,11 +232,11 @@ function setupTagTypeahead() {
     }).on('typeahead:selected', function (event, data) {
         recordTag(data.value);
         //   console.log('data', data);
-        $('#tagTypeahead').val('');
+        document.getElementById('#tagTypeahead').value = '';
     }).keydown(function (event) {
         var key = event.which;
-        console.log('key = ' + key);
-        console.log('event = ', event);
+        console.log('[RBUTR] key = ' + key);
+        console.log('[RBUTR] event = ', event);
         if (key == 13 || key == 186 || key == 188) {
             event.preventDefault();
             recordTag($('#tagTypeahead').val());
@@ -332,8 +333,8 @@ function requestRebuttals() {
     appendPage('request');
     setupTagTypeahead();
     $('#requestUrl').val(bg.canonical_urls[tabId]);
-    console.log('input = ' + $('#requestUrl').val());
-    console.log('bg = ' + bg.canonical_urls[tabId]);
+    console.log('[RBUTR] input = ' + $('#requestUrl').val());
+    console.log('[RBUTR] bg = ' + bg.canonical_urls[tabId]);
     $('#StartSubmissionDiv').hide();
 }
 
@@ -355,14 +356,14 @@ function submitRequestData() {
         pageIsCanonical: bg.url_is_canonical[bg.canonical_urls[tabId]],
         cid: bg.getCid()
     }, function (data) {
-        console.log('Success : ', data);
+        console.log('[RBUTR] Success : ', data);
         $('#wholePopupDiv').html(data);
     }).fail(function (msg, arg2, arg3) {
-        console.log('fail : ', msg);
-        console.log('fail status ' + msg.status);
-        console.log('msg = ', msg);
-        console.log('arg2 = ', arg2);
-        console.log('arg3 = ', arg3);
+        console.log('[RBUTR] fail : ', msg);
+        console.log('[RBUTR] fail status ' + msg.status);
+        console.log('[RBUTR] msg = ', msg);
+        console.log('[RBUTR] arg2 = ', arg2);
+        console.log('[RBUTR] arg3 = ', arg3);
         displayMessage('An error occurred : ' + msg.responseText);
     });
 }
