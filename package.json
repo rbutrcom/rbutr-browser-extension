@@ -7,11 +7,17 @@
   "author": "rbutr Community",
   "license": "LGPL-3.0",
   "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-google": "^0.7.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "node-sass": "^4.5.2"
   },
   "scripts": {
     "sass": "node-sass src/scss/main.scss --output src/css --source-map-embed --source-map-contents",
     "watch:sass": "npm run sass -- --watch",
+    "lint": "eslint src",
     "zip": "mkdir -p build && zip -r build/rbutr.zip ./src/*",
     "build": "npm run sass && npm run zip"
   }
