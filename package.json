@@ -6,19 +6,11 @@
   "repository": "github:tomlutzenberger/rbutr-browser-extension.git",
   "author": "rbutr Community",
   "license": "LGPL-3.0",
-  "dependencies": {
-    "jquery": "^3.2.1",
-    "md5": "^2.2.1",
-    "typeahead.js": "^0.11.1"
-  },
   "devDependencies": {
-    "grunt": "^1.0.1",
-    "grunt-contrib-compress": "^1.4.1",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-csslint": "^2.0.0",
-    "grunt-contrib-jshint": "^1.1.0",
-    "grunt-contrib-less": "^1.4.1",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-htmlhint": "^0.9.13"
+    "node-sass": "^4.5.2"
+  },
+  "scripts": {
+    "sass": "node-sass src/scss/main.scss --output src/css --source-map-embed --source-map-contents",
+    "watch:sass": "npm run sass -- --watch"
   }
 }
