@@ -27,8 +27,7 @@
   "browser_action": {
     "default_icon": "assets/icon.png",
     "default_title": "RbutR, balancing the internet.",
-    "default_popup": "popup/popup.html",
-    "css": "css/main.css"
+    "default_popup": "popup.html"
   },
 
   "web_accessible_resources": [
