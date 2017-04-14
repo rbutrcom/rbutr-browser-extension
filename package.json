@@ -11,6 +11,8 @@
   },
   "scripts": {
     "sass": "node-sass src/scss/main.scss --output src/css --source-map-embed --source-map-contents",
-    "watch:sass": "npm run sass -- --watch"
+    "watch:sass": "npm run sass -- --watch",
+    "zip": "mkdir -p build && zip -r build/rbutr.zip ./src/*",
+    "build": "npm run sass && npm run zip"
   }
 }
