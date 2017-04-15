@@ -7,18 +7,27 @@
   "author": "rbutr Community",
   "license": "LGPL-3.0",
   "devDependencies": {
+    "concurrently": "^3.4.0",
     "eslint": "^3.19.0",
     "eslint-config-google": "^0.7.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
-    "node-sass": "^4.5.2"
+    "htmlhint": "^0.9.13",
+    "node-sass": "^4.5.2",
+    "stylelint": "^7.10.1"
   },
   "scripts": {
     "sass": "node-sass src/scss/main.scss --output src/css --source-map-embed --source-map-contents",
     "watch:sass": "npm run sass -- --watch",
-    "lint": "eslint src",
+    "lint:js": "eslint --config .eslintrc.json src;",
+    "lint:style": "stylelint --config .stylelintrc src/scss/*.scss;",
+    "lint:html": "htmlhint --config .htmlhintrc src/**/*.html;",
+    "lint": "concurrently --names  lint:html, lint:style, lint:js -p name 'npm run lint:html' 'npm run lint:style' 'npm run lint:js';",
     "zip": "mkdir -p build && zip -r build/rbutr.zip ./src/*",
-    "build": "npm run sass && npm run zip"
+    "build": "lint && npm run sass && npm run zip"
+  },
+  "dependencies": {
+    "stylelint-config-standard": "^16.0.0"
   }
 }
