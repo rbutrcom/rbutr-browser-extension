@@ -6,6 +6,8 @@
   "repository": "github:tomlutzenberger/rbutr-browser-extension.git",
   "author": "rbutr Community",
   "license": "LGPL-3.0",
+  "dependencies": {
+  },
   "devDependencies": {
     "concurrently": "^3.4.0",
     "eslint": "^3.19.0",
@@ -15,7 +17,9 @@
     "eslint-plugin-standard": "^3.0.1",
     "htmlhint": "^0.9.13",
     "node-sass": "^4.5.2",
-    "stylelint": "^7.10.1"
+    "stylelint": "^7.10.1",
+    "stylelint-config-standard": "^16.0.0"
+
   },
   "scripts": {
     "sass": "node-sass src/scss/main.scss --output src/css --source-map-embed --source-map-contents",
@@ -26,8 +30,5 @@
     "lint": "concurrently --names  lint:html, lint:style, lint:js -p name 'npm run lint:html' 'npm run lint:style' 'npm run lint:js';",
     "zip": "mkdir -p build && zip -r build/rbutr.zip ./src/*",
     "build": "lint && npm run sass && npm run zip"
-  },
-  "dependencies": {
-    "stylelint-config-standard": "^16.0.0"
   }
 }
