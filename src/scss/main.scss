@@ -1,40 +1,41 @@
 /* General. */
 
 body {
-    font-family: sans-serif;
-    overflow-x: hidden;
-    width: 500px;
+  font-family: sans-serif;
+  overflow-x: hidden;
+  width: 500px;
 }
 
 h1 {
-    color: #333;
-    font-size: 40px;
-    font-weight: normal;
-    letter-spacing: 0;
-    line-height: 1.3em;
-    margin: 0;
-    padding: 0;
+  color: #333;
+  font-size: 40px;
+  font-weight: normal;
+  letter-spacing: 0;
+  line-height: 1.3em;
+  margin: 0;
+  padding: 0;
 }
 
 h2 {
-    color: #777;
-    float: left;
-    font-size: 22px;
-    font-weight: normal;
-    letter-spacing: 0;
-    line-height: 1.3em;
-    margin: 0 0 10px 0;
-    padding: 10px;
+  color: #777;
+  float: left;
+  font-size: 22px;
+  font-weight: normal;
+  letter-spacing: 0;
+  line-height: 1.3em;
+  margin-bottom: 10px;
+  margin-top: 0;
+  padding: 10px;
 
-    &.status {
-        color: #c33;
-        float: left;
-        font-size: 26px;
-    }
+  &.status {
+    color: #c33;
+    float: left;
+    font-size: 26px;
+  }
 }
 
 .hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .hide {
@@ -42,398 +43,398 @@ h2 {
 }
 
 .rebuttals {
-    float: left;
-    font-size: 14px;
+  float: left;
+  font-size: 14px;
 }
 
 p.rebuttals {
-    font-size: 12px;
+  font-size: 12px;
 }
 
 #wholePopupDiv {
-    position: relative;
+  position: relative;
 }
 
 a {
-    color: #599bc5;
-    text-decoration: none;
+  color: #599bc5;
+  text-decoration: none;
 
-    &:hover {
-        text-decoration: underline;
-    }
+  &:hover {
+    text-decoration: underline;
+  }
 
-    &.linkTitle {
-        font-size: 11px;
-    }
+  &.linkTitle {
+    font-size: 11px;
+  }
 
-    &.tagForSubmission {
-        background-color: #ccffe6;
-        background-image: url("http://rbutr.com/images/button-removetag.png");
-        background-position: 4% 50%;
-        background-repeat: no-repeat;
-        margin: 5px 5px;
-        padding: 3px 5px 3px 20px;
-        text-align: right;
-    }
+  &.tagForSubmission {
+    background-color: #ccffe6;
+    background-image: url("http://rbutr.com/images/button-removetag.png");
+    background-position: 4% 50%;
+    background-repeat: no-repeat;
+    margin: 5px;
+    padding: 3px 5px 3px 20px;
+    text-align: right;
+  }
 }
 
 .fakeLink {
-    color: blue;
-    cursor: pointer;
-    font-size: 12px;
-    padding: 2px 0;
-    text-decoration: none;
+  color: blue;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 0;
+  text-decoration: none;
 }
 
 .button {
-    background: -webkit-gradient(linear, left top, left bottom, from(#efefef), to(#e6e6e6));
-    background: -moz-linear-gradient(top, #efefef, #e6e6e6);
-    border: 0;
-    border-radius: 0;
-    cursor: pointer;
-    font-size: 12px;
-    margin: 0;
-    padding: 5px 10px;
-    position: relative;
+  background: -webkit-gradient(linear, left top, left bottom, from(#efefef), to(#e6e6e6));
+  background: -moz-linear-gradient(top, #efefef, #e6e6e6);
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 12px;
+  margin: 0;
+  padding: 5px 10px;
+  position: relative;
 }
 
 .direct {
-    margin: 20px auto 20px 5px;
+  margin: 20px auto 20px 5px;
 }
 
 .button:hover {
-    color: #c33;
-    text-decoration: none;
+  color: #c33;
+  text-decoration: none;
 }
 
 ul {
-    -webkit-padding-start: 30px;
+  -webkit-padding-start: 30px;
 }
 
 .linkTitle {
-    font-size: 85%;
+  font-size: 85%;
 }
 
 .linkUrl {
-    color: gray;
-    font-size: 60%;
+  color: gray;
+  font-size: 60%;
 }
 
 .linkBlock {
-    background-color: #f3f3f3;
-    margin: 3px 2px;
-    padding: 3px 10px;
+  background-color: #f3f3f3;
+  margin: 3px 2px;
+  padding: 3px 10px;
 }
 
 .sourceHeading {
-    color: #c00;
-    float: left;
-    margin: 3px 3px;
-    position: relative;
+  color: #c00;
+  float: left;
+  margin: 3px;
+  position: relative;
 }
 
 .rebuttalHeading {
-    color: #22AA22;
-    float: left;
-    margin: 3px 3px;
-    padding-top: 15px;
-    position: relative;
+  color: #2a2;
+  float: left;
+  margin: 3px;
+  padding-top: 15px;
+  position: relative;
 }
 
 .CaptureCopy {
-    color: #A5A5A5;
-
+  color: #a5a5a5;
 }
+
 .CaptureHeader {
-    color: #2a2;
-    font-size: 14px;
-    font-weight: bold;
-    padding-top: 20px;
+  color: #2a2;
+  font-size: 14px;
+  font-weight: bold;
+  padding-top: 20px;
 }
 
 .cancelSubmissionLink {
-    float: right;
-    font-size: 12px;
-    position: relative;
-    text-decoration: none;
+  float: right;
+  font-size: 12px;
+  position: relative;
+  text-decoration: none;
 }
 
 #StartSubmissionDiv,
 #SubmitDiv {
-    border-top: 0;
-    margin: 0;
+  border-top: 0;
+  margin: 0;
 }
 
 .firstHalf,
 .secondHalf {
-    float: left;
-    position: relative;
-    width: 50%;
+  float: left;
+  position: relative;
+  width: 50%;
 
-    .padding {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 10px;
+  .padding {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
 
-        input {
-            width: 100%;
-        }
+    input {
+      width: 100%;
     }
+  }
 }
 
 .firstHalf .padding {
-    margin: 0 30px 10px 10px;
+  margin: 0 30px 10px 10px;
 }
 
 .secondHalf .padding {
-    margin: 0 10px 10px 30px;
+  margin: 0 10px 10px 30px;
 }
 
 #swapUrlsLink {
-    background-color: #c66;
-    color: #fff;
-    display: block;
-    font-weight: bold;
-    left: -30px;
-    padding: 5px 0;
-    position: absolute;
-    text-align: center;
-    top: 21px;
-    width: 60px;
+  background-color: #c66;
+  color: #fff;
+  display: block;
+  font-weight: bold;
+  left: -30px;
+  padding: 5px 0;
+  position: absolute;
+  text-align: center;
+  top: 21px;
+  width: 60px;
 }
 
 /* User options */
 
 .UserOptionsButton {
-    background-color: #fbfbfb;
-    border: 1px solid #e5e5e5;
-    color: #777;
-    cursor: pointer;
-    font-size: 12px;
-    padding: 5px 10px;
-    width: 30px;
+  background-color: #fbfbfb;
+  border: 1px solid #e5e5e5;
+  color: #777;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 5px 10px;
+  width: 30px;
 }
 
 .StartRebut {
-    float: left;
-    padding-right: 10px;
-    position: relative;
+  float: left;
+  padding-right: 10px;
+  position: relative;
 }
 
 .StartRebutal {
-    float: left;
-    padding-right: 10px;
-    position: relative;
+  float: left;
+  padding-right: 10px;
+  position: relative;
 }
 
 .StartRebutal2 {
-    float: right;
-    position: relative;
-    top: -2px;
+  float: right;
+  position: relative;
+  top: -2px;
 }
 
 .StartRebutal3 {
-    float: right;
-    position: relative;
-    top: -2px;
+  float: right;
+  position: relative;
+  top: -2px;
 }
 
 .Random {
-    text-align: right;
-    font-size: 12px;
-    clear: both;
+  text-align: right;
+  font-size: 12px;
+  clear: both;
 }
 
 #startFromSubmission {
-    color: #c00 !important;
-    padding-left: 40px;
-    padding-right: 40px;
-    width: 100px;
+  color: #c00 !important;
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100px;
 }
 
 #startToSubmission {
-    color: #126FCD;
-    padding-left: 40px;
-    padding-right: 40px;
-    width: 100px;
+  color: #126fcd;
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100px;
 }
 
 .Ryleandom {
-    float: right;
-    font-size: 12px;
-    margin: 10px;
+  float: right;
+  font-size: 12px;
+  margin: 10px;
 }
 
 .RebuttalsContainer {
-    width: 100%;
+  width: 100%;
 
-    tr {
-        border-bottom: 15px #fff solid;
+  tr {
+    border-bottom: 15px #fff solid;
+  }
+
+  td {
+    background-color: #f3f3f3;
+    color: #a4a4a4;
+    padding: 10px;
+    vertical-align: top;
+
+    &.middle {
+      background-color: #cce5ff;
+      color: #666;
+      font-size: 12px;
+      vertical-align: bottom;
+      width: 42px;
     }
 
-    td {
-        background-color: #f3f3f3;
-        color: #a4a4a4;
-        padding: 10px;
-        vertical-align: top;
-
-        &.middle {
-            background-color: #cce5ff;
-            color: #666;
-            font-size: 12px;
-            vertical-align: bottom;
-            width: 42px;
-        }
-
-        a {
-            color: #06c;
-        }
+    a {
+      color: #06c;
     }
+  }
 
-    thead td {
-        background-color: #fff !important;
-        padding: 0 10px;
+  thead td {
+    background-color: #fff !important;
+    padding: 0 10px;
 
-        h3 {
-            margin-bottom: 0;
-        }
+    h3 {
+      margin-bottom: 0;
     }
+  }
 
-    .hoverUrlImage {
-        font-size: 11px;
-    }
+  .hoverUrlImage {
+    font-size: 11px;
+  }
 
-    .link {
-        background-image: url('http://rbutr.com/images/link.png');
-        display: block;
-        height: 20px;
-        margin-bottom: 10px;
-        width: 20px;
-    }
+  .link {
+    background-image: url('http://rbutr.com/images/link.png');
+    display: block;
+    height: 20px;
+    margin-bottom: 10px;
+    width: 20px;
+  }
 
-    .comment {
-        color: #209926;
-        font-size: 11px;
-        padding-bottom: 3px;
-    }
+  .comment {
+    color: #209926;
+    font-size: 11px;
+    padding-bottom: 3px;
+  }
 
-    .bottom {
-        float: left;
-        vertical-align: bottom;
-    }
+  .bottom {
+    float: left;
+    vertical-align: bottom;
+  }
 }
 
 .thumbsUp,
 .thumbsDown {
-    background-repeat: no-repeat;
-    display: block;
-    height: 23px;
-    margin-bottom: 10px;
+  background-repeat: no-repeat;
+  display: block;
+  height: 23px;
+  margin-bottom: 10px;
 
-    a {
-        padding-left: 28px;
-        text-decoration: none;
-    }
+  a {
+    padding-left: 28px;
+    text-decoration: none;
+  }
 }
 
 .thumbsUp {
-    background-image: url('http://rbutr.com/images/thumbsUp.png');
+  background-image: url('http://rbutr.com/images/thumbsUp.png');
 
-    a {
-        color: #3c0 !important;
-    }
+  a {
+    color: #3c0 !important;
+  }
 }
 
 .thumbsDown {
-    background-image: url('http://rbutr.com/images/thumbsDown.png');
+  background-image: url('http://rbutr.com/images/thumbsDown.png');
 
-    a {
-        color: #f00 !important;
-    }
+  a {
+    color: #f00 !important;
+  }
 }
 
 .tag {
-    background-color: #E6E6E6;
-    border-radius: 5px;
-    display: block;
-    float: left;
-    font-size: 10px;
-    margin-right: 3px;
-    padding: 2px 7px;
+  background-color: #e6e6e6;
+  border-radius: 5px;
+  display: block;
+  float: left;
+  font-size: 10px;
+  margin-right: 3px;
+  padding: 2px 7px;
 }
 
 .address {
-    color: #a4a4a4 !important;
-    font-size: 10px;
-    position: relative;
-    top: -3px;
+  color: #a4a4a4 !important;
+  font-size: 10px;
+  position: relative;
+  top: -3px;
 }
 
 .linkBy {
-    float: right;
-    font-size: 10px;
-    vertical-align: bottom;
+  float: right;
+  font-size: 10px;
+  vertical-align: bottom;
 }
 
 img.close {
-    float: right;
+  float: right;
 }
 
 .typeahead-wrapper {
-    display: block;
-    margin: 50px 0;
+  display: block;
+  margin: 50px 0;
 }
 
 .tt-dropdown-menu {
-    background-color: #fff;
-    border: 1px solid #000;
-    padding: 7px 7px;
+  background-color: #fff;
+  border: 1px solid #000;
+  padding: 7px;
 }
 
 .tt-suggestion.tt-is-under-cursor {
-    background-color: #ccc;
+  background-color: #ccc;
 }
 
 .triggered-events {
-    float: right;
-    height: 300px;
-    width: 500px;
+  float: right;
+  height: 300px;
+  width: 500px;
 }
 
 #captureSourceButton {
-    left: 5px;
-    position: relative;
-    top: 2px;
+  left: 5px;
+  position: relative;
+  top: 2px;
 }
 
 #captureRebuttalButton {
-    left: 5px;
-    position: relative;
-    top: 2px;
+  left: 5px;
+  position: relative;
+  top: 2px;
 }
 
 #tagDiv {
-    position: relative;
-    top: 8px;
+  position: relative;
+  top: 8px;
 }
 
 #tagHolder {
-    margin-top: 20px;
-    position: relative;
+  margin-top: 20px;
+  position: relative;
 }
 
 #notLoggedIn {
-    margin: 15px;
+  margin: 15px;
 }
 
 #cancelRequestLink,
 #cancelSubmissionLink,
 #swapUrlsLink {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #popupContent {
-    border: none;
-    height: auto;
-    width: auto;
+  border: none;
+  height: auto;
+  width: auto;
 }
