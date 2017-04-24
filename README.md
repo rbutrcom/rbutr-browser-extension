@@ -19,33 +19,22 @@ Want a rebuttal for a page you have found? Submit a request to the community.
 Click here for more information and screenshots
 
 
-## How do I install it?
-
-First install https://yarnpkg.com on your machine.
+## How do I build it?
 
 **Caution!**
 
-If you are using Windows, you might have to do the following steps before.
-*Need to be executed with Administrator permission*
+If you are using Windows, you need to use the Linux subsystem in order to execute the build scripts.
 
-`$ yarn global install --production windows-build-tools`
 
-`$ yarn global install node-gyp`
+### 1. Install [yarn](https://yarnpkg.com/lang/en/docs/install/) and [Node.js](https://nodejs.org/en/download/package-manager/) on your machine.
 
-For details, see the full answer at [StackOverflow](http://stackoverflow.com/questions/21365714/nodejs-error-installing-with-npm)
-
-Install dependencies
+### 2. Install dependencies
 
 `$ yarn install`
 
-Build sass with
+### 3. Build
 
-`$ npm sass`
-
-or with watcher
-
-
-`$ npm watch:sass`
+`$ yarn run build`
 
 
 ## How do I test it?
