@@ -44,14 +44,14 @@ function setPage(page) {
     console.log('[RBUTR] show page: ' + page);
 
     // clear all message
-    document.querySelector('#message').innerHTML = "";
+    document.querySelector('#message').innerHTML = '';
 
 
     if (page === 'rebuttals') {
         $('#message').html(bg.rebuttals[tabId]);
     } else {
-        document.querySelectorAll('#popupContent > div').forEach( x=> x.setAttribute('class','hide'));
-        document.querySelector('#view-'  + page).removeAttribute('class', 'hide');
+        document.querySelectorAll('#popupContent > div').forEach( x => x.setAttribute('class','hide'));
+        document.querySelector('#view-' + page).removeAttribute('class', 'hide');
     }
 }
 
@@ -60,7 +60,7 @@ function setPage(page) {
 function appendPage(page) {
 
     'use strict';
-    document.querySelector('#popupContent > ' + '.view-'  + page).removeAttribute('class', 'hide');
+    document.querySelector('#popupContent > ' + '.view-' + page).removeAttribute('class', 'hide');
 }
 
 
@@ -82,7 +82,7 @@ function doingTutorial() {
 
     'use strict';
 
-    return bg.fromUrls[0] != null && bg.fromUrls[0].endsWith('/fauxNews.html');
+    return bg.fromUrls[0] !== null && bg.fromUrls[0].endsWith('/fauxNews.html');
 }
 
 
@@ -160,8 +160,8 @@ function refreshSubmissionData() {
 
     $('#submitError').text(bg.submitError);
 
-    if (bg.fromUrls[0] != null && bg.fromUrls[0].substring(0, 4).toLowerCase() == 'http' &&
-        bg.toUrls[0] != null && bg.toUrls[0].substring(0, 4).toLowerCase() == 'http' &&
+    if (bg.fromUrls[0] !== null && bg.fromUrls[0].substring(0, 4).toLowerCase() == 'http' &&
+        bg.toUrls[0] !== null && bg.toUrls[0].substring(0, 4).toLowerCase() == 'http' &&
         bg.tags.length > 0) {
         document.forms['data'].submitLink.title = 'Submit this rebuttal';
         document.forms['data'].submitLink.disabled = false;
@@ -418,7 +418,7 @@ function handleDelayOnLoadOfRebuttals() {
     // Recursively sleep until the rebuttal data is ready.
     setTimeout(function () {
         // not yet ready.
-        if (bg.rebuttals[tabId] == null) {
+        if (bg.rebuttals[tabId] === null) {
             waitCount++;
             if (waitCount < 50) {
                 // Recurse
@@ -449,7 +449,7 @@ function loadData() {
         displaySubmissionForm();
 
         // This means we are on a rebuttal we clicked through to.
-    } else if (recordedClick != null) {
+    } else if (recordedClick && recordedClick !== null) {
         $('.votingFromUrl').attr('href', recordedClick.linkFromUrl);
         $('#currentScore').html(recordedClick.score);
         displayVoteForm(recordedClick);
@@ -472,8 +472,8 @@ function vote(voteScore) {
     var recordedClick = bg.getRecordedClickByToUrl(bg.canonical_urls[tabId]);
     $.get('http://rbutr.com/rbutr/PluginServlet', {
         'linkId': recordedClick.linkId,
-        vote: voteScore,
-        cid: bg.getCid()
+        'vote': voteScore,
+        'cid': bg.getCid()
     }, function (data) {
         $('#currentScore').html(data);
     });

@@ -25,7 +25,7 @@ var canonical_urls = {};
 var plain_urls = {};
 var url_is_canonical = {};
 var page_title = {};
-console.log('[RBUTR] background initialised ' + new Date());
+//console.log('[RBUTR] background initialised ' + new Date());
 
 
 // This is based on code from https://github.com/kevmoo/chromeCanonicalExtension
@@ -111,8 +111,8 @@ function displayMessage(message) {
 
     var popup = getPopup();
 
-    if (popup == null) {
-        console.error('[RBUTR] Popup was null, couldn\'t display : ' + message);
+    if (popup === null) {
+        //console.error('[RBUTR] Popup was null, couldn\'t display : ' + message);
     } else {
         popup.displayMessage(message);
     }
@@ -131,7 +131,7 @@ function postMessage(tabId, titleMessage) {
         lastFocusedWindow: true
     }, function (tabs) {
         browser.tabs.sendMessage(tabId, {message: titleMessage, url: canonical_urls[tabId]}, function (response) {
-            console.log('[RBUTR] ' + response);
+            //console.log('[RBUTR] ' + response);
         });
     });
 }
@@ -142,7 +142,7 @@ function getRecordedClickByToUrl(toUrl) {
 
     'use strict';
 
-    return recordedClicks[toUrl];
+    return recordedClicks[toUrl] ? recordedClicks[toUrl] : null;
 }
 
 
@@ -155,7 +155,7 @@ function tabLoaded(tabId, url) {
     var vote = false;
     var recordedClick = getRecordedClickByToUrl(canonical_urls[tabId]);
     // Don't show voting after you've voted
-    if (recordedClick != null && recordedClick.yourVote === 0) {
+    if (recordedClick !== null && recordedClick.yourVote === 0) {
         vote = true;
     }
 
@@ -169,7 +169,7 @@ function tabLoaded(tabId, url) {
         rebuttals[tabId] = data;
         loggedIn = true;
         var m = rebuttals[tabId].match(/id="notLoggedIn"/g);
-        if (m != null && m.length > 0) {
+        if (m !== null && m.length > 0) {
             loggedIn = false;
         }
         var titleMessage;
@@ -191,7 +191,7 @@ function tabLoaded(tabId, url) {
             }
         } else {
             var matches = rebuttals[tabId].match(/class="thumbsUp"/g);
-            var count = Number(matches == null ? 0 : matches.length).toString();
+            var count = Number(matches === null ? 0 : matches.length).toString();
             rebuttalCount[tabId] = count;
             var rebuttal_plural = 'rebuttals';
 
@@ -252,19 +252,19 @@ function submitRebuttals(tabId) {
         tags: tags,
         cid: getCid()
     }, function (data) {
-        console.log('[RBUTR] sucess status ' + data.status);
+        //console.log('[RBUTR] sucess status ' + data.status);
         displayMessage('<b>' + data.result + '</b>');
         window.open(data.redirectUrl);
         getPopup().cancelSubmission(); // Clear the data now that it's submitted.
         tabLoaded(tabId, canonical_urls[tabId]); // This will reload the for the tab, and set the badge.
     }, 'json').done(function (msg) {
-        console.log('[RBUTR] done status ' + msg.status);
+        //console.log('[RBUTR] done status ' + msg.status);
     }).fail(function (msg, arg2, arg3) {
         displayMessage('Failed to submit : ' + msg.responseText);
-        console.log('[RBUTR] fail status ' + msg.status);
-        console.log('[RBUTR] msg = ', msg);
-        console.log('[RBUTR] arg2 = ', arg2);
-        console.log('[RBUTR] arg3 = ', arg3);
+        //console.log('[RBUTR] fail status ' + msg.status);
+        //console.log('[RBUTR] msg = ', msg);
+        //console.log('[RBUTR] arg2 = ', arg2);
+        //console.log('[RBUTR] arg3 = ', arg3);
     });
 }
 
@@ -372,10 +372,10 @@ browser.runtime.onMessage.addListener(function (request, sender, callback) {
 
     if (request.action) {
         if (request.action == 'log') {
-            console.log('[RBUTR] ' + request.text);
+            //console.log('[RBUTR] ' + request.text);
 
         } else if (request.action == 'error') {
-            console.error('[RBUTR] ' + request.text);
+            //console.error('[RBUTR] ' + request.text);
 
         } else if (request.action == 'setCanonical') {
             var tab = request.tab || sender.tab;
@@ -396,7 +396,7 @@ browser.runtime.onMessage.addListener(function (request, sender, callback) {
         } else if (request.action == 'setClick') {
             var click = request.click;
             recordLinkClick(null, click.linkId, click.linkFromUrl, click.linkToUrl, click.score, click.yourVote);
-            console.log('[RBUTR] click recorded : ' + click.linkToUrl);
+            //console.log('[RBUTR] click recorded : ' + click.linkToUrl);
         }
     }
 });
