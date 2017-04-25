@@ -1,4 +1,4 @@
-/*global chrome,console,$,JSON*/
+/*global browser,console,$,JSON*/
 /*jslint browser: true */
 
 window.browser = (function () {
@@ -69,15 +69,6 @@ browser.runtime.onMessage.addListener(
             window.setTimeout(function () {
                 $('#rbutrfloatdiv').remove();
             }, 5000);
-            //    $('body').qtip({
-            //        content: {
-            //            text: 'Short hand notation'
-            //        },
-            //        position: {
-            //            target: [10,10]
-            //        }
-            //    });
-            //    $('body').qtip('show');
 
             $('#dontShowAgain').css('cursor', 'pointer').click(function () {
                 localStorage.setItem('rbutr.dontshow.' + request.url, $('#dontShowAgain')[0].checked);
@@ -85,16 +76,6 @@ browser.runtime.onMessage.addListener(
         }
     }
 );
-
-
-
-//browser.runtime.onMessage.addListener(
-//  function(request, sender, sendResponse) {
-//    console.log(sender.tab ? 'from a content script:' + sender.tab.url : 'from the extension');
-//    if (request.messageForContent == 'true')
-//      $()
-//      sendResponse({farewell: 'ack'});
-//  });
 
 
 
@@ -107,8 +88,6 @@ var title = $('title').text();
 if ($('#clickDataForRbutrPlugin').length) { // jQuery never returns null.. http://stackoverflow.com/questions/477667/how-to-check-null-objects-in-jquery
     var click = JSON.parse($('#clickDataForRbutrPlugin').text());
     browser.runtime.sendMessage({'action': 'setClick', 'click': click});
-    // alert($('#dataForRbutrPlugin').text());
-    // alert(click);
 }
 
 

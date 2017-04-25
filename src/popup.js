@@ -1,4 +1,4 @@
-/*global chrome,console,$,MutationObserver*/
+/*global browser,console,$,MutationObserver*/
 /*jslint browser: true */
 
 var waitCount;
@@ -75,15 +75,6 @@ function setupCss() {
         $(this).removeClass('hover');
     });
 }
-
-
-
-/*
- //NOT USED
- function loadRebuttal(url) {
-    browser.tabs.create({'url':url, 'selected':true});
- }
- */
 
 
 
@@ -166,23 +157,14 @@ function refreshSubmissionData() {
     $('#captureRebuttalButton').click(function () {
         toTagged();
     });
-    // document.forms['data'].fromUrl.value = bg.fromUrl;
-    // document.forms['data'].toUrl.value = bg.toUrl;
-    // document.forms['data'].tags.value = bg.tags;
+
     $('#submitError').text(bg.submitError);
 
     if (bg.fromUrls[0] != null && bg.fromUrls[0].substring(0, 4).toLowerCase() == 'http' &&
         bg.toUrls[0] != null && bg.toUrls[0].substring(0, 4).toLowerCase() == 'http' &&
         bg.tags.length > 0) {
-        // document.forms['data'].comment.disabled = false;
-        // document.forms['data'].comment.focus();
-        // if (bg.comment != null && bg.comment != '' &&
-        //     bg.tags != null && bg.tags != '') {
         document.forms['data'].submitLink.title = 'Submit this rebuttal';
         document.forms['data'].submitLink.disabled = false;
-        // } else {
-        //     document.forms['data'].submitLink.value = 'Enter a comment and pick at least one tag.';
-        // }
     } else {
         document.forms['data'].submitLink.title = 'You must have at least one source link, rebuttal link and tag to submit';
         document.forms['data'].submitLink.disabled = true;
@@ -235,7 +217,6 @@ function setupTagTypeahead() {
         // local: bg.getTagsData()
     }).on('typeahead:selected', function (event, data) {
         recordTag(data.value);
-        //   console.log('data', data);
         document.getElementById('#tagTypeahead').value = '';
     }).keydown(function (event) {
         var key = event.which;
@@ -320,8 +301,6 @@ function cancelSubmission() {
 
     bg.stopSubmission();
     window.close();
-    // $('#ssubmitDiv').hide();
-    // $('#StartSubmissionDiv').show();
 }
 
 
@@ -403,15 +382,6 @@ function fromTagged() {
 
 
 
-//function swapUrls() {
-//     var tmp = bg.fromUrl;
-//     bg.fromUrl = bg.toUrl;
-//     bg.toUrl = tmp;
-//     refreshSubmissionData();
-//}
-
-
-
 function cancelRequestSubmission() {
 
     'use strict';
@@ -485,18 +455,12 @@ function loadData() {
         displayVoteForm(recordedClick);
     }
 
-    // $('#voteDownDiv').html(bg.voteDownDiv);
-    // $('#voteUpDiv').html(bg.voteUpDiv);
-
     // Don't show current rebuttals if adding, too messy.
     if (!bg.submittingRebuttal) {
         // Needs to be set for following call which is recursive
         waitCount = 0;
         handleDelayOnLoadOfRebuttals();
     }
-    // if (!bg.loggedIn) {
-    //     $('#StartSubmissionDiv').hide();
-    // }
 }
 
 
@@ -515,8 +479,6 @@ function vote(voteScore) {
     });
     recordedClick.score += voteScore;
     recordedClick.yourVote = voteScore;
-    // $('#voteDownDiv').hide();
-    // $('#voteUpDiv').hide();
     setPage('thankyou');
 }
 
@@ -527,8 +489,6 @@ function voteUp() {
     'use strict';
 
     vote(1);
-    // $('#voteDiv img.clickableImages').hide(); // Hide the buttons
-    // $('#voteUpDiv').show();
 }
 
 
@@ -538,19 +498,7 @@ function voteDown() {
     'use strict';
 
     vote(-1);
-    // $('#voteDiv img.clickableImages').hide(); // Hide the buttons
-    // $('#voteDownDiv').show();
 }
-
-
-
-/*
- //NOT USED
- function submitIdea() {
-    document.forms['ideaForm'].url.value = bg.canonical_urls[tabId];
-    setPage('idea');
- }
- */
 
 
 
@@ -589,15 +537,6 @@ function loadMenu() {
         $('#message').html(msg.responseText);
     });
 }
-
-
-
-/*
- //NOT USED
- function recordLinkClick(linkId, fromLinkUrl, toLinkUrl, score, yourVote) {
- bg.recordLinkClick(tabId, linkId, fromLinkUrl, toLinkUrl, score, yourVote);
- }
- */
 
 
 
