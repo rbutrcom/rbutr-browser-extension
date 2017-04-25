@@ -1,4 +1,4 @@
-/*global chrome,console,$*/
+/*global browser,console,$*/
 /*jslint browser: true */
 
 // Global
@@ -13,8 +13,6 @@ var submitError;
 var direct = false;
 // Other globals
 var recordedClicks = {};
-// var voteUpDiv;
-// var voteDownDiv;
 
 // Per tab
 // Keyed by tabId
@@ -42,41 +40,6 @@ window.browser = (function () {
         window.browser ||
         window.chrome;
 })();
-
-
-/*
- //NOT USED
- var linkContextId = browser.contextMenus.create({
-    title: 'Submit as rebutted by current page',
-    contexts: ['link'],
-    onclick: contextLinkSelected
- });
-
- var textContextId = browser.contextMenus.create({
-    title: 'Use text as rebuttal comment.',
-    contexts: ['selection'],
-    onclick: contextTextSelected
- });
- */
-
-
-/*
- //NOT USED
- function contextLinkSelected(info, tab) {
-    if (!alreadyExists(info.linkUrl)) {
-        fromUrls[fromUrls.length] = info.linkUrl;
-    }
-    if (!alreadyExists(canonical_urls[tab.id]) ) {
-        toUrls[toUrls.length] = canonical_urls[tab.id];
-    }
-    if (!submittingRebuttal ) {
-        comment = [];
-        tags = [];
-        submitError = '';
-        submittingRebuttal = true;
-    }
- }
- */
 
 
 
@@ -179,9 +142,6 @@ function getRecordedClickByToUrl(toUrl) {
 
     'use strict';
 
-    // for (var key in recordedClicks) {
-    //     console.log('key is: ' + key + ', value is: ' + eval('myArray.' + key));
-    // }
     return recordedClicks[toUrl];
 }
 
@@ -229,11 +189,6 @@ function tabLoaded(tabId, url) {
                     title: 'RbutR - There are no rebuttals to this page, do you know of one?'
                 });
             }
-            // } else if (rebuttals[tabId].indexOf('You are not logged in') != -1 ) {
-            //     loggedIn = false;
-            //     browser.browserAction.setBadgeText({ text: 'NOTE', tabId: tabId});
-            //     browser.browserAction.setBadgeBackgroundColor({ color: [255, 0, 0, 255], tabId: tabId});
-            //     browser.browserAction.setTitle({tabId: tabId, title: 'You are not logged in! rbutr requires you to be logged in.'});
         } else {
             var matches = rebuttals[tabId].match(/class="thumbsUp"/g);
             var count = Number(matches == null ? 0 : matches.length).toString();
@@ -311,27 +266,7 @@ function submitRebuttals(tabId) {
         console.log('[RBUTR] arg2 = ', arg2);
         console.log('[RBUTR] arg3 = ', arg3);
     });
-    // console.log('immediate status ' + jqxhr.status);
-    // console.log('jqxhr = ' , jqxhr);
 }
-
-
-
-/*
- //NOT USED
- function contextTextSelected(info, tab) {
- // console.log('item ' + info.menuItemId + ' was clicked');
- // console.log('info: ' + JSON.stringify(info));
- // console.log('tab: ' + JSON.stringify(tab));
- if (!submittingRebuttal) {
- comment = [];
- tags = [];
- submitError = '';
- submittingRebuttal = true;
- }
- comment[0] = info.selectionText;
- }
- */
 
 
 
@@ -364,19 +299,6 @@ function stopSubmission() {
     comment = [];
     tags = [];
 }
-
-
-
-// This is now called above after canonical is set.
-// browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-//     if (changeInfo.status == 'loading') {
-//         tabLoaded(tab,tabId);
-//         browser.tabs.sendRequest(tab.id, {greeting: tab.url}, function (response) {
-//             console.log(response.farewell);
-//         });
-//        browser.tabs.executeScript(tabId, { code: 'alert("Hello World ' + tablink + '")' });
-//     }
-// });
 
 
 
@@ -469,7 +391,6 @@ browser.runtime.onMessage.addListener(function (request, sender, callback) {
             plain_urls[tab.id] = tab.url;
 
             page_title[url] = tab.title;
-            // console.log('tab[' + tab.id + '] set canonical_url ' + tab.url + ' to ' + canonicalUrl);
             tabLoaded(tab.id, url);
 
         } else if (request.action == 'setClick') {
@@ -500,11 +421,8 @@ browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     // ensure that the url data lives for the life of the page, not the tab
     if (changeInfo.status == 'loading') {
         if (tab.url == plain_urls[tabId]) {
-            // console.log('Skipping clearing canonical_url IT HASN'T CHANGED : '  + canonical_urls[tabId]);
             return;
         }
-        // console.log('tab[' + tabId + '] loading - clearing canonical_url : was '  + canonical_urls[tabId]);
-        // console.log('tab[' + tabId + '] = ' , tab);
         delete canonical_urls[tabId];
         delete plain_urls[tabId];
     }
