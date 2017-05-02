@@ -12,24 +12,6 @@ window.browser = (function () {
 
 
 
-function log(text) {
-
-    'use strict';
-
-    browser.runtime.sendMessage({'action': 'log', 'text': text});
-}
-
-
-
-function error(text) {
-
-    'use strict';
-
-    browser.runtime.sendMessage({'action': 'error', 'text': text});
-}
-
-
-
 function shouldShowMessage(url) {
 
     'use strict';
