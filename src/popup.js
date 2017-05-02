@@ -1,4 +1,4 @@
-/*global browser,console,$,MutationObserver*/
+/*global browser,$,MutationObserver*/
 /*jslint browser: true */
 
 var waitCount;
@@ -20,32 +20,13 @@ window.browser = (function () {
 
 
 
-function log(text) {
-
-    'use strict';
-
-    var offset = new Date().getTime() - start;
-    console.log('[RBUTR] ' + text);
-    browser.runtime.sendMessage({'action': 'log', 'text': String(offset) + ' ' + text});
-}
-
-
-
-function error(text) {
-    'use strict';
-    browser.runtime.sendMessage({'action': 'error', 'text': text});
-}
-
-
-
 function setPage(page) {
 
     'use strict';
-    console.log('[RBUTR] show page: ' + page);
+    bg.logDev('debug', 'show page: ', page);
 
     // clear all message
     document.querySelector('#message').innerHTML = '';
-
 
     if (page === 'rebuttals') {
         $('#message').html(bg.rebuttals[tabId]);
@@ -220,8 +201,8 @@ function setupTagTypeahead() {
         document.getElementById('#tagTypeahead').value = '';
     }).keydown(function (event) {
         var key = event.which;
-        console.log('[RBUTR] key = ' + key);
-        console.log('[RBUTR] event = ', event);
+        bg.logDev('debug', 'key = ', key);
+        bg.logDev('debug', 'event = ', event);
         if (key == 13 || key == 186 || key == 188) {
             event.preventDefault();
             recordTag($('#tagTypeahead').val());
@@ -316,8 +297,8 @@ function requestRebuttals() {
     appendPage('request');
     setupTagTypeahead();
     $('#requestUrl').val(bg.canonical_urls[tabId]);
-    console.log('[RBUTR] input = ' + $('#requestUrl').val());
-    console.log('[RBUTR] bg = ' + bg.canonical_urls[tabId]);
+    bg.logDev('debug', 'input = ', $('#requestUrl').val());
+    bg.logDev('debug', 'bg = ', bg.canonical_urls[tabId]);
     $('#StartSubmissionDiv').hide();
 }
 
@@ -339,14 +320,14 @@ function submitRequestData() {
         pageIsCanonical: bg.url_is_canonical[bg.canonical_urls[tabId]],
         cid: bg.getCid()
     }, function (data) {
-        console.log('[RBUTR] Success : ', data);
+        bg.logDev('debug', 'Success : ', data);
         $('#message').html(data);
     }).fail(function (msg, arg2, arg3) {
-        console.log('[RBUTR] fail : ', msg);
-        console.log('[RBUTR] fail status ' + msg.status);
-        console.log('[RBUTR] msg = ', msg);
-        console.log('[RBUTR] arg2 = ', arg2);
-        console.log('[RBUTR] arg3 = ', arg3);
+        bg.logDev('debug', 'fail : ', msg);
+        bg.logDev('debug', 'fail status ', msg.status);
+        bg.logDev('debug', 'msg = ', msg);
+        bg.logDev('debug', 'arg2 = ', arg2);
+        bg.logDev('debug', 'arg3 = ', arg3);
         displayMessage('An error occurred : ' + msg.responseText);
     });
 }
@@ -444,7 +425,6 @@ function loadData() {
 
     // Loads the data from the background tab, which has likely already retrieved it.
     var recordedClick = bg.getRecordedClickByToUrl(bg.canonical_urls[tabId]);
-    // bg.console.log('recordedClick[' + tabUrl + '] = ' + recordedClick);
     if (bg.submittingRebuttal) {
         displaySubmissionForm();
 
