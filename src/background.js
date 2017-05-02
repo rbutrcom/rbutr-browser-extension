@@ -25,7 +25,8 @@ var canonical_urls = {};
 var plain_urls = {};
 var url_is_canonical = {};
 var page_title = {};
-//console.log('[RBUTR] background initialised ' + new Date());
+
+logDev('info','background initialised ', new Date());
 
 
 // This is based on code from https://github.com/kevmoo/chromeCanonicalExtension
@@ -40,6 +41,42 @@ window.browser = (function () {
         window.browser ||
         window.chrome;
 })();
+
+
+
+function isDev() {
+
+    'use strict';
+
+    var dev = localStorage.getItem('rbutr-is-dev');
+    return dev === 'true';
+}
+
+
+
+function logDev() {
+
+    'use strict';
+
+    if(isDev()) {
+        // only continue if there are more than 1 params (0 = level, 1-x = output)
+        if(arguments.length > 1) {
+            var logLevel = console[arguments[0]],
+                logArguments = [];
+
+            for (var i = 1; i < arguments.length; i++) {
+                logArguments.push(arguments[i]);
+            }
+
+            if(typeof logLevel === 'function') {
+                logLevel.apply(null, ['[rbutr] '].concat(logArguments));
+            } else {
+                console.error('[rbutr] console.' + arguments[0] + ' is not a valid logging function.');
+                console.debug.apply(null, ['[rbutr] '].concat(logArguments));
+            }
+        }
+    }
+}
 
 
 
@@ -112,7 +149,7 @@ function displayMessage(message) {
     var popup = getPopup();
 
     if (popup === null) {
-        //console.error('[RBUTR] Popup was null, couldn\'t display : ' + message);
+        logDev('error', 'Popup was null, couldn\'t display : ', message);
     } else {
         popup.displayMessage(message);
     }
@@ -131,7 +168,7 @@ function postMessage(tabId, titleMessage) {
         lastFocusedWindow: true
     }, function (tabs) {
         browser.tabs.sendMessage(tabId, {message: titleMessage, url: canonical_urls[tabId]}, function (response) {
-            //console.log('[RBUTR] ' + response);
+            logDev('debug', response);
         });
     });
 }
@@ -252,19 +289,19 @@ function submitRebuttals(tabId) {
         tags: tags,
         cid: getCid()
     }, function (data) {
-        //console.log('[RBUTR] sucess status ' + data.status);
+        logDev('debug', 'success status ', data.status);
         displayMessage('<b>' + data.result + '</b>');
         window.open(data.redirectUrl);
         getPopup().cancelSubmission(); // Clear the data now that it's submitted.
         tabLoaded(tabId, canonical_urls[tabId]); // This will reload the for the tab, and set the badge.
     }, 'json').done(function (msg) {
-        //console.log('[RBUTR] done status ' + msg.status);
+        logDev('debug', 'done status ', msg.status);
     }).fail(function (msg, arg2, arg3) {
         displayMessage('Failed to submit : ' + msg.responseText);
-        //console.log('[RBUTR] fail status ' + msg.status);
-        //console.log('[RBUTR] msg = ', msg);
-        //console.log('[RBUTR] arg2 = ', arg2);
-        //console.log('[RBUTR] arg3 = ', arg3);
+        logDev('debug', 'fail status ', msg.status);
+        logDev('debug', 'msg = ', msg);
+        logDev('debug', 'arg2 = ', arg2);
+        logDev('debug', 'arg3 = ', arg3);
     });
 }
 
@@ -356,7 +393,7 @@ function getCanonicalUrl(canonicalValue) {
             // canonicalValue is an absolute url in the current host
             return location.protocol + '//' + location.host + canonicalValue;
         } else {
-            error('The canonical URL is relative and does not start with "/". Not supported.');
+            logDev('error', 'The canonical URL is relative and does not start with "/". Not supported.');
             return null;
         }
     } else {
@@ -371,13 +408,7 @@ browser.runtime.onMessage.addListener(function (request, sender, callback) {
     'use strict';
 
     if (request.action) {
-        if (request.action == 'log') {
-            //console.log('[RBUTR] ' + request.text);
-
-        } else if (request.action == 'error') {
-            //console.error('[RBUTR] ' + request.text);
-
-        } else if (request.action == 'setCanonical') {
+        if (request.action == 'setCanonical') {
             var tab = request.tab || sender.tab;
             var canonicalUrl = getCanonicalUrl(tab.url);
             var url = canonicalUrl || tab.url;
@@ -396,7 +427,7 @@ browser.runtime.onMessage.addListener(function (request, sender, callback) {
         } else if (request.action == 'setClick') {
             var click = request.click;
             recordLinkClick(null, click.linkId, click.linkFromUrl, click.linkToUrl, click.score, click.yourVote);
-            //console.log('[RBUTR] click recorded : ' + click.linkToUrl);
+            logDev('debug', 'click recorded: ', click.linkToUrl);
         }
     }
 });
