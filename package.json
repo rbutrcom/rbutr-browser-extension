@@ -29,6 +29,6 @@
     "lint:html": "htmlhint --config .htmlhintrc src/**/*.html;",
     "lint": "concurrently --names  lint:html, lint:style, lint:js -p name 'npm run lint:html' 'npm run lint:style' 'npm run lint:js';",
     "zip": "mkdir -p build && zip -r build/rbutr.zip ./src/*",
-    "build": "lint && npm run sass && npm run zip"
+    "build": "npm run lint && npm run sass && npm run zip"
   }
 }
