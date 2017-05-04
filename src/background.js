@@ -26,6 +26,8 @@ var plain_urls = {};
 var url_is_canonical = {};
 var page_title = {};
 
+var RBUTR_URL = isDev() ? 'https://russell.rbutr.com' : 'http://rbutr.com';
+
 logDev('info','background initialised ', new Date());
 
 
@@ -197,7 +199,7 @@ function tabLoaded(tabId, url) {
     }
 
     var urlHash = b64_md5(url);
-    $.get('http://rbutr.com/rbutr/PluginServlet', {
+    $.get(RBUTR_URL + '/rbutr/PluginServlet', {
         getLinks: true,
         fromPageUrlHash: urlHash,
         version: browser.runtime.getManifest().version,
@@ -276,7 +278,7 @@ function submitRebuttals(tabId) {
         canonicalFromPages[j] = url_is_canonical[fromUrls[j]];
     }
 
-    $.post('http://rbutr.com/rbutr/PluginServlet', {
+    $.post(RBUTR_URL + '/rbutr/PluginServlet', {
         submitLinks: true,
         fromUrls: fromUrls,
         toUrls: toUrls,
