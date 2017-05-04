@@ -194,7 +194,7 @@ function setupTagTypeahead() {
     $('#tagTypeahead').typeahead({
         name: 'tags',
         limit: 10,
-        prefetch: 'http://rbutr.com/rbutr/PluginServlet?getPlainTagsJson=true'
+        prefetch: bg.RBUTR_URL + '/rbutr/PluginServlet?getPlainTagsJson=true'
         // local: bg.getTagsData()
     }).on('typeahead:selected', function (event, data) {
         recordTag(data.value);
@@ -257,7 +257,7 @@ function displayNotLoggedInMessage() {
     'use strict';
 
     displayMessage('You are not logged in! rbutr requires you to be logged in to submit rebuttals and to vote. ' +
-        'Click <a target="_blank" href="http://rbutr.com/rbutr/LoginServlet">here</a> to login or register.');
+        'Click <a target="_blank" href="' + bg.RBUTR_URL + '/rbutr/LoginServlet">here</a> to login or register.');
 }
 
 
@@ -313,7 +313,7 @@ function submitRequestData() {
         document.forms['requestData'].submitLink.disabled = false;
         return false;
     }
-    $.post('http://rbutr.com/rbutr/PluginServlet', {
+    $.post(bg.RBUTR_URL + '/rbutr/PluginServlet', {
         subscribeToPage: bg.canonical_urls[tabId],
         title: bg.page_title[bg.canonical_urls[tabId]],
         tags: bg.tags,
@@ -450,7 +450,7 @@ function vote(voteScore) {
     'use strict';
 
     var recordedClick = bg.getRecordedClickByToUrl(bg.canonical_urls[tabId]);
-    $.get('http://rbutr.com/rbutr/PluginServlet', {
+    $.get(bg.RBUTR_URL + '/rbutr/PluginServlet', {
         'linkId': recordedClick.linkId,
         'vote': voteScore,
         'cid': bg.getCid()
@@ -488,7 +488,7 @@ function submitIdeaData() {
 
     document.forms['ideaForm'].submitLink.value = 'Please wait..';
     document.forms['ideaForm'].submitLink.disabled = true;
-    $.post('http://rbutr.com/rbutr/PluginServlet', {
+    $.post(bg.RBUTR_URL + '/rbutr/PluginServlet', {
         url: bg.canonical_urls[tabId],
         title: bg.page_title[bg.canonical_urls[tabId]],
         idea: document.forms['ideaForm'].idea.value,
@@ -507,7 +507,7 @@ function loadMenu() {
     'use strict';
 
     $('#message').html('Loading..');
-    $.post('http://rbutr.com/rbutr/PluginServlet', {
+    $.post(bg.RBUTR_URL + '/rbutr/PluginServlet', {
         getMenu: true,
         version: browser.runtime.getManifest().version,
         cid: bg.getCid()
