@@ -46,6 +46,21 @@ On Chrome & Vivaldi: https://developer.chrome.com/extensions/getstarted#unpacked
 On Opera: https://dev.opera.com/extensions/testing/
 
 
+## How do I enable Dev-Mode?
+
+After you installed the extension, you might want to enable the developer mode:
+
+1. Open the Background page on your browser's extension page (Developer Tools show up)
+2. Open the "Application" section ("Storage" in Firefox)
+3. Click on "Local storage" and the nested entry "chrome-extension"
+4. Add a new key "rbutr-is-dev" and "true" as value
+
+The Dev-Mode has currently 2 functionalities implemented.
+
+1. Instead of connecting to the productive server, it connects to a Test-Server. This way you can test code changes or just play around without affecting the live data.
+2. It gives you log messages in the console.
+
+
 ## How can I help?
 
 Please see http://blog.rbutr.com/support-rbutr/ or have a look at the [issues](https://github.com/tomlutzenberger/rbutr-browser-extension/issues)
