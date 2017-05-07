@@ -23,12 +23,12 @@
   },
   "scripts": {
     "sass": "node-sass src/scss/main.scss --output src/css --source-map-embed --source-map-contents",
-    "watch:sass": "npm run sass -- --watch",
+    "watch:sass": "yarn run sass -- --watch",
     "lint:js": "eslint --config .eslintrc.json src;",
     "lint:style": "stylelint --config .stylelintrc src/scss/*.scss;",
     "lint:html": "htmlhint --config .htmlhintrc src/**/*.html;",
-    "lint": "concurrently --names  lint:html, lint:style, lint:js -p name 'npm run lint:html' 'npm run lint:style' 'npm run lint:js';",
+    "lint": "concurrently --names  lint:html, lint:style, lint:js -p name 'yarn run lint:html' 'yarn run lint:style' 'yarn run lint:js';",
     "zip": "mkdir -p build && zip -r build/rbutr.zip ./src/*",
-    "build": "npm run lint && npm run sass && npm run zip"
+    "build": "yarn run lint && yarn run sass && yarn run zip"
   }
 }
