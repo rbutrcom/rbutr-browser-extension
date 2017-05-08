@@ -1,5 +1,5 @@
 /*global browser,console,$,JSON*/
-/*jslint browser: true */
+/*jslint browser:true,esnext:true */
 
 window.browser = (function () {
 
