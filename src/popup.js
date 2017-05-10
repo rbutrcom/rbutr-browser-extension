@@ -759,19 +759,3 @@ browser.tabs.query({currentWindow: true, active: true}, function (tab) {
 
     loadData();
 });
-
-
-
-/**
- * @description String prototype enhancement to check string endings (from http://stackoverflow.com/questions/280634/endswith-in-javascript)
- *
- * @method endsWith
- * @param {string} suffix
- * @return {boolean}
- */
-String.prototype.endsWith = function (suffix) {
-
-    'use strict';
-
-    return this.indexOf(suffix, this.length - suffix.length) !== -1;
-};
