@@ -5,6 +5,10 @@
 var waitCount;
 var tabId;
 
+
+/**
+ * @description Multi-Browser support
+ */
 window.browser = (function () {
 
     'use strict';
@@ -20,6 +24,13 @@ rbutr.logDev('debug', 'in popup');
 
 
 
+/**
+ * @description Toggle currently displayed popup page
+ *
+ * @method setPage
+ * @param {string} page
+ * @return {void}
+ */
 function setPage(page) {
 
     'use strict';
@@ -38,6 +49,13 @@ function setPage(page) {
 
 
 
+/**
+ * @description Append page to currently displayed popup page
+ *
+ * @method appendPage
+ * @param {string} page
+ * @return {void}
+ */
 function appendPage(page) {
 
     'use strict';
@@ -68,6 +86,13 @@ function doingTutorial() {
 
 
 
+/**
+ * @description Refresh stored data certain user interactions
+ *
+ * @method refreshSubmissionData
+ * @param {void}
+ * @return {void}
+ */
 function refreshSubmissionData() {
 
     'use strict';
@@ -154,6 +179,13 @@ function refreshSubmissionData() {
 
 
 
+/**
+ * @description Refresh stored tags
+ *
+ * @method refreshTags
+ * @param {void}
+ * @return {void}
+ */
 function refreshTags() {
 
     'use strict';
@@ -172,6 +204,13 @@ function refreshTags() {
 
 
 
+/**
+ * @description Add tag to taglist and refresh stored data
+ *
+ * @method recordTag
+ * @param {string} tagText
+ * @return {void}
+ */
 function recordTag(tagText) {
 
     'use strict';
@@ -187,6 +226,13 @@ function recordTag(tagText) {
 
 
 
+/**
+ * @description Setup typeahead autocomplete library
+ *
+ * @method setupTagTypeahead
+ * @param {void}
+ * @return {void}
+ */
 function setupTagTypeahead() {
 
     'use strict';
@@ -213,6 +259,13 @@ function setupTagTypeahead() {
 
 
 
+/**
+ * @description Prepare and display submission page
+ *
+ * @method displaySubmissionForm
+ * @param {void}
+ * @return {void}
+ */
 function displaySubmissionForm() {
 
     'use strict';
@@ -230,6 +283,13 @@ function displaySubmissionForm() {
 
 
 
+/**
+ * @description Show voting page if no votes have been made, otherwise thankyou page
+ *
+ * @method displayVoteForm
+ * @param {integer} recordedClick
+ * @return {void}
+ */
 function displayVoteForm(recordedClick) {
 
     'use strict';
@@ -243,6 +303,13 @@ function displayVoteForm(recordedClick) {
 
 
 
+/**
+ * @description Display given message in popup
+ *
+ * @method displayMessage
+ * @param {string} htmlMessage
+ * @return {void}
+ */
 function displayMessage(htmlMessage) {
 
     'use strict';
@@ -252,6 +319,13 @@ function displayMessage(htmlMessage) {
 
 
 
+/**
+ * @description Display message if user is not logged in
+ *
+ * @method displayNotLoggedInMessage
+ * @param {void}
+ * @return {void}
+ */
 function displayNotLoggedInMessage() {
 
     'use strict';
@@ -262,6 +336,13 @@ function displayNotLoggedInMessage() {
 
 
 
+/**
+ * @description Display submission page if user is logged in
+ *
+ * @method showSubmissionPopup
+ * @param {string} fromTo
+ * @return {void}
+ */
 function showSubmissionPopup(fromTo) {
 
     'use strict';
@@ -276,6 +357,13 @@ function showSubmissionPopup(fromTo) {
 
 
 
+/**
+ * @description Stop submission and close popup
+ *
+ * @method cancelSubmission
+ * @param {void}
+ * @return {void}
+ */
 function cancelSubmission() {
 
     'use strict';
@@ -286,6 +374,13 @@ function cancelSubmission() {
 
 
 
+/**
+ * @description Display rebuttal request page
+ *
+ * @method requestRebuttals
+ * @param {void}
+ * @return {void}
+ */
 function requestRebuttals() {
 
     'use strict';
@@ -304,6 +399,13 @@ function requestRebuttals() {
 
 
 
+/**
+ * @description Submit rebuttal request data to server
+ *
+ * @method submitRequestData
+ * @param {void}
+ * @return {boolean}
+ */
 function submitRequestData() {
 
     'use strict';
@@ -334,6 +436,13 @@ function submitRequestData() {
 
 
 
+/**
+ * @description Add canonical url to stored toUrl list and reresh data
+ *
+ * @method toTagged
+ * @param {void}
+ * @return {void}
+ */
 function toTagged() {
 
     'use strict';
@@ -348,6 +457,13 @@ function toTagged() {
 
 
 
+/**
+ * @description Add canonical url to stored fromUrl list and reresh data
+ *
+ * @method fromTagged
+ * @param {void}
+ * @return {void}
+ */
 function fromTagged() {
 
     'use strict';
@@ -365,6 +481,13 @@ function fromTagged() {
 
 
 
+/**
+ * @description Return from request to submission page
+ *
+ * @method cancelRequestSubmission
+ * @param {void}
+ * @return {void}
+ */
 function cancelRequestSubmission() {
 
     'use strict';
@@ -375,6 +498,13 @@ function cancelRequestSubmission() {
 
 
 
+/**
+ * @description Submit data
+ *
+ * @method submitData
+ * @param {void}
+ * @return {boolean}
+ */
 function submitData() {
 
     'use strict';
@@ -394,11 +524,17 @@ function submitData() {
 
 
 
+/**
+ * @description Recursively sleep until the rebuttal data is ready
+ *
+ * @method handleDelayOnLoadOfRebuttals
+ * @param {void}
+ * @return {void}
+ */
 function handleDelayOnLoadOfRebuttals() {
 
     'use strict';
 
-    // Recursively sleep until the rebuttal data is ready.
     setTimeout(function () {
         // not yet ready.
         if (rbutr.rebuttals[tabId] === null) {
@@ -421,6 +557,13 @@ function handleDelayOnLoadOfRebuttals() {
 
 
 
+/**
+ * @description Load recorded click data
+ *
+ * @method loadData
+ * @param {void}
+ * @return {void}
+ */
 function loadData() {
 
     'use strict';
@@ -447,6 +590,13 @@ function loadData() {
 
 
 
+/**
+ * @description Update vote score with given value
+ *
+ * @method vote
+ * @param {integer} voteScore
+ * @return {void}
+ */
 function vote(voteScore) {
 
     'use strict';
@@ -466,6 +616,13 @@ function vote(voteScore) {
 
 
 
+/**
+ * @description Increment vote score
+ *
+ * @method voteUp
+ * @param {void}
+ * @return {void}
+ */
 function voteUp() {
 
     'use strict';
@@ -475,6 +632,13 @@ function voteUp() {
 
 
 
+/**
+ * @description Decrement vote score
+ *
+ * @method voteDown
+ * @param {void}
+ * @return {void}
+ */
 function voteDown() {
 
     'use strict';
@@ -484,6 +648,13 @@ function voteDown() {
 
 
 
+/**
+ * @description Submit rebuttal idea to the server
+ *
+ * @method submitIdeaData
+ * @param {void}
+ * @return {void}
+ */
 function submitIdeaData() {
 
     'use strict';
@@ -504,6 +675,13 @@ function submitIdeaData() {
 
 
 
+/**
+ * @description Load menu from server and show message afterwards
+ *
+ * @method loadMenu
+ * @param {void}
+ * @return {void}
+ */
 function loadMenu() {
 
     'use strict';
@@ -522,8 +700,10 @@ function loadMenu() {
 
 
 
+/**
+ * @description Set up event listeners
+ */
 // As per http://developer.browser.com/extensions/contentSecurityPolicy.html
-// Set up the listeners here instead of in the HTML
 $(document)
     .on('click', '#tagTo', toTagged)
     .on('click', '#tagFrom', fromTagged)
@@ -589,6 +769,9 @@ $(document)
 
 
 
+/**
+ * @description Set canonical url in background
+ */
 /** @namespace rbutr.fromUrls */
 /** @namespace rbutr.toUrls */
 browser.tabs.query({currentWindow: true, active: true}, function (tab) {
@@ -608,7 +791,13 @@ browser.tabs.query({currentWindow: true, active: true}, function (tab) {
 
 
 
-// Add endsWith function to String, as per http://stackoverflow.com/questions/280634/endswith-in-javascript
+/**
+ * @description String prototype enhancement to check string endings (from http://stackoverflow.com/questions/280634/endswith-in-javascript)
+ *
+ * @method endsWith
+ * @param {string} suffix
+ * @return {boolean}
+ */
 String.prototype.endsWith = function (suffix) {
 
     'use strict';
