@@ -77,15 +77,6 @@ function setupCss() {
 
 
 
-function doingTutorial() {
-
-    'use strict';
-
-    return rbutr.fromUrls.length > 0 && rbutr.fromUrls[0].endsWith('/fauxNews.html');
-}
-
-
-
 /**
  * @description Refresh stored data certain user interactions
  *
@@ -272,11 +263,8 @@ function displaySubmissionForm() {
 
     setPage('submission');
     refreshTags();
-    if (doingTutorial()) { // The tutorial.  Note the tag RbutrTutorial is special, don't change the text.
-        recordTag('RbutrTutorial');
-    } else {
-        setupTagTypeahead();
-    }
+    setupTagTypeahead();
+
     $('#StartSubmissionDiv').hide();
     refreshSubmissionData();
 }
@@ -471,9 +459,6 @@ function fromTagged() {
     if (rbutr.canonical_urls[tabId] === undefined || rbutr.alreadyExists(rbutr.canonical_urls[tabId])) {
         return;
     } else {
-        if (doingTutorial()) {
-            rbutr.tags = []; // Clear the tags, tutorial only has one and it needs locking down.
-        }
         rbutr.fromUrls[rbutr.fromUrls.length] = rbutr.canonical_urls[tabId];
         refreshSubmissionData();
     }
