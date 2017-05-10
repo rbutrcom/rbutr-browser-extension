@@ -64,19 +64,6 @@ function appendPage(page) {
 
 
 
-function setupCss() {
-
-    'use strict';
-
-    $('.clickableImages').hover(function () {
-        $(this).addClass('hover');
-    }, function () {
-        $(this).removeClass('hover');
-    });
-}
-
-
-
 /**
  * @description Refresh stored data certain user interactions
  *
@@ -769,8 +756,7 @@ browser.tabs.query({currentWindow: true, active: true}, function (tab) {
     if (!rbutr.canonical_urls[tabId]) {
         browser.runtime.sendMessage({action: 'setCanonical', tab: tab[0]});
     }
-    setupCss();
-    // This sets up everything.
+
     loadData();
 });
 
