@@ -69,7 +69,7 @@ Rbutr.prototype = {
 
         'use strict';
 
-        var dev = localStorage.getItem('rbutr-is-dev');
+        var dev = localStorage.getItem('rbutr.isDev');
         return dev === 'true';
     },
 
@@ -119,7 +119,7 @@ Rbutr.prototype = {
 
         'use strict';
 
-        var CID_KEY = 'rbutr_cid';
+        var CID_KEY = 'rbutr.cid';
         var cid = localStorage.getItem(CID_KEY);
         if (!cid) {
             var ms = new Date().getTime();
