@@ -1,6 +1,10 @@
 /*global browser,console,$,JSON*/
 /*jslint browser:true,esnext:true */
 
+
+/**
+ * @description Multi-Browser support
+ */
 window.browser = (function () {
 
     'use strict';
@@ -12,27 +16,33 @@ window.browser = (function () {
 
 
 
+var canonicalValue = $('head link[rel=canonical]').attr('href');
+var title = $('title').text();
+
+
+
+/**
+ * @description Determine, wether rbutr message box should appear or not
+ *
+ * @method shouldShowMessage
+ * @param {string} url
+ * @return {boolean}
+ */
 function shouldShowMessage(url) {
 
     'use strict';
 
     var result = !localStorage.getItem('rbutr.dontshow.' + url);
-    if (result === undefined || result === null) {
-        result = true;
-    }
-    return result;
+    return result === undefined || result === null;
 }
 
 
 
-var isInstalledNode = document.createElement('div');
-isInstalledNode.id = 'rbutr-extension-is-installed';
-document.body.appendChild(isInstalledNode);
-
-
-
+/**
+ * @description Handle message box
+ */
 browser.runtime.onMessage.addListener(
-    function (request, sender, sendResponse) {
+    function (request) {
 
         'use strict';
 
@@ -61,11 +71,6 @@ browser.runtime.onMessage.addListener(
 
 
 
-var canonicalValue = $('head link[rel=canonical]').attr('href');
-var title = $('title').text();
-
-
-
 // When the user clicks through from our webpage, rather than the plugin, we hide the click details in the re-direct page.
 if ($('#clickDataForRbutrPlugin').length) { // jQuery never returns null.. http://stackoverflow.com/questions/477667/how-to-check-null-objects-in-jquery
     var click = JSON.parse($('#clickDataForRbutrPlugin').text());
@@ -74,6 +79,3 @@ if ($('#clickDataForRbutrPlugin').length) { // jQuery never returns null.. http:
 
 
 browser.runtime.sendMessage({'action': 'setCanonical', 'url': canonicalValue || location.href, 'title': title});
-
-
-$('body').append('<div style="display: none;" class="rbutrInstalled"></div>');

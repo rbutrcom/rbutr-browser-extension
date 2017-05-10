@@ -2,6 +2,9 @@
 /*jslint browser:true,esnext:true */
 
 
+/**
+ * @description Multi-Browser support
+ */
 window.browser = (function () {
 
     'use strict';
@@ -55,6 +58,13 @@ Rbutr.prototype = {
     constructor: Rbutr,
 
 
+    /**
+     * @description Determine, wether development mode is enabled or not
+     *
+     * @method isDev
+     * @param {void}
+     * @return {boolean}
+     */
     isDev: function () {
 
         'use strict';
@@ -65,6 +75,13 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description If developer mode is enabled, the passed parameters will be logged to the console. First parameter defines the log-level
+     *
+     * @method logDev
+     * @param {mixed}
+     * @return {void}
+     */
     logDev: function () {
 
         'use strict';
@@ -91,6 +108,13 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Get stored client id or generate and store a new one
+     *
+     * @method getCid
+     * @param {void}
+     * @return {string}
+     */
     getCid: function () {
 
         'use strict';
@@ -108,18 +132,32 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Initialize rbutr
+     *
+     * @method initialize
+     * @param {void}
+     * @return {void}
+     */
     initialize: function () {
 
         'use strict';
 
         this.serverUrl = this.isDev() ? 'https://russell.rbutr.com' : 'http://rbutr.com';
-        this.cid = this.cid;
+        this.cid = this.getCid();
 
-        this.logDev('info','rbutr initialised ', new Date());
+        this.logDev('log','rbutr initialised ', new Date());
     },
 
 
 
+    /**
+     * @description Check if the given url already exist in property arrays
+     *
+     * @method alreadyExists
+     * @param {string} url
+     * @return {boolean}
+     */
     alreadyExists: function (url) {
 
         'use strict';
@@ -139,6 +177,13 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Get page title for the given url
+     *
+     * @method getPageTitle
+     * @param {string} url
+     * @return {string}
+     */
     getPageTitle: function (url) {
 
         'use strict';
@@ -152,6 +197,13 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Get currently displayed popup
+     *
+     * @method getPopup
+     * @param {void}
+     * @return {object}
+     */
     getPopup: function () {
 
         'use strict';
@@ -165,6 +217,14 @@ Rbutr.prototype = {
     },
 
 
+
+    /**
+     * @description Display a message in the current popup
+     *
+     * @method displayMessage
+     * @param {string} message
+     * @return {void}
+     */
     displayMessage: function (message) {
 
         'use strict';
@@ -180,7 +240,14 @@ Rbutr.prototype = {
 
 
 
-    // For communicating with the content script for it to pop stuff up.
+    /**
+     * @description Post a message to content script to pop stuff up
+     *
+     * @method postMessage
+     * @param {string} tabId
+     * @param {string} titleMessage
+     * @return {void}
+     */
     postMessage: function (tabId, titleMessage) {
 
         'use strict';
@@ -198,6 +265,13 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Get recordec click object by given toUrl
+     *
+     * @method getRecordedClickByToUrl
+     * @param {string} toUrl
+     * @return {object}
+     */
     getRecordedClickByToUrl: function (toUrl) {
 
         'use strict';
@@ -207,6 +281,14 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Load data on tab switch
+     *
+     * @method tabLoaded
+     * @param {string} tabId
+     * @param {string} url
+     * @return {void}
+     */
     tabLoaded: function (tabId, url) {
 
         'use strict';
@@ -280,6 +362,13 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Submit rebuttal data to server
+     *
+     * @method submitRebuttals
+     * @param {string} tabId
+     * @return {void}
+     */
     submitRebuttals: function (tabId) {
 
         'use strict';
@@ -330,6 +419,14 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Prepare data submission
+     *
+     * @method startSubmission
+     * @param {string} tabId
+     * @param {string} fromTo
+     * @return {void}
+     */
     startSubmission: function (tabId, fromTo) {
 
         'use strict';
@@ -349,6 +446,13 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Cleanup after data submission
+     *
+     * @method stopSubmission
+     * @param {void}
+     * @return {void}
+     */
     stopSubmission: function () {
 
         'use strict';
@@ -362,6 +466,13 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Remove a tag from tag list
+     *
+     * @method removeTag
+     * @param {string} tagText
+     * @return {void}
+     */
     removeTag: function (tagText) {
 
         'use strict';
@@ -374,6 +485,13 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Add a tag to tag list
+     *
+     * @method addTag
+     * @param {string} tagText
+     * @return {void}
+     */
     addTag: function (tagText) {
 
         'use strict';
@@ -387,6 +505,18 @@ Rbutr.prototype = {
 
 
 
+    /**
+     * @description Record click from rbutr website
+     *
+     * @method recordLinkClick
+     * @param {string} fromTabId
+     * @param {string} linkId
+     * @param {string} linkFromUrl
+     * @param {string} linkToUrl
+     * @param {float} score
+     * @param {integer} yourVote
+     * @return {void}
+     */
     recordLinkClick: function (fromTabId, linkId, linkFromUrl, linkToUrl, score, yourVote) {
 
         'use strict';
@@ -403,7 +533,13 @@ Rbutr.prototype = {
 
 
 
-    // generate an absolute url (protocol, host, path) from a canonicalValue that might be relative
+    /**
+     * @description Generate an absolute url (protocol, host, path) from a canonicalValue that might be relative
+     *
+     * @method getCanonicalUrl
+     * @param {string} canonicalValue
+     * @return {string}
+     */
     getCanonicalUrl: function (canonicalValue) {
 
         'use strict';
