@@ -51,6 +51,38 @@ p.rebuttals {
   font-size: 12px;
 }
 
+#dontShowAgain {
+  cursor: pointer;
+}
+
+#rbutrfloatdiv {
+  background: #fff;
+  border: 2px solid #26a;
+  color: #000;
+  font-size: 9pt;
+  font-weight: bold;
+  height: 250px;
+  padding: 16px;
+  position: fixed;
+  right: 10px;
+  text-align: center;
+  top: 10px;
+  width: 250px;
+  z-index: 2147483647;
+
+  span {
+    font-size: x-small;
+    font-weight: normal;
+  }
+  label {
+    font-size: x-small;
+    font-weight: normal;
+    margin-top: 10px;
+    text-align: center;
+    width: 100%;
+  }
+}
+
 #wholePopupDiv {
   position: relative;
 }

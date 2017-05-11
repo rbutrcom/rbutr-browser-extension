@@ -47,22 +47,29 @@ browser.runtime.onMessage.addListener(
         'use strict';
 
         if (shouldShowMessage(request.url)) {
-            $('body').append('<div id="rbutrfloatdiv" style="position:fixed; width:250px; height: 250px;top:10px;right:10px; ' +
-                'padding:16px;background:#FFFFFF;   border:2px solid #2266AA;   z-index:2147483647">' +
-                '<center><img src="http://rbutr.com/images/logo_small_transparent.png">' +
-                '<br><span style="text-align: center;font-size:9pt; color:black;font-weight:bold;">' + request.message +
-                '<br><br><span style="font-weight:normal;font-size:x-small">This message will fade in 5 secs.</span>' +
-                '<div><label style="margin-top:10px;width:100%;font-weight:normal;font-size:x-small;text-align: center">' +
-                '<input id="dontShowAgain" type="checkbox">&nbsp;Dont tell me again for this page</label></div>' +
-                '</center></span></center>' +
-                '</div>'
+            $('body').append(
+                `<div id="rbutrfloatdiv">
+                    <center>
+                        <img src="http://rbutr.com/images/logo_small_transparent.png">
+                        <br>
+                        ${request.message}
+                        <br><br>
+                        <span>This message will fade in 5 secs.</span>
+                        <div>
+                            <label>
+                                <input id="dontShowAgain" type="checkbox">
+                                &nbsp;Don't tell me again for this page
+                            </label>
+                        </div>
+                    </center>
+                </div>`
             );
 
             window.setTimeout(function () {
                 $('#rbutrfloatdiv').remove();
             }, 5000);
 
-            $('#dontShowAgain').css('cursor', 'pointer').click(function () {
+            $('#dontShowAgain').click(function () {
                 localStorage.setItem('rbutr.dontshow.' + request.url, $('#dontShowAgain')[0].checked);
             });
         }
