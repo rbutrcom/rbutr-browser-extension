@@ -11,17 +11,32 @@
   "permissions": [
     "<all_urls>",
     "tabs",
-    "contextMenus"
+    "contextMenus",
+    "webRequest",
+    "webNavigation"
   ],
 
   "content_scripts": [{
-      "js": ["vendors/jquery.js", "contentScript.js"],
+      "js": [
+        "vendors/jquery.js",
+        "vendors/md5.js",
+        "utils.js",
+        "contentScript.js"
+      ],
+      "css": [
+        "css/platforms.css"
+      ],
       "matches": ["*://*/*"],
       "run_at": "document_end"
   }],
 
   "background": {
-    "scripts": ["vendors/jquery.js", "vendors/md5.js", "background.js"]
+    "scripts": [
+      "vendors/jquery.js",
+      "vendors/md5.js",
+      "utils.js",
+      "background.js"
+    ]
   },
 
   "browser_action": {

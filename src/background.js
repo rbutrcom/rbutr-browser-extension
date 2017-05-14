@@ -1,4 +1,4 @@
-/*global browser,console,$,b64_md5*/
+/*global browser,console,$,b64_md5,RbutrUtils*/
 /*jslint browser:true,esnext:true */
 
 
@@ -13,6 +13,10 @@ window.browser = (function () {
         window.browser ||
         window.chrome;
 })();
+
+
+
+const rbutrUtils = new RbutrUtils();
 
 
 
@@ -45,10 +49,9 @@ function Rbutr() {
     this.url_is_canonical = {};
     this.page_title = {};
 
-    this.serverUrl = '';
-    this.cid = '';
-
     this.simpleAbsoluteUrlMatch = '^[a-zA-Z]+://.*';
+
+    return this;
 }
 
 
@@ -58,52 +61,19 @@ Rbutr.prototype = {
     constructor: Rbutr,
 
 
+
     /**
-     * @description Determine, wether development mode is enabled or not
+     * @description Initialize rbutr
      *
-     * @method isDev
+     * @method initialize
      * @param {void}
-     * @return {boolean}
-     */
-    isDev: function () {
-
-        'use strict';
-
-        var dev = localStorage.getItem('rbutr.isDev');
-        return dev === 'true';
-    },
-
-
-
-    /**
-     * @description If developer mode is enabled, the passed parameters will be logged to the console. First parameter defines the log-level
-     *
-     * @method logDev
-     * @param {mixed}
      * @return {void}
      */
-    logDev: function () {
+    initialize: function () {
 
         'use strict';
 
-        if(this.isDev()) {
-            // only continue if there are more than 1 params (0 = level, 1-x = output)
-            if(arguments.length > 1) {
-                var logLevel = console[arguments[0]],
-                    logArguments = [];
-
-                for (var i = 1; i < arguments.length; i++) {
-                    logArguments.push(arguments[i]);
-                }
-
-                if(typeof logLevel === 'function') {
-                    logLevel.apply(null, ['[rbutr] '].concat(logArguments));
-                } else {
-                    console.error('[rbutr] console.' + arguments[0] + ' is not a valid logging function.');
-                    console.debug.apply(null, ['[rbutr] '].concat(logArguments));
-                }
-            }
-        }
+        rbutrUtils.log('log','rbutr initialised ', new Date());
     },
 
 
@@ -128,25 +98,6 @@ Rbutr.prototype = {
             localStorage.setItem(CID_KEY, cid);
         }
         return cid;
-    },
-
-
-
-    /**
-     * @description Initialize rbutr
-     *
-     * @method initialize
-     * @param {void}
-     * @return {void}
-     */
-    initialize: function () {
-
-        'use strict';
-
-        this.serverUrl = this.isDev() ? 'https://russell.rbutr.com' : 'http://rbutr.com';
-        this.cid = this.getCid();
-
-        this.logDev('log','rbutr initialised ', new Date());
     },
 
 
@@ -232,7 +183,7 @@ Rbutr.prototype = {
         var popup = this.getPopup();
 
         if (popup === null) {
-            this.logDev('error', 'Popup was null, couldn\'t display : ', message);
+            rbutrUtils.log('error', 'Popup was null, couldn\'t display : ', message);
         } else {
             popup.displayMessage(message);
         }
@@ -241,14 +192,15 @@ Rbutr.prototype = {
 
 
     /**
-     * @description Post a message to content script to pop stuff up
+     * @description Post a message to content script to request an action
      *
      * @method postMessage
-     * @param {string} tabId
-     * @param {string} titleMessage
+     * @param {integer} tabId
+     * @param {string} action
+     * @param {object} data
      * @return {void}
      */
-    postMessage: function (tabId, titleMessage) {
+    postMessage: function (action, data) {
 
         'use strict';
 
@@ -256,9 +208,11 @@ Rbutr.prototype = {
         browser.tabs.query({
             active: true,
             lastFocusedWindow: true
-        }, function () {
-            browser.tabs.sendMessage(tabId, {message: titleMessage, url: rbutr.canonical_urls[tabId]}, function (response) {
-                rbutr.logDev('debug', response);
+        }, function (tab) {
+            var $data = Object.assign({}, {rbutr: rbutr, action: action}, data);
+            rbutrUtils.log('debug', tab[0]);
+            browser.tabs.sendMessage(tab[0].id, $data, function (response) {
+                rbutrUtils.log('debug', response);
             });
         });
     },
@@ -285,7 +239,7 @@ Rbutr.prototype = {
      * @description Load data on tab switch
      *
      * @method tabLoaded
-     * @param {string} tabId
+     * @param {integer} tabId
      * @param {string} url
      * @return {void}
      */
@@ -302,11 +256,11 @@ Rbutr.prototype = {
         }
 
 
-        $.get(this.serverUrl + '/rbutr/PluginServlet', {
+        $.get(rbutrUtils.getServerUrl(), {
             getLinks: true,
             fromPageUrlHash: b64_md5(url),
             version: browser.runtime.getManifest().version,
-            cid: rbutr.cid
+            cid: rbutr.getCid()
         }, function (data) {
             rbutr.rebuttals[tabId] = data;
             rbutr.loggedIn = true;
@@ -324,7 +278,7 @@ Rbutr.prototype = {
                     browser.browserAction.setBadgeBackgroundColor({color: [255, 255, 0, 255], tabId: tabId});
                     titleMessage = 'You can vote on this.';
                     browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
-                    rbutr.postMessage(tabId, titleMessage);
+                    rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.canonical_urls[tabId]});
                 } else {
                     browser.browserAction.setTitle({
                         tabId: tabId,
@@ -353,7 +307,7 @@ Rbutr.prototype = {
                     browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
                 }
 
-                rbutr.postMessage(tabId, titleMessage);
+                rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.canonical_urls[tabId]});
             }
         }).error(function (msg) {
             rbutr.rebuttals[tabId] = msg.responseText;
@@ -366,7 +320,7 @@ Rbutr.prototype = {
      * @description Submit rebuttal data to server
      *
      * @method submitRebuttals
-     * @param {string} tabId
+     * @param {integer} tabId
      * @return {void}
      */
     submitRebuttals: function (tabId) {
@@ -388,7 +342,7 @@ Rbutr.prototype = {
             canonicalFromPages[j] = this.url_is_canonical[this.fromUrls[j]];
         }
 
-        $.post(this.serverUrl + '/rbutr/PluginServlet', {
+        $.post(rbutrUtils.getServerUrl(), {
             submitLinks: true,
             fromUrls: rbutr.fromUrls,
             toUrls: rbutr.toUrls,
@@ -399,21 +353,21 @@ Rbutr.prototype = {
             canonicalToPages: canonicalToPages,
             direct: rbutr.direct,
             tags: rbutr.tags,
-            cid: rbutr.cid
+            cid: rbutr.getCid()
         }, function (data) {
-            rbutr.logDev('debug', 'success status ', data.status);
+            rbutrUtils.log('debug', 'success status ', data.status);
             rbutr.displayMessage('<b>' + data.result + '</b>');
             window.open(data.redirectUrl);
             rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
             rbutr.tabLoaded(tabId, rbutr.canonical_urls[tabId]); // This will reload the for the tab, and set the badge.
         }, 'json').done(function (msg) {
-            rbutr.logDev('debug', 'done status ', msg.status);
+            rbutrUtils.log('debug', 'done status ', msg.status);
         }).fail(function (msg, arg2, arg3) {
             rbutr.displayMessage('Failed to submit : ' + msg.responseText);
-            rbutr.logDev('debug', 'fail status ', msg.status);
-            rbutr.logDev('debug', 'msg = ', msg);
-            rbutr.logDev('debug', 'arg2 = ', arg2);
-            rbutr.logDev('debug', 'arg3 = ', arg3);
+            rbutrUtils.log('debug', 'fail status ', msg.status);
+            rbutrUtils.log('debug', 'msg = ', msg);
+            rbutrUtils.log('debug', 'arg2 = ', arg2);
+            rbutrUtils.log('debug', 'arg3 = ', arg3);
         });
     },
 
@@ -423,7 +377,7 @@ Rbutr.prototype = {
      * @description Prepare data submission
      *
      * @method startSubmission
-     * @param {string} tabId
+     * @param {integer} tabId
      * @param {string} fromTo
      * @return {void}
      */
@@ -552,7 +506,7 @@ Rbutr.prototype = {
                 // canonicalValue is an absolute url in the current host
                 return location.protocol + '//' + location.host + canonicalValue;
             } else {
-                this.logDev('error', 'The canonical URL is relative and does not start with "/". Not supported.');
+                rbutrUtils.log('error', 'The canonical URL is relative and does not start with "/". Not supported.');
                 return null;
             }
         } else {
@@ -561,61 +515,85 @@ Rbutr.prototype = {
     }
 };
 
+
 var rbutr = new Rbutr();
-rbutr.initialize();
 
-browser.runtime.onMessage.addListener(function (request, sender) {
+document.addEventListener('DOMContentLoaded', function () {
 
-    'use strict';
+    rbutr.initialize();
 
-    if (request.action) {
-        if (request.action == 'setCanonical') {
-            var tab = request.tab || sender.tab;
-            var canonicalUrl = rbutr.getCanonicalUrl(tab.url);
-            var url = canonicalUrl || tab.url;
 
-            if (!/^http/.test(canonicalUrl)) {
-                return;
+    browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+
+        'use strict';
+
+        if (request.action) {
+            if (request.action == 'setCanonical') {
+                var tab = request.tab || sender.tab;
+                var canonicalUrl = rbutr.getCanonicalUrl(tab.url);
+                var url = canonicalUrl || tab.url;
+
+                if (!/^http/.test(canonicalUrl)) {
+                    return;
+                }
+
+                rbutr.url_is_canonical[url] = !!canonicalUrl;
+                rbutr.canonical_urls[tab.id] = canonicalUrl;
+                rbutr.plain_urls[tab.id] = tab.url;
+
+                rbutr.page_title[url] = tab.title;
+                rbutr.tabLoaded(tab.id, url);
+
+            } else if (request.action == 'setClick') {
+                var click = request.click;
+                rbutr.recordLinkClick(null, click.linkId, click.linkFromUrl, click.linkToUrl, click.score, click.yourVote);
+                rbutrUtils.log('debug', 'click recorded: ', click.linkToUrl);
+            } else if (request.action == 'getCid') {
+                sendResponse(rbutr.getCid());
+                return true;
+            } else if (request.action == 'getServerUrl') {
+                sendResponse(rbutrUtils.getServerUrl());
+                return true;
+            } else if (request.action == 'getServerDomain') {
+                sendResponse(rbutrUtils.getServerUrl(true));
+                return true;
+            } else if (request.action == 'getVersion') {
+                sendResponse(browser.runtime.getManifest().version);
+                return true;
             }
-
-            rbutr.url_is_canonical[url] = !!canonicalUrl;
-            rbutr.canonical_urls[tab.id] = canonicalUrl;
-            rbutr.plain_urls[tab.id] = tab.url;
-
-            rbutr.page_title[url] = tab.title;
-            rbutr.tabLoaded(tab.id, url);
-
-        } else if (request.action == 'setClick') {
-            var click = request.click;
-            rbutr.recordLinkClick(null, click.linkId, click.linkFromUrl, click.linkToUrl, click.score, click.yourVote);
-            rbutr.logDev('debug', 'click recorded: ', click.linkToUrl);
         }
-    }
-});
+
+    });
 
 
 
-// tab is going away, remove the canonical data for it
-browser.tabs.onRemoved.addListener(function (tabId) {
+    // tab is going away, remove the canonical data for it
+    browser.tabs.onRemoved.addListener(function (tabId) {
 
-    'use strict';
+        'use strict';
 
-    delete rbutr.canonical_urls[tabId];
-    delete rbutr.plain_urls[tabId];
-});
-
-
-
-browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-
-    'use strict';
-
-    // ensure that the url data lives for the life of the page, not the tab
-    if (changeInfo.status == 'loading') {
-        if (tab.url == rbutr.plain_urls[tabId]) {
-            return;
-        }
         delete rbutr.canonical_urls[tabId];
         delete rbutr.plain_urls[tabId];
-    }
+    });
+
+
+
+    /**
+     * @description Fires when a tab is updated
+     */
+    browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+
+        'use strict';
+
+        // ensure that the url data lives for the life of the page, not the tab
+        if (changeInfo.status === 'loading') {
+            if (tab.url == rbutr.plain_urls[tabId]) {
+                return;
+            }
+            delete rbutr.canonical_urls[tabId];
+            delete rbutr.plain_urls[tabId];
+        }
+    });
+
+
 });

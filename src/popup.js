@@ -1,4 +1,4 @@
-/*global browser,$,MutationObserver*/
+/*global browser,$,MutationObserver,RbutrUtils*/
 /*jslint browser:true,esnext:true */
 
 
@@ -19,8 +19,10 @@ window.browser = (function () {
 })();
 
 
+
+const rbutrUtils = new RbutrUtils();
 var rbutr = browser.extension.getBackgroundPage().rbutr;
-rbutr.logDev('debug', 'in popup');
+rbutrUtils.log('debug', 'in popup');
 
 
 
@@ -34,7 +36,7 @@ rbutr.logDev('debug', 'in popup');
 function setPage(page) {
 
     'use strict';
-    rbutr.logDev('debug', 'show page: ', page);
+    rbutrUtils.log('debug', 'show page: ', page);
 
     // clear all message
     document.querySelector('#message').innerHTML = '';
@@ -218,15 +220,15 @@ function setupTagTypeahead() {
     $('#tagTypeahead').typeahead({
         name: 'tags',
         limit: 10,
-        prefetch: rbutr.serverUrl + '/rbutr/PluginServlet?getPlainTagsJson=true'
+        prefetch: rbutrUtils.getServerUrl() + '?getPlainTagsJson=true'
         // local: rbutr.getTagsData()
     }).on('typeahead:selected', function (event, data) {
         recordTag(data.value);
         document.getElementById('#tagTypeahead').value = '';
     }).keydown(function (event) {
         var key = event.which;
-        rbutr.logDev('debug', 'key = ', key);
-        rbutr.logDev('debug', 'event = ', event);
+        rbutrUtils.log('debug', 'key = ', key);
+        rbutrUtils.log('debug', 'event = ', event);
         if (key == 13 || key == 186 || key == 188) {
             event.preventDefault();
             recordTag($('#tagTypeahead').val());
@@ -306,7 +308,7 @@ function displayNotLoggedInMessage() {
     'use strict';
 
     displayMessage('You are not logged in! rbutr requires you to be logged in to submit rebuttals and to vote. ' +
-        'Click <a target="_blank" href="' + rbutr.serverUrl + '/rbutr/LoginServlet">here</a> to login or register.');
+        'Click <a target="_blank" href="' + rbutrUtils.getServerUrl(true) + '/rbutr/LoginServlet">here</a> to login or register.');
 }
 
 
@@ -366,8 +368,8 @@ function requestRebuttals() {
         appendPage('request');
         setupTagTypeahead();
         $('#requestUrl').val(rbutr.canonical_urls[tabId]);
-        rbutr.logDev('debug', 'input = ', $('#requestUrl').val());
-        rbutr.logDev('debug', 'bg = ', rbutr.canonical_urls[tabId]);
+        rbutrUtils.log('debug', 'input = ', $('#requestUrl').val());
+        rbutrUtils.log('debug', 'bg = ', rbutr.canonical_urls[tabId]);
         $('#StartSubmissionDiv').hide();
     }
 }
@@ -390,21 +392,21 @@ function submitRequestData() {
         document.forms['requestData'].submitLink.disabled = false;
         return false;
     }
-    $.post(rbutr.serverUrl + '/rbutr/PluginServlet', {
+    $.post(rbutrUtils.getServerUrl(), {
         subscribeToPage: rbutr.canonical_urls[tabId],
         title: rbutr.page_title[rbutr.canonical_urls[tabId]],
         tags: rbutr.tags,
         pageIsCanonical: rbutr.url_is_canonical[rbutr.canonical_urls[tabId]],
         cid: rbutr.cid
     }, function (data) {
-        rbutr.logDev('debug', 'Success : ', data);
+        rbutrUtils.log('debug', 'Success : ', data);
         $('#message').html(data);
     }).fail(function (msg, arg2, arg3) {
-        rbutr.logDev('debug', 'fail : ', msg);
-        rbutr.logDev('debug', 'fail status ', msg.status);
-        rbutr.logDev('debug', 'msg = ', msg);
-        rbutr.logDev('debug', 'arg2 = ', arg2);
-        rbutr.logDev('debug', 'arg3 = ', arg3);
+        rbutrUtils.log('debug', 'fail : ', msg);
+        rbutrUtils.log('debug', 'fail status ', msg.status);
+        rbutrUtils.log('debug', 'msg = ', msg);
+        rbutrUtils.log('debug', 'arg2 = ', arg2);
+        rbutrUtils.log('debug', 'arg3 = ', arg3);
         displayMessage('An error occurred : ' + msg.responseText);
     });
 }
@@ -574,7 +576,7 @@ function vote(voteScore) {
     'use strict';
 
     var recordedClick = rbutr.getRecordedClickByToUrl(rbutr.canonical_urls[tabId]);
-    $.get(rbutr.serverUrl + '/rbutr/PluginServlet', {
+    $.get(rbutrUtils.getServerUrl(), {
         'linkId': recordedClick.linkId,
         'vote': voteScore,
         'cid': rbutr.cid
@@ -633,7 +635,7 @@ function submitIdeaData() {
 
     document.forms['ideaForm'].submitLink.value = 'Please wait..';
     document.forms['ideaForm'].submitLink.disabled = true;
-    $.post(rbutr.serverUrl + '/rbutr/PluginServlet', {
+    $.post(rbutrUtils.getServerUrl(), {
         url: rbutr.canonical_urls[tabId],
         title: rbutr.page_title[rbutr.canonical_urls[tabId]],
         idea: document.forms['ideaForm'].idea.value,
@@ -659,7 +661,7 @@ function loadMenu() {
     'use strict';
 
     $('#message').html('Loading..');
-    $.post(rbutr.serverUrl + '/rbutr/PluginServlet', {
+    $.post(rbutrUtils.getServerUrl(), {
         getMenu: true,
         version: browser.runtime.getManifest().version,
         cid: rbutr.cid
