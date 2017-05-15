@@ -68,8 +68,15 @@ RbutrUtils.prototype = {
 
         'use strict';
 
-        var dev = localStorage.getItem('rbutr.isDev');
-        return dev === 'true';
+        const storageKey = 'rbutr.isDev';
+        let isDev = localStorage.getItem(storageKey);
+
+        if (!isDev) {
+            isDev = 'false';
+            localStorage.setItem(storageKey, isDev);
+        }
+
+        return isDev === 'true';
     },
 
 
