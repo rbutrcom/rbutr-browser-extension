@@ -51,9 +51,9 @@ On Opera: https://dev.opera.com/extensions/testing/
 After you installed the extension, you might want to enable the developer mode:
 
 1. Open the Background page on your browser's extension page (Developer Tools show up)
-2. Open the "Application" section ("Storage" in Firefox)
-3. Click on "Local storage" and the nested entry "chrome-extension"
-4. Add a new key "rbutr-is-dev" and "true" as value
+2. Open the **"Application"** section (**"Storage"** in Firefox)
+3. Click on **"Local storage"** and the nested entry `chrome-extension://<extension-id>`
+4. Set key `rbutr.isDev` to `true`
 
 The Dev-Mode has currently 2 functionalities implemented.
 
