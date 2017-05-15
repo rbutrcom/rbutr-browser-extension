@@ -113,4 +113,17 @@ RbutrUtils.prototype = {
             return url;
         }
     },
+
+
+
+    /**
+     * @description Convert Unicode escaped string to regular string, see http://stackoverflow.com/questions/7885096/how-do-i-decode-a-string-with-escaped-unicode
+     *
+     * @method unicode2String
+     * @param {string} str
+     * @return {string}
+     */
+    unicode2String: function (str) {
+        return decodeURIComponent(JSON.parse('"' + str.replace(/\"/g, '\\"') + '"'));
+    }
 };

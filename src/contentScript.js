@@ -233,112 +233,130 @@ Content.prototype = {
      * @description Create html template and fill it with data from given object
      *
      * @method createMessageTemplate
-     * @param {object} data
+     * @param {object} $entry
+     * @param {string} type
      * @return {string}
      */
-    createMessageTemplate: function (data) {
+    createSingleMessageEntry: function ($entry, type) {
+        return `
+            <div class="rbutr-message-entry">
+                <h6>${$entry[type].title}</h6>
+                <a href="${$entry[type].url}">${$entry[type].url}</a>
+
+                <div class="rbutr-info">
+                    <table>
+                        <tr>
+                            <th>Upvotes:</th>
+                            <th>Downvotes:</th>
+                            <th>Clicks:</th>
+                            <th>Views:</th>
+                        </tr>
+                        <tr>
+                            <td>${$entry.upVotes}</td>
+                            <td>${$entry.downVotes}</td>
+                            <td>${$entry.clickCount}</td>
+                            <td>${$entry.viewCount}</td>
+                        </tr>
+                        <tr>
+                            <td class="rbutr-footer" colspan="4"><small>
+                                Created on ${$entry.creationDate}
+                                by <a href="${this.serverDomain}/rbutr/LoginServlet?requestType=userPage&personId=${$entry.person.id}">${$entry.person.username}</a>
+                            </small></td>
+                    </table>
+                </div>
+            </div>
+        `;
+    },
+
+
+
+    /**
+     * @description Create html template and fill it with data from given object
+     *
+     * @method createMessageTemplate
+     * @param {object} $data
+     * @param {string} requestedUrl
+     * @return {string}
+     */
+    createMessageTemplate: function ($data, requestedUrl) {
 
         let
             messageTemplate = '',
-            rbutrLogo = '<img src="' + this.serverDomain + '/images/logohomepagelowres.png" width="24" class="rbutr-logo" alt="Rbutr">';
+            rbutrLogo = '<img src="' + this.serverDomain + '/images/logohomepagelowres.png" width="24" class="rbutr-logo" alt="Rbutr">',
+            detailsButton = '<div><button class="more" onclick="this.parentNode.nextElementSibling.classList.toggle(\'hidden\');">Details</button><div class="clearfix"></div></div>',
+            rebuttedCount = 0,
+            rebuttalCount = 0,
+            rebuttedList = '',
+            rebuttalList = '';
 
-        if (data.direct.length > 0 || data.general.length > 0) {
-            if (data.direct.length > 0) {
-                for (let index in data.direct) {
 
-                    messageTemplate += `
-                        <div class="rbutr-message">
-                            ${rbutrLogo}
-                            <table>
-                                <tr>
-                                    <th>Rebutted:</th>
-                                    <td>
-                                        <h6>${data.direct[index].fromPage.title}</h6>
-                                        <a href="${data.direct[index].fromPage.url}">${data.direct[index].fromPage.url}</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Rebuttal:</th>
-                                    <td>
-                                        <h6>${data.direct[index].toPage.title}</h6>
-                                        <a href="${data.direct[index].toPage.url}">${data.direct[index].toPage.url}</a>
-                                    </td>
-                                </tr>
-                            </table>
-
-                            <table class="rbutr-info">
-                                <tr>
-                                    <th>Upvotes:</th>
-                                    <th>Downvotes:</th>
-                                    <th>Clicks:</th>
-                                    <th>Views:</th>
-                                </tr>
-                                <tr>
-                                    <td>${data.direct[index].upVotes}</td>
-                                    <td>${data.direct[index].downVotes}</td>
-                                    <td>${data.direct[index].clickCount}</td>
-                                    <td>${data.direct[index].viewCount}</td>
-                                </tr>
-                            </table>
-                            <div class="rbutr-footer"><small>
-                                Created on ${data.direct[index].creationDate}
-                                by <a href="${this.serverDomain}/rbutr/LoginServlet?requestType=userPage&personId=${data.direct[index].person.id}">${data.direct[index].person.username}</a>
-                            </small></div>
-                        </div>
-                    `;
-                }
-            }
-            if (data.general.length > 0) {
-                for (let index in data.general) {
-
-                    messageTemplate += `
-                        <div class="rbutr-message">
-                            ${rbutrLogo}
-                            <table>
-                                <tr>
-                                    <th>Rebutted:</th>
-                                    <td>
-                                        <h6>${data.general[index].fromPage.title}</h6>
-                                        <a href="${data.general[index].fromPage.url}">${data.general[index].fromPage.url}</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Rebuttal:</th>
-                                    <td>
-                                        <h6>${data.general[index].toPage.title}</h6>
-                                        <a href="${data.general[index].toPage.url}">${data.general[index].toPage.url}</a>
-                                    </td>
-                                </tr>
-                            </table>
-
-                            <table class="rbutr-info">
-                                <tr>
-                                    <th>Upvotes:</th>
-                                    <th>Downvotes:</th>
-                                    <th>Clicks:</th>
-                                    <th>Views:</th>
-                                </tr>
-                                <tr>
-                                    <td>${data.general[index].upVotes}</td>
-                                    <td>${data.general[index].downVotes}</td>
-                                    <td>${data.general[index].clickCount}</td>
-                                    <td>${data.general[index].viewCount}</td>
-                                </tr>
-                            </table>
-                            <div class="rbutr-footer"><small>
-                                Created on ${data.general[index].creationDate}
-                                by <a href="${this.serverDomain}/rbutr/LoginServlet?requestType=userPage&personId=${data.general[index].person.id}">${data.general[index].person.username}</a>
-                            </small></div>
-                        </div>
-                    `;
-                }
-            }
-        } else {
+        if ($data.direct.length > 0 || $data.general.length > 0) {
             messageTemplate += `
                 <div class="rbutr-message">
                     ${rbutrLogo}
-                    <h6>This Link has no rebuttals.</h6>
-                </div>`;
+                `;
+
+            if ($data.direct.length > 0) {
+                for (let index in $data.direct) {
+
+                    if (rbutrUtils.unicode2String($data.direct[index].fromPage.url) === requestedUrl) {
+                        rebuttedCount++;
+                        rebuttedList += this.createSingleMessageEntry($data.direct[index], 'toPage');
+                    } else if (rbutrUtils.unicode2String($data.direct[index].toPage.url) === requestedUrl) {
+                        rebuttalCount++;
+                        rebuttalList += this.createSingleMessageEntry($data.direct[index], 'fromPage');
+                    }
+                }
+            }
+            if ($data.general.length > 0) {
+                for (let index in $data.general) {
+
+                    if (rbutrUtils.unicode2String($data.general[index].fromPage.url) === requestedUrl) {
+                        rebuttedCount++;
+                        rebuttedList += this.createSingleMessageEntry($data.general[index], 'toPage');
+                    } else if (rbutrUtils.unicode2String($data.general[index].toPage.url) === requestedUrl) {
+                        rebuttalCount++;
+                        rebuttalList += this.createSingleMessageEntry($data.general[index], 'fromPage');
+                    }
+                }
+            }
+
+
+            if (rebuttalCount > 0 && rebuttedCount > 0) {
+                messageTemplate += `
+                    <h4>This page has been rebutted by ${rebuttedCount} ${rebuttedCount > 1 ? 'pages' : 'page'}
+                    and rebuts ${rebuttalCount} other ${rebuttalCount > 1 ? 'pages' : 'page'}</h4>
+                    ${detailsButton}
+                    <div class="details hidden">
+                        <h5>Rebutted by</h5>
+                        ${rebuttedList}
+                        <h5>Rebuttal for</h5>
+                        ${rebuttalList}
+                    </div>
+                `;
+            } else if (rebuttalCount > 0) {
+                messageTemplate += `
+                    <h4>This page rebuts ${rebuttalCount} other ${rebuttalCount > 1 ? 'pages' : 'page'}</h4>
+                    ${detailsButton}
+                    <div class="details hidden">
+                        <h5>Rebuttal for</h5>
+                        ${rebuttalList}
+                    </div>
+                `;
+            } else if (rebuttedCount > 0) {
+                messageTemplate += `
+                    <h4>This page has been rebutted by ${rebuttedCount} ${rebuttedCount > 1 ? 'pages' : 'page'}</h4>
+                    ${detailsButton}
+                    <div class="details hidden">
+                        <h5>Rebutted by</h5>
+                        ${rebuttedList}
+                    </div>
+                `;
+            }
+
+            messageTemplate += '</div>';
+        } else {
+            // Do nothing yet
         }
 
         return messageTemplate;
@@ -364,7 +382,7 @@ Content.prototype = {
             cid: content.cid,
             json: true
         }, 'json').done( function (data) {
-            callback(data, $element);
+            callback(data, url, $element);
         });
     },
 
@@ -406,9 +424,9 @@ Content.prototype = {
                         expandedUrl = content.platform.expandExternalLinks($currentLink);
 
                         if(expandedUrl) {
-                            content.getRbutrData(expandedUrl, $linkWrapper, function (result, $element) {
-                                messageTemplate = content.createMessageTemplate(result);
-                                $element.before($('<div class="rbutr-message-container"></div>').html(messageTemplate));
+                            content.getRbutrData(expandedUrl, $linkWrapper, function (result, url, $element) {
+                                messageTemplate = content.createMessageTemplate(result, url);
+                                $element.after($('<div class="rbutr-message-container"></div>').html(messageTemplate));
                             });
                             $linkWrapper.attr('data-rbutr-processed', true);
                         }
@@ -549,6 +567,9 @@ document.onreadystatechange = function () {
 
 
         $('body').append('<div id="rbutr-installed"></div>');
+        $('.rbutr-message .more').click(function () {
+            $('.rbutr-message .details').toggleClass('hidden');
+        });
         content.execute();
     }
 };
