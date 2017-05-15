@@ -1,0 +1,28 @@
+
+.rbutr-message-container {
+  margin-top: 10px;
+
+  .rbutr-message {
+    background: #cef;
+    border: 1px solid #06c;
+    color: #333;
+    margin-bottom: 5px;
+    padding: 10px;
+
+    table {
+      border: 0;
+      margin-bottom: 5px;
+      width: 100%;
+    }
+
+    .rbutr-info {
+      th, td {
+        text-align: center;
+      }
+    }
+
+    .rbutr-footer {
+      text-align: right;
+    }
+  }
+}

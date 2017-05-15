@@ -22,7 +22,7 @@
 
   },
   "scripts": {
-    "sass": "node-sass src/scss/main.scss --output src/css --source-map-embed --source-map-contents",
+    "sass": "node-sass src/scss/main.scss --output src/css --source-map-embed --source-map-contents && node-sass src/scss/platforms.scss --output src/css --source-map-embed --source-map-contents",
     "watch:sass": "yarn run sass -- --watch",
     "lint:js": "eslint --config .eslintrc.json src;",
     "lint:style": "stylelint --config .stylelintrc src/scss/*.scss;",
