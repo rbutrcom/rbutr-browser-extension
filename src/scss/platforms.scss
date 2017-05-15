@@ -1,4 +1,13 @@
 
+.hidden {
+  display: none;
+}
+
+.clearfix {
+  clear: both;
+  float: none;
+}
+
 .rbutr-message-container {
   margin-top: 10px;
 
@@ -9,6 +18,32 @@
     margin-bottom: 5px;
     padding: 10px;
 
+    .rbutr-logo {
+      float: left;
+      margin-right: 10px;
+    }
+
+    .rbutr-message-entry {
+      padding: 10px 20px 5px 20px;
+      position: relative;
+
+      &:hover {
+        background: #bde;
+
+        .rbutr-info {
+          display: table;
+        }
+      }
+    }
+
+    button {
+      background: #06c;
+      border: 0;
+      color: #fff;
+      float: right;
+      padding: 4px 8px;
+    }
+
     table {
       border: 0;
       margin-bottom: 5px;
@@ -16,13 +51,37 @@
     }
 
     .rbutr-info {
+      background: #cef;
+      border: 1px solid #06c;
+      color: #333;
+      display: none;
+      position: absolute;
+      left: 97%;
+      top: 5px;
+      width: 300px;
+      z-index: 99999;
+
+      &::before {
+        border: 10px solid transparent;
+        border-right: 10px solid #06c;
+        content: "";
+        display: block;
+        height: 0;
+        left: -20px;
+        position: absolute;
+        top: 5px;
+        width: 0;
+      z-index: 999999;
+      }
+
       th, td {
         text-align: center;
       }
+
+      .rbutr-footer {
+        text-align: right;
+      }
     }
 
-    .rbutr-footer {
-      text-align: right;
-    }
   }
 }
