@@ -5,7 +5,7 @@ rbutr destroys misinformation and promotes critical thinking online.
 ##  What is rbutr?
 Rbutr tells you when the webpage you are viewing has been disputed, rebutted or contradicted elsewhere on the internet.
 
-This is the rbutr's browser extension for Chrome and Firefox (WebExtensions).
+This is the rbutr's browser extension (WebExtensions).
 
 To know more checkout the videos (older version of the extension): https://www.youtube.com/watch?list=PLSz7oRxf5vs39J4asj8nQFauvih7zJXl_&v=hdgNnQm9be4
 
@@ -44,14 +44,16 @@ If you are using Windows, you need to use the Linux subsystem in order to execut
 
 `$ yarn run build`
 
+Instead of **yarn** you can also use **npm**.
+
 
 ## How do I test it?
 
-On Firefox: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Your_first_WebExtension#Trying_it_out
+**On Chrome & Vivaldi:** https://developer.chrome.com/extensions/getstarted#unpacked
 
-On Chrome & Vivaldi: https://developer.chrome.com/extensions/getstarted#unpacked
+**On Firefox:** https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Your_first_WebExtension#Trying_it_out
 
-On Opera: https://dev.opera.com/extensions/testing/
+**On Opera:** https://dev.opera.com/extensions/testing/
 
 
 ## How do I enable Dev-Mode?
