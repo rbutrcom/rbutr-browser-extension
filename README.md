@@ -19,6 +19,14 @@ Want a rebuttal for a page you have found? Submit a request to the community.
 Click here for more information and screenshots
 
 
+## Which browsers are supported?
+
+![Browser Support Chrome: passing](https://img.shields.io/badge/Chrome-passing-brightgreen.svg)
+![Browser Support Firefox: passing](https://img.shields.io/badge/Firefox-passing-brightgreen.svg)
+![Browser Support Opera: passinga](https://img.shields.io/badge/Opera-passing-brightgreen.svg)
+![Browser Support Vivaldi: passing](https://img.shields.io/badge/Vivaldi-passing-brightgreen.svg)
+
+
 ## How do I build it?
 
 **Caution!**
