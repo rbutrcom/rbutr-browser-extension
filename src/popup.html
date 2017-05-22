@@ -6,124 +6,110 @@
   <link rel="stylesheet" href="css/main.css" type="text/css" media="screen">
 </head>
 <body>
-<div id="wholePopupDiv">
 
-  <div id="StartSubmissionDiv">
+  <div id="wholePopupDiv">
 
-    <div class="StartRebut">
-      <a href="#" id="startFromSubmission" class="button">Rebut this page</a>
-    </div>
-    <div class="StartRebutal">
-      <a href="#" id="startToSubmission" class="button">Use this page as Rebuttal</a>
-    </div>
-    <div class="StartRebutal2">
-      <div class="UserOptionsButton">Menu</div>
-    </div>
-  </div>
 
-  <div id="popupContent">
-
-    <div id="message"></div>
-
-    <div id="view-idea" class="ideaDiv hide">
-      <form id="ideaForm">
-        <label>URL : <input disabled size="100" type="text" name="url"></label>
-        <label>Please let us know the reason you want to submit this page<br>
-          <textarea name="idea" rows="3" cols="80"></textarea>
-        </label><br>
-        <input type="submit" value="Submit" name="submitLink">
-      </form>
+    <div id="StartSubmissionDiv">
+      <div class="StartRebut">
+        <a href="#" id="startFromSubmission" class="button">Rebut this page</a>
+      </div>
+      <div class="StartRebutal">
+        <a href="#" id="startToSubmission" class="button">Use this page as Rebuttal</a>
+      </div>
+      <div class="StartRebutal2">
+        <div class="UserOptionsButton">Menu</div>
+      </div>
     </div>
 
 
-    <div id="view-request" class="submitRequestDiv hide">
-      <h2>Request a rebuttal</h2>
-      <form id="requestData">
-        <label for="requestUrl">URL:</label>
-        <input disabled size="80" type="text" name="requestUrl" id="requestUrl">
+    <div id="popupContent">
 
-        <div id="view-request-tag" class="tag">
-          <input class="tagTypeahead typeahead tt-query" type="text" placeholder="Enter tag and hit enter"
-                 autocomplete="off" spellcheck="false"
-                 style="position: relative; vertical-align: top; background-color: transparent; " dir="auto"> Enter up
-          to 6 tags.
-        </div>
-        <div class="request-tagHolder tagHolder"></div>
+      <div id="message"></div>
 
-        <input type="submit" value="Submit" name="submitLink">
+
+      <div id="view-idea" class="ideaDiv hide">
+        <form id="ideaForm">
+          <label>URL: <input disabled size="100" type="text" name="url"></label>
+          <label>Please let us know the reason you want to submit this page<br>
+            <textarea name="idea" rows="3" cols="80"></textarea>
+          </label>
+          <br>
+          <input type="submit" value="Submit" name="submitLink">
+        </form>
+      </div>
+
+
+      <div id="view-request" class="submitRequestDiv hide">
+        <h2>Request a rebuttal</h2>
+        <form id="requestData">
+          <label for="requestUrl">URL:</label>
+          <input disabled size="80" type="text" name="requestUrl" id="requestUrl">
+          <div id="view-request-tag" class="tag">
+            <input class="tagTypeahead typeahead tt-query" type="text" placeholder="Enter tag and hit enter" autocomplete="off" spellcheck="false" style="position: relative; vertical-align: top; background-color: transparent; " dir="auto"> Enter up to 6 tags.
+          </div>
+          <div class="request-tagHolder tagHolder"></div>
+          <input type="submit" value="Submit" name="submitLink">
+          &nbsp;&nbsp;
+          <a id="cancelRequestLink">Cancel</a>
+        </form>
+      </div>
+
+
+      <div id="view-submission" class="submitDiv hide">
+        <form id="data">
+          <div id="submitSources"></div>
+          <div id="submitRebuttals"></div>
+          <div id="view-submission-tag" class="tag">
+            <input id="tagTypeahead" class="typeahead tt-query" type="text" placeholder="Enter tag and hit enter" autocomplete="off" spellcheck="false" style="position: relative; vertical-align: top; background-color: transparent; " dir="auto"> Enter up to 6 tags.
+          </div>
+          <div class="submission-tagHolder tagHolder"></div>
+          <input type="checkbox" id="direct" name="direct" title="direct"> This rebuttal is a "Direct Response" to the source article
+          <br>
+          <input disabled type="submit" value="Submit" name="submitLink">
+          <span id="submitError" style="color:red;"></span>
+          &nbsp;&nbsp;
+          <a id="cancelSubmissionLink" class="cancelSubmissionLink">Cancel</a>
+        </form>
+      </div>
+
+
+      <div id="view-thankyou" class="thankyouForVotingDiv hide">
+        <strong>Thank you for voting!</strong>
+        This is a rebuttal of
+        <a target="_blank" class="votingFromUrl" href="">this page.</a>
+        <img src="http://rbutr.com/images/backward_arrow_30px.png" alt="Back">
+        <p>Current score: <span id="currentScore"></span></p>
+      </div>
+
+
+      <div id="view-vote" class="voteDiv hide">
+        <h1>Vote on this Rebuttal</h1>
+        This is a rebuttal of <a target="_blank" class="votingFromUrl" href="">this page.</a>
+        <img src="http://rbutr.com/images/backward_arrow_30px.png" alt="Back">
+        <p>If you think this is a particularly good or bad rebuttal, please let us know.</p>
+        <img title="Vote this rebuttal up" class="clickableImages" id="clickable-up" src="http://rbutr.com/images/thumbsUp.png" alt="Thumbs up">
         &nbsp;&nbsp;
-        <a id="cancelRequestLink">Cancel</a>
-      </form>
-    </div>
+        <img title="Vote this rebuttal down" class="clickableImages" id="clickable-down" src="http://rbutr.com/images/thumbsDown.png" alt="Thumbs down">
+      </div>
 
-    <div id="view-submission" class="submitDiv hide">
-      <form id="data">
-        <div id="submitSources">
-        </div>
-        <div id="submitRebuttals">
-        </div>
-        <div id="view-submission-tag" class="tag">
-          <input id="tagTypeahead" class="typeahead tt-query" type="text" placeholder="Enter tag and hit enter"
-                 autocomplete="off" spellcheck="false"
-                 style="position: relative; vertical-align: top; background-color: transparent; " dir="auto"> Enter up
-          to 6 tags.
-        </div>
-        <div class="submission-tagHolder tagHolder"></div>
-        <!--
-          <div id="topTagDiv"></div>
-          <div id="childTagDiv"></div>
-          <label>
-            Optional : Comma separated tags for this link, pick from above first. You can enter multiple and ones that aren't above.<br/>
-            <input disabled id='submitTags' type='text' name='tags' size="60">
-          </label><br>
-        -->
-        <input type="checkbox" id="direct" name="direct" title="direct"/> This rebuttal is a "Direct Response" to the source
-        article<br/>
 
-        <input disabled type="submit" value="Submit" name="submitLink">
-        <span id="submitError" style="color:red;"></span>
-        &nbsp;&nbsp;
-        <a id="cancelSubmissionLink" class="cancelSubmissionLink">Cancel</a>
-      </form>
     </div>
 
 
-    <div id="view-thankyou" class="thankyouForVotingDiv hide">
-      <b>Thank you for voting!</b>
-      This is a rebuttal of
-      <a target="_blank" class="votingFromUrl" href="">this page.</a>
-      <img src="http://rbutr.com/images/backward_arrow_30px.png" alt="Back">
-      <p>Current score : <span id="currentScore"></span></p>
+    <div class="Random">
+      <a target="_blank" href="http://rbutr.com/rbutr/WebsiteServlet?requestType=showLink&linkId=random">Load a rebutted page (random)</a>
     </div>
-
-    <div id="view-vote" class="voteDiv hide">
-      <h1>Vote on this Rebuttal</h1>
-      This is a rebuttal of <a target="_blank" class="votingFromUrl" href="">this page.</a>
-      <img src="http://rbutr.com/images/backward_arrow_30px.png" alt="Back">
-      <p>
-        If you think this is a particularly good or bad rebuttal, please let us know.</p>
-      <img title="Vote this rebuttal up" class="clickableImages" id="clickable-up"
-           src="http://rbutr.com/images/thumbsUp.png" alt="Thumbs up">
-      &nbsp;&nbsp;
-      <img title="Vote this rebuttal down" class="clickableImages" id="clickable-down"
-           src="http://rbutr.com/images/thumbsDown.png" alt="Thumbs down">
-    </div>
-    <!--<div id="voteUpDiv" style="display:none;">-->
-    <!--</div>-->
-    <!--<div id="voteDownDiv" style="display:none;">-->
-    <!--</div>-->
 
 
   </div>
-  <div class="Random">
-    <a target="_blank" href="http://rbutr.com/rbutr/WebsiteServlet?requestType=showLink&linkId=random">Load a rebutted page (random)</a>
-    <!--If you want to submit this page for another reason, please <a href="javascript:void(0);" onclick="submitIdea();" class="button">Tell us!</a>-->
-  </div>
-</div>
-<script src="./vendors/jquery.js"></script>
-<script src="./vendors/typeahead.js"></script>
-<script src="./utils.js"></script>
-<script src="./popup.js"></script>
+
+
+
+  <script src="./vendors/jquery.js"></script>
+  <script src="./vendors/typeahead.js"></script>
+  <script src="./utils.js"></script>
+  <script src="./popup.js"></script>
 
 </body>
 </html>
