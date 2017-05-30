@@ -16,7 +16,7 @@ window.browser = (function () {
 
 
 
-const rbutrUtils = new RbutrUtils();
+const rbutrUtils = RbutrUtils();
 
 
 
@@ -25,40 +25,80 @@ const rbutrUtils = new RbutrUtils();
  *
  * @method Rbutr
  */
-function Rbutr() {
+const Rbutr = () => {
 
     'use strict';
 
-    this.submittingRebuttal = false;
-    this.fromUrls = [];
-    this.toUrls = [];
-    this.comment = [];
-    this.tags = [];
-    this.loggedIn = false;
-    this.submitError = '';
-    this.direct = false;
-    this.recordedClicks = {};
+    let properties = {
 
-    // Keyed by tabId
-    this.rebuttals = {};
-    // Keyed by tabId
-    this.rebuttalCount = {};
-
-    this.canonical_urls = {};
-    this.plain_urls = {};
-    this.url_is_canonical = {};
-    this.page_title = {};
-
-    this.simpleAbsoluteUrlMatch = '^[a-zA-Z]+://.*';
-
-    return this;
-}
+        fromUrls : [],
+        toUrls : [],
+        comment : [],
+        tags : [],
+        recordedClicks : [],
+        // Keyed by tabId
+        rebuttals : [],
+        // Keyed by tabId
+        rebuttalCount : [],
+        canonicalUrls : [],
+        plainUrls : [],
+        urlIsCanonical : [],
+        pageTitle : [],
+        submittingRebuttal : false,
+        loggedIn : false,
+        submitError : '',
+        direct : false
+    };
 
 
 
-Rbutr.prototype = {
+    /**
+     * @description Property getter
+     *
+     * @method getProp
+     * @param {string} name
+     * @param {mixed} key
+     * @return {mixed}
+     */
+    const getProp = (name, key) => {
+        return key === null ? properties[name] : properties[name][key];
+    };
 
-    constructor: Rbutr,
+
+
+    /**
+     * @description Property setter
+     *
+     * @method setProp
+     * @param {string} name
+     * @param {mixed} key
+     * @param {mixed} value
+     * @return {void}
+     */
+    const setProp = (name, key, value) => {
+        if (key !== null) {
+            if (value === null) {
+                properties[name].splice(key, 1);
+            } else {
+                properties[name][key] = value;
+            }
+        } else {
+            properties[name] = value;
+        }
+    };
+
+
+
+    /**
+     * @description Get length of property array
+     *
+     * @method getPropLen
+     * @param {string} name
+     * @return {integer}
+     */
+    const getPropLen = (name) => {
+        return properties[name].length;
+    };
 
 
 
@@ -69,12 +109,10 @@ Rbutr.prototype = {
      * @param {void}
      * @return {void}
      */
-    initialize: function () {
-
-        'use strict';
+    const initialize = () => {
 
         rbutrUtils.log('log','rbutr initialised ', new Date());
-    },
+    };
 
 
 
@@ -83,22 +121,20 @@ Rbutr.prototype = {
      *
      * @method getCid
      * @param {void}
-     * @return {string}
+     * @return {integer}
      */
-    getCid: function () {
+    const getCid = () => {
 
-        'use strict';
-
-        var CID_KEY = 'rbutr.cid';
-        var cid = localStorage.getItem(CID_KEY);
+        const CID_KEY = 'rbutr.cid';
+        let cid = localStorage.getItem(CID_KEY);
         if (!cid) {
-            var ms = new Date().getTime();
-            var rnd = Math.floor((Math.random() * 1000) + 1);
+            let ms = new Date().getTime();
+            let rnd = Math.floor((Math.random() * 1000) + 1);
             cid = ms + ('0000' + rnd).slice(-4);
             localStorage.setItem(CID_KEY, cid);
         }
-        return cid;
-    },
+        return parseInt(cid, 10);
+    };
 
 
 
@@ -109,22 +145,20 @@ Rbutr.prototype = {
      * @param {string} url
      * @return {boolean}
      */
-    alreadyExists: function (url) {
+    const alreadyExists = (url) => {
 
-        'use strict';
-
-        for (var i = 0; i < this.fromUrls.length; i++) {
-            if (this.fromUrls[i] == url) {
+        for (let i = 0; i < getPropLen('fromUrls'); i++) {
+            if (getProp('fromUrls', i) == url) {
                 return true;
             }
         }
-        for (var j = 0; j < this.toUrls.length; j++) {
-            if (this.toUrls[j] == url) {
+        for (let j = 0; j < getPropLen('toUrls'); j++) {
+            if (getProp('toUrls', j) == url) {
                 return true;
             }
         }
         return false;
-    },
+    };
 
 
 
@@ -135,16 +169,15 @@ Rbutr.prototype = {
      * @param {string} url
      * @return {string}
      */
-    getPageTitle: function (url) {
+    const getPageTitle = (url) => {
 
-        'use strict';
-
-        if (this.page_title[url]) {
-            return this.page_title[url];
+        let pageTitle = getProp('pageTitle', url);
+        if (pageTitle) {
+            return pageTitle;
         } else {
             return 'No title';
         }
-    },
+    };
 
 
 
@@ -155,17 +188,15 @@ Rbutr.prototype = {
      * @param {void}
      * @return {object}
      */
-    getPopup: function () {
+    const getPopup = () => {
 
-        'use strict';
-
-        var popups = browser.extension.getViews({type: 'popup'});
+        let popups = browser.extension.getViews({type: 'popup'});
         if (popups.length > 0) {
             return popups[0];
         } else {
             return null;
         }
-    },
+    };
 
 
 
@@ -176,18 +207,16 @@ Rbutr.prototype = {
      * @param {string} message
      * @return {void}
      */
-    displayMessage: function (message) {
+    const displayMessage = (message) => {
 
-        'use strict';
-
-        var popup = this.getPopup();
+        let popup = getPopup();
 
         if (popup === null) {
             rbutrUtils.log('error', 'Popup was null, couldn\'t display : ', message);
         } else {
             popup.displayMessage(message);
         }
-    },
+    };
 
 
 
@@ -200,22 +229,20 @@ Rbutr.prototype = {
      * @param {object} data
      * @return {void}
      */
-    postMessage: function (action, data) {
-
-        'use strict';
+    const postMessage = (action, data) => {
 
         // Get the current active tab in the lastly focused window
         browser.tabs.query({
             active: true,
             lastFocusedWindow: true
         }, function (tab) {
-            var $data = Object.assign({}, {rbutr: rbutr, action: action}, data);
+            let $data = Object.assign({}, {rbutr: rbutr, action: action}, data);
             rbutrUtils.log('debug', tab[0]);
             browser.tabs.sendMessage(tab[0].id, $data, function (response) {
                 rbutrUtils.log('debug', response);
             });
         });
-    },
+    };
 
 
 
@@ -226,12 +253,11 @@ Rbutr.prototype = {
      * @param {string} toUrl
      * @return {object}
      */
-    getRecordedClickByToUrl: function (toUrl) {
+    const getRecordedClickByToUrl = (toUrl) => {
 
-        'use strict';
-
-        return this.recordedClicks[toUrl] ? this.recordedClicks[toUrl] : null;
-    },
+        let recClicks = getProp('recordedClicks', toUrl);
+        return recClicks ? recClicks : null;
+    };
 
 
 
@@ -243,13 +269,11 @@ Rbutr.prototype = {
      * @param {string} url
      * @return {void}
      */
-    tabLoaded: function (tabId, url) {
+    const tabLoaded = (tabId, url) => {
 
-        'use strict';
-
-        this.rebuttals[tabId] = null;
-        var vote = false;
-        var recordedClick = this.getRecordedClickByToUrl(this.canonical_urls[tabId]);
+        setProp('rebuttals', tabId, null);
+        let vote = false;
+        let recordedClick = getRecordedClickByToUrl(getProp('canonicalUrls', tabId));
         // Don't show voting after you've voted
         if (recordedClick !== null && recordedClick.yourVote === 0) {
             vote = true;
@@ -262,23 +286,25 @@ Rbutr.prototype = {
             version: browser.runtime.getManifest().version,
             cid: rbutr.getCid()
         }, function (data) {
-            rbutr.rebuttals[tabId] = data;
-            rbutr.loggedIn = true;
-            var m = rbutr.rebuttals[tabId].match(/id="notLoggedIn"/g);
+            rbutr.setProp('rebuttals', tabId, data);
+            rbutr.setProp('loggedIn', null, true);
+
+            let m = rbutr.getProp('rebuttals', tabId).match(/id="notLoggedIn"/g);
+            let titleMessage = '';
+
             if (m !== null && m.length > 0) {
-                rbutr.loggedIn = false;
+                rbutr.setProp('loggedIn', null, false);
             }
-            var titleMessage;
-            if (rbutr.rebuttals[tabId].indexOf('<h2 class="status">No Rebuttals</h2><br style="clear:left;">') != -1) {
-                rbutr.rebuttalCount[tabId] = 0;
+            if (rbutr.getProp('rebuttals', tabId).indexOf('<h2 class="status">No Rebuttals</h2><br style="clear:left;">') != -1) {
+                rbutr.setProp('rebuttalCount', tabId, 0);
                 // No rebuttals
                 browser.browserAction.setBadgeText({text: '', tabId: tabId});
-                if (vote && rbutr.loggedIn) {
+                if (vote && rbutr.getProp('loggedIn')) {
                     browser.browserAction.setBadgeText({text: 'Vote', tabId: tabId});
                     browser.browserAction.setBadgeBackgroundColor({color: [255, 255, 0, 255], tabId: tabId});
                     titleMessage = 'You can vote on this.';
                     browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
-                    rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.canonical_urls[tabId]});
+                    rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.getProp('canonicalUrls', tabId)});
                 } else {
                     browser.browserAction.setTitle({
                         tabId: tabId,
@@ -286,16 +312,16 @@ Rbutr.prototype = {
                     });
                 }
             } else {
-                var matches = rbutr.rebuttals[tabId].match(/class="thumbsUp"/g);
-                var count = Number(matches === null ? 0 : matches.length).toString();
-                rbutr.rebuttalCount[tabId] = count;
-                var rebuttal_plural = 'rebuttals';
+                let matches = rbutr.getProp('rebuttals', tabId).match(/class="thumbsUp"/g);
+                let count = Number(matches === null ? 0 : matches.length).toString();
+                rbutr.setProp('rebuttalCount', tabId, count);
+                let rebuttal_plural = 'rebuttals';
 
                 if (count == 1) {
                     rebuttal_plural = 'rebuttal';
                 }
 
-                if (vote && rbutr.loggedIn) {
+                if (vote && rbutr.getProp('loggedIn')) {
                     browser.browserAction.setBadgeText({text: 'V ' + count, tabId: tabId});
                     browser.browserAction.setBadgeBackgroundColor({color: [255, 100, 100, 255], tabId: tabId});
                     titleMessage = 'You can vote on this, and there is also ' + count + ' ' + rebuttal_plural + '.';
@@ -307,12 +333,12 @@ Rbutr.prototype = {
                     browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
                 }
 
-                rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.canonical_urls[tabId]});
+                rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.getProp('canonicalUrls', tabId)});
             }
         }).error(function (msg) {
-            rbutr.rebuttals[tabId] = msg.responseText;
+            rbutr.setProp('rebuttals', tabId, msg.responseText);
         });
-    },
+    };
 
 
 
@@ -323,43 +349,41 @@ Rbutr.prototype = {
      * @param {integer} tabId
      * @return {void}
      */
-    submitRebuttals: function (tabId) {
+    const submitRebuttals = (tabId) => {
 
-        'use strict';
+        let fromPageTitles = [];
+        let toPageTitles = [];
+        let canonicalFromPages = [];
+        let canonicalToPages = [];
 
-        var fromPageTitles = [];
-        var toPageTitles = [];
-        var canonicalFromPages = [];
-        var canonicalToPages = [];
-
-        for (var i = 0; i < this.toUrls.length; i++) {
-            toPageTitles[i] = this.page_title[this.toUrls[i]];
-            canonicalToPages[i] = this.url_is_canonical[this.toUrls[i]];
+        for (let i = 0; i < getPropLen('toUrls'); i++) {
+            toPageTitles[i] = getProp('pageTitle', getProp('toUrls', i));
+            canonicalToPages[i] = getProp('urlIsCanonical', getProp('toUrls', i));
         }
 
-        for (var j = 0; j < this.fromUrls.length; j++) {
-            fromPageTitles[j] = this.page_title[this.fromUrls[j]];
-            canonicalFromPages[j] = this.url_is_canonical[this.fromUrls[j]];
+        for (let j = 0; j < getPropLen('fromUrls'); j++) {
+            fromPageTitles[j] = getProp('pageTitle', getProp('fromUrls', j));
+            canonicalFromPages[j] = getProp('urlIsCanonical', getProp('fromUrls', j));
         }
 
         $.post(rbutrUtils.getServerUrl(), {
             submitLinks: true,
-            fromUrls: rbutr.fromUrls,
-            toUrls: rbutr.toUrls,
+            fromUrls: getProp('fromUrls', null),
+            toUrls: getProp('toUrls', null),
             fromPageTitles: fromPageTitles,
             toPageTitles: toPageTitles,
-            comments: rbutr.comment,
+            comments: getProp('comment', null),
             canonicalFromPages: canonicalFromPages,
             canonicalToPages: canonicalToPages,
-            direct: rbutr.direct,
-            tags: rbutr.tags,
+            direct: getProp('direct', null),
+            tags: getProp('tags', null),
             cid: rbutr.getCid()
         }, function (data) {
             rbutrUtils.log('debug', 'success status ', data.status);
             rbutr.displayMessage('<b>' + data.result + '</b>');
             window.open(data.redirectUrl);
             rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
-            rbutr.tabLoaded(tabId, rbutr.canonical_urls[tabId]); // This will reload the for the tab, and set the badge.
+            rbutr.tabLoaded(tabId, getProp('canonicalUrls', tabId)); // This will reload the for the tab, and set the badge.
         }, 'json').done(function (msg) {
             rbutrUtils.log('debug', 'done status ', msg.status);
         }).fail(function (msg, arg2, arg3) {
@@ -369,7 +393,7 @@ Rbutr.prototype = {
             rbutrUtils.log('debug', 'arg2 = ', arg2);
             rbutrUtils.log('debug', 'arg3 = ', arg3);
         });
-    },
+    };
 
 
 
@@ -381,22 +405,23 @@ Rbutr.prototype = {
      * @param {string} fromTo
      * @return {void}
      */
-    startSubmission: function (tabId, fromTo) {
+    const startSubmission = (tabId, fromTo) => {
 
-        'use strict';
+        let canonUrlByTab = getProp('canonicalUrls', tabId);
 
-        this.submittingRebuttal = true;
+        setProp('submittingRebuttal', true);
+
         if (fromTo == 'from') {
-            this.fromUrls[0] = this.canonical_urls[tabId];
+            setProp('fromUrls', 0, canonUrlByTab);
             // toUrl = 'Please navigate to the rebuttal page and select using above link';
         } else {
-            this.toUrls[0] = this.canonical_urls[tabId];
+            setProp('toUrls', 0, canonUrlByTab);
             // fromUrl = 'Please navigate to the source page and select using above link';
         }
-        this.comment = [];
-        this.submitError = '';
-        this.tags = [];
-    },
+        setProp('comment', []);
+        setProp('submitError', '');
+        setProp('tags', []);
+    };
 
 
 
@@ -407,16 +432,14 @@ Rbutr.prototype = {
      * @param {void}
      * @return {void}
      */
-    stopSubmission: function () {
+    const stopSubmission = () => {
 
-        'use strict';
-
-        this.submittingRebuttal = false;
-        this.fromUrls = [];
-        this.toUrls = [];
-        this.comment = [];
-        this.tags = [];
-    },
+        setProp('submittingRebuttal', false);
+        setProp('fromUrls', []);
+        setProp('toUrls', []);
+        setProp('comment', []);
+        setProp('tags', []);
+    };
 
 
 
@@ -427,15 +450,11 @@ Rbutr.prototype = {
      * @param {string} tagText
      * @return {void}
      */
-    removeTag: function (tagText) {
+    const removeTag = (tagText) => {
 
-        'use strict';
-
-        var index = this.tags.indexOf(tagText);
-        if (index >= 0) {
-            this.tags.splice(index, 1);
-        }
-    },
+        let index = getProp('tags').indexOf(tagText);
+        setProp('tags', index, null);
+    };
 
 
 
@@ -446,16 +465,15 @@ Rbutr.prototype = {
      * @param {string} tagText
      * @return {void}
      */
-    addTag: function (tagText) {
+    const addTag = (tagText) => {
 
-        'use strict';
-
-        if (this.tags.length >= 6) {
+        if (getPropLen('tags') >= 6) {
             return;
+        } else {
+            removeTag(tagText); // Avoid duplicates.
+            setProp('tags', getPropLen('tags'), tagText);
         }
-        this.removeTag(tagText); // Avoid duplicates.
-        this.tags[this.tags.length] = tagText;
-    },
+    };
 
 
 
@@ -463,27 +481,22 @@ Rbutr.prototype = {
      * @description Record click from rbutr website
      *
      * @method recordLinkClick
-     * @param {string} fromTabId
-     * @param {string} linkId
-     * @param {string} linkFromUrl
-     * @param {string} linkToUrl
-     * @param {float} score
-     * @param {integer} yourVote
+     * @param {object} clickData
      * @return {void}
      */
-    recordLinkClick: function (fromTabId, linkId, linkFromUrl, linkToUrl, score, yourVote) {
+    const recordLinkClick = (clickData) => {
 
-        'use strict';
-
-        this.recordedClicks[linkToUrl] = {
-            fromTabId: fromTabId,
-            linkId: linkId,
-            linkFromUrl: linkFromUrl,
-            linkToUrl: linkToUrl,
-            score: score,
-            yourVote: yourVote
+        let data = {
+            fromTabId: null,
+            linkId: clickData.linkId,
+            linkFromUrl: clickData.linkFromUrl,
+            linkToUrl: clickData.linkToUrl,
+            score: clickData.score,
+            yourVote: clickData.yourVote
         };
-    },
+
+        setProp('recordedClicks', clickData.linkToUrl, data);
+    };
 
 
 
@@ -494,12 +507,10 @@ Rbutr.prototype = {
      * @param {string} canonicalValue
      * @return {string}
      */
-    getCanonicalUrl: function (canonicalValue) {
-
-        'use strict';
+    const getCanonicalUrl = (canonicalValue) => {
 
         if (canonicalValue) {
-            if (canonicalValue.match(this.simpleAbsoluteUrlMatch)) {
+            if (canonicalValue.match('^[a-zA-Z]+://.*')) {
                 // canonicalValue is a full url
                 return canonicalValue;
             } else if (canonicalValue.match('^/.*')) {
@@ -512,11 +523,15 @@ Rbutr.prototype = {
         } else {
             return null;
         }
-    }
+    };
+
+
+    return {getProp, setProp, getPropLen, initialize, getCid, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, tabLoaded, submitRebuttals, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
 };
 
 
-var rbutr = new Rbutr();
+
+var rbutr = Rbutr();
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -529,24 +544,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (request.action) {
             if (request.action == 'setCanonical') {
-                var tab = request.tab || sender.tab;
-                var canonicalUrl = rbutr.getCanonicalUrl(tab.url);
-                var url = canonicalUrl || tab.url;
+                let tab = request.tab || sender.tab;
+                let canonicalUrl = rbutr.getCanonicalUrl(tab.url);
+                let url = canonicalUrl || tab.url;
 
                 if (!/^http/.test(canonicalUrl)) {
                     return;
                 }
 
-                rbutr.url_is_canonical[url] = !!canonicalUrl;
-                rbutr.canonical_urls[tab.id] = canonicalUrl;
-                rbutr.plain_urls[tab.id] = tab.url;
+                rbutr.setProp('urlIsCanonical', url, !!canonicalUrl);
+                rbutr.setProp('canonicalUrls', tab.id, canonicalUrl);
+                rbutr.setProp('plainUrls', tab.id, tab.url);
 
-                rbutr.page_title[url] = tab.title;
+                rbutr.setProp('pageTitle', url, tab.title);
                 rbutr.tabLoaded(tab.id, url);
 
             } else if (request.action == 'setClick') {
-                var click = request.click;
-                rbutr.recordLinkClick(null, click.linkId, click.linkFromUrl, click.linkToUrl, click.score, click.yourVote);
+                let click = request.click;
+                rbutr.recordLinkClick(click);
                 rbutrUtils.log('debug', 'click recorded: ', click.linkToUrl);
             } else if (request.action == 'getCid') {
                 sendResponse(rbutr.getCid());
@@ -572,8 +587,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         'use strict';
 
-        delete rbutr.canonical_urls[tabId];
-        delete rbutr.plain_urls[tabId];
+        rbutr.setProp('canonicalUrls', tabId, null);
+        rbutr.setProp('plainUrls', tabId, null);
     });
 
 
@@ -587,11 +602,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // ensure that the url data lives for the life of the page, not the tab
         if (changeInfo.status === 'loading') {
-            if (tab.url == rbutr.plain_urls[tabId]) {
+            if (tab.url == rbutr.getProp('plainUrls', tabId)) {
                 return;
             }
-            delete rbutr.canonical_urls[tabId];
-            delete rbutr.plain_urls[tabId];
+
+            rbutr.setProp('canonicalUrls', tabId, null);
+            rbutr.setProp('plainUrls', tabId, null);
         }
     });
 

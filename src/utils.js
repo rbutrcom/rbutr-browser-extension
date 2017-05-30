@@ -10,18 +10,15 @@
  * @param {void}
  * @return {object}
  */
-function RbutrUtils() {
+const RbutrUtils = () => {
 
     'use strict';
 
-    return this;
-}
+    const devStorageKey = 'rbutr.isDev';
+    const logPrefix = '[rbutr] ';
+    const devDomain = 'https://russell.rbutr.com';
+    const liveDomain = 'http://rbutr.com';
 
-
-
-RbutrUtils.prototype = {
-
-    constructor: RbutrUtils,
 
 
     /**
@@ -31,29 +28,18 @@ RbutrUtils.prototype = {
      * @param {mixed}
      * @return {void}
      */
-    log: function () {
+    const log = (logLevel, ...logParams) => {
 
-        'use strict';
-
-        if(this.isDev()) {
-            // only continue if there are more than 1 params (0 = level, 1-x = output)
-            if(arguments.length > 1) {
-                var logLevel = console[arguments[0]],
-                    logArguments = [];
-
-                for (var i = 1; i < arguments.length; i++) {
-                    logArguments.push(arguments[i]);
-                }
-
-                if(typeof logLevel === 'function') {
-                    logLevel.apply(null, ['[rbutr] '].concat(logArguments));
-                } else {
-                    console.error('[rbutr] console.' + arguments[0] + ' is not a valid logging function.');
-                    console.debug.apply(null, ['[rbutr] '].concat(logArguments));
-                }
+        // only continue in Dev-Mode and if there are more than 1 log params
+        if(isDev() && logParams.length > 0) {
+            if(typeof console[logLevel] === 'function') {
+                console[logLevel](logPrefix + logParams.join(''));
+            } else {
+                console.error(logPrefix + 'console.' + logLevel + ' is not a valid logging function.');
+                console.debug(logPrefix + logParams.join(''));
             }
         }
-    },
+    };
 
 
 
@@ -64,20 +50,17 @@ RbutrUtils.prototype = {
      * @param {void}
      * @return {boolean}
      */
-    isDev: function () {
+    const isDev = () => {
 
-        'use strict';
-
-        const storageKey = 'rbutr.isDev';
-        let isDev = localStorage.getItem(storageKey);
+        let isDev = localStorage.getItem(devStorageKey);
 
         if (!isDev) {
             isDev = 'false';
-            localStorage.setItem(storageKey, isDev);
+            localStorage.setItem(devStorageKey, isDev);
         }
 
         return isDev === 'true';
-    },
+    };
 
 
 
@@ -88,16 +71,14 @@ RbutrUtils.prototype = {
      * @param {boolean} domainOnly
      * @return {string}
      */
-    getServerUrl: function (domainOnly) {
-
-        'use strict';
+    const getServerUrl = (domainOnly) => {
 
         let
-            domain = this.isDev() ? 'https://russell.rbutr.com' : 'http://rbutr.com',
+            domain = isDev() ? devDomain : liveDomain,
             apiPath = domainOnly === true ? '' : '/rbutr/PluginServlet';
 
         return domain + apiPath;
-    },
+    };
 
 
 
@@ -109,17 +90,17 @@ RbutrUtils.prototype = {
      * @param {string} url
      * @return {string}
      */
-    url2Domain: function (url) {
-
-        'use strict';
+    const url2Domain = (url) => {
 
         if (url) {
-            url = url.toString().replace(/^(?:https?|ftp)\:\/\//i, '');
-            url = url.toString().replace(/^www\./i, '');
-            url = url.toString().replace(/\/.*/, '');
-            return url;
+            return url.toString()
+                .replace(/^(?:https?|ftp)\:\/\//i, '')
+                .replace(/^www\./i, '')
+                .replace(/\/.*/, '');
         }
-    },
+
+        return url;
+    };
 
 
 
@@ -130,7 +111,9 @@ RbutrUtils.prototype = {
      * @param {string} str
      * @return {string}
      */
-    unicode2String: function (str) {
+    const unicode2String = (str) => {
         return decodeURIComponent(JSON.parse('"' + str.replace(/\"/g, '\\"') + '"'));
-    }
+    };
+
+    return {log, isDev, getServerUrl, url2Domain, unicode2String};
 };

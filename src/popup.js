@@ -20,7 +20,7 @@ window.browser = (function () {
 
 
 
-const rbutrUtils = new RbutrUtils();
+const rbutrUtils = RbutrUtils();
 var rbutr = browser.extension.getBackgroundPage().rbutr;
 rbutrUtils.log('debug', 'in popup');
 
@@ -42,7 +42,7 @@ function setPage(page) {
     document.querySelector('#message').innerHTML = '';
 
     if (page === 'rebuttals') {
-        $('#message').html(rbutr.rebuttals[tabId]);
+        $('#message').html(rbutr.getProp('rebuttals', tabId));
     } else {
         document.querySelectorAll('#popupContent > div').forEach( x => x.setAttribute('class','hide'));
         document.querySelector('#view-' + page).removeAttribute('class', 'hide');
@@ -77,40 +77,40 @@ function refreshSubmissionData() {
 
     'use strict';
 
-    if (rbutr.fromUrls.length > 1) {
+    if (rbutr.getPropLen('fromUrls') > 1) {
         $('#submitSources').html('<h3 class="sourceHeading">Rebut these sources</h3><div class="UserOptionsButton StartRebutal3">Menu</div><div style="clear:both"></div>');
     } else {
         $('#submitSources').html('<h3 class="sourceHeading">Rebut this source</h3><div class="UserOptionsButton StartRebutal3">Menu</div><div style="clear:both"></div>');
     }
     // This data lives in the background so it can be shared between tabs (popups are one per tab)
 
-    for (var i = 0; i < rbutr.fromUrls.length; i++) {
-        var url = rbutr.fromUrls[i];
+    for (var i = 0; i < rbutr.getPropLen('fromUrls'); i++) {
+        var url = rbutr.getProp('fromUrls', i);
         var source = $('<div class="linkBlock" id="source_' + i +
             '"><span class="linkTitle">' + rbutr.getPageTitle(url) + '</span><br>' +
             '<span class="linkUrl">' + url + '</span></div>').appendTo('#submitSources');
         $('<img class="close" src="http://rbutr.com/images/button-removetag.png" id="s_x_' + i + '"/>').click(function (event) {
             event.preventDefault();
             event.stopPropagation();
-            rbutr.fromUrls.splice(this.id.substring(4, 5), 1);
+            rbutr.setProp('fromUrls', this.id.substring(4, 5), null);
             refreshSubmissionData();
         }).appendTo(source);
     }
 
-    if (rbutr.fromUrls.length > 0) {
+    if (rbutr.getPropLen('fromUrls') > 0) {
         $('#submitSources').append('<div id="captureSourceButton" class="fakeLink">+ add another source</div>');
     } else {
         $('#submitSources').append('<div id="captureSourceButton" class="button">Click to capture current page as source link.</div>');
     }
 
-    if (rbutr.toUrls.length > 1) {
+    if (rbutr.getPropLen('toUrls') > 1) {
         $('#submitRebuttals').html('<h3 class="rebuttalHeading">With these pages</h3><div style="clear:both"></div>');
     } else {
         $('#submitRebuttals').html('<h3 class="rebuttalHeading">With this page</h3><div style="clear:both"></div>');
     }
 
-    for (var j = 0; j < rbutr.toUrls.length; j++) {
-        var toUrl = rbutr.toUrls[j];
+    for (var j = 0; j < rbutr.getPropLen('toUrls'); j++) {
+        var toUrl = rbutr.getProp('toUrls', j);
         var rebuttal = $(
             '<div class="linkBlock" id="rebuttal_' + j +
             '"><span class="linkTitle">' + rbutr.getPageTitle(toUrl) + '</span><br>' +
@@ -119,22 +119,22 @@ function refreshSubmissionData() {
         $('<input id="c_x_' + j +
             '" size="60" type="text" placeholder="Optional : Describe the relationship between these two pages in a few words" ' +
             'name="c_x_' + j + '">')
-            .val(rbutr.comment[j])
+            .val(rbutr.getProp('comment', j))
             .on('keyup', function (event) {
-                rbutr.comment[event.target.id.substring(4, 5)] = this.value;
+                rbutr.setProp('comment', event.target.id.substring(4, 5), this.value);
             })
             .appendTo(rebuttal);
         $('<img class="close" src="http://rbutr.com/images/button-removetag.png" id="r_x_' + j + '">').click(function (event) {
             event.preventDefault();
             event.stopPropagation();
-            rbutr.toUrls.splice(this.id.substring(4, 5), 1);
+            rbutr.setProp('toUrls', this.id.substring(4, 5), null);
             refreshSubmissionData();
         }).appendTo(rebuttal);
     }
 
-    if (rbutr.toUrls.length >= 3) {
+    if (rbutr.getPropLen('toUrls') >= 3) {
         $('#captureRebuttalButton').disable();
-    } else if (rbutr.toUrls.length > 0) {
+    } else if (rbutr.getPropLen('toUrls') > 0) {
         $('#submitRebuttals').append('<div id="captureRebuttalButton" class="fakeLink">+ add another rebuttal</div>');
     } else {
         $('#submitRebuttals').append('<div id="captureRebuttalButton" class="button">Click to capture current page as rebuttal link.</div>');
@@ -144,11 +144,11 @@ function refreshSubmissionData() {
         toTagged();
     });
 
-    $('#submitError').text(rbutr.submitError);
+    $('#submitError').text(rbutr.getProp('submitError'));
 
-    if (rbutr.fromUrls.length > 0 && rbutr.fromUrls[0].substring(0, 4).toLowerCase() == 'http' &&
-        rbutr.toUrls.length > 0 && rbutr.toUrls[0].substring(0, 4).toLowerCase() == 'http' &&
-        rbutr.tags.length > 0) {
+    if (rbutr.getPropLen('fromUrls') > 0 && rbutr.getProp('fromUrls', 0).substring(0, 4).toLowerCase() == 'http' &&
+        rbutr.getPropLen('toUrls') > 0 && rbutr.getProp('toUrls', 0).substring(0, 4).toLowerCase() == 'http' &&
+        rbutr.getPropLen('tags') > 0) {
         document.forms['data'].submitLink.title = 'Submit this rebuttal';
         document.forms['data'].submitLink.disabled = false;
     } else {
@@ -171,8 +171,8 @@ function refreshTags() {
     'use strict';
 
     $('#tagHolder').html(''); // Wipe and recreate
-    for (var i = 0; i < rbutr.tags.length; i++) {
-        $('#tagHolder').append('<a class="tagForSubmission" href="#">' + rbutr.tags[i] + '</a>');
+    for (var i = 0; i < rbutr.getPropLen('tags'); i++) {
+        $('#tagHolder').append('<a class="tagForSubmission" href="#">' + rbutr.getProp('tags', i) + '</a>');
     }
     $('.tagForSubmission').click(function () {
         rbutr.removeTag(this.text);
@@ -324,7 +324,7 @@ function showSubmissionPopup(fromTo) {
 
     'use strict';
 
-    if (!rbutr.loggedIn) {
+    if (!rbutr.getProp('loggedIn')) {
         displayNotLoggedInMessage();
     } else {
         rbutr.startSubmission(tabId, fromTo);
@@ -362,14 +362,14 @@ function requestRebuttals() {
 
     'use strict';
 
-    if (!rbutr.loggedIn) {
+    if (!rbutr.getProp('loggedIn')) {
         displayNotLoggedInMessage();
     } else {
         appendPage('request');
         setupTagTypeahead();
-        $('#requestUrl').val(rbutr.canonical_urls[tabId]);
+        $('#requestUrl').val(rbutr.getProp('canonicalUrls', tabId));
         rbutrUtils.log('debug', 'input = ', $('#requestUrl').val());
-        rbutrUtils.log('debug', 'bg = ', rbutr.canonical_urls[tabId]);
+        rbutrUtils.log('debug', 'bg = ', rbutr.getProp('canonicalUrls', tabId));
         $('#StartSubmissionDiv').hide();
     }
 }
@@ -387,17 +387,17 @@ function submitRequestData() {
 
     'use strict';
 
-    if (rbutr.tags.length > 6) {
+    if (rbutr.getPropLen('tags') > 6) {
         document.forms['requestData'].submitLink.value = 'Maximum of 6 tags, please fix before submitting.';
         document.forms['requestData'].submitLink.disabled = false;
         return false;
     }
     $.post(rbutrUtils.getServerUrl(), {
-        subscribeToPage: rbutr.canonical_urls[tabId],
-        title: rbutr.page_title[rbutr.canonical_urls[tabId]],
-        tags: rbutr.tags,
-        pageIsCanonical: rbutr.url_is_canonical[rbutr.canonical_urls[tabId]],
-        cid: rbutr.cid
+        subscribeToPage: rbutr.getProp('canonicalUrls', tabId),
+        title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tabId)),
+        tags: rbutr.getProp('tags'),
+        pageIsCanonical: rbutr.getProp('urlIsCanonical', rbutr.getProp('canonicalUrls', tabId)),
+        cid: rbutr.getCid()
     }, function (data) {
         rbutrUtils.log('debug', 'Success : ', data);
         $('#message').html(data);
@@ -424,10 +424,10 @@ function toTagged() {
 
     'use strict';
 
-    if (rbutr.canonical_urls[tabId] === undefined || rbutr.alreadyExists(rbutr.canonical_urls[tabId])) {
+    if (rbutr.getProp('canonicalUrls', tabId) === undefined || rbutr.alreadyExists(rbutr.getProp('canonicalUrls', tabId))) {
         return;
     } else {
-        rbutr.toUrls[rbutr.toUrls.length] = rbutr.canonical_urls[tabId];
+        rbutr.setProp('toUrls', rbutr.getPropLen('toUrls'), rbutr.getProp('canonicalUrls', tabId));
         refreshSubmissionData();
     }
 }
@@ -445,10 +445,10 @@ function fromTagged() {
 
     'use strict';
 
-    if (rbutr.canonical_urls[tabId] === undefined || rbutr.alreadyExists(rbutr.canonical_urls[tabId])) {
+    if (rbutr.getProp('canonicalUrls', tabId) === undefined || rbutr.alreadyExists(rbutr.getProp('canonicalUrls', tabId))) {
         return;
     } else {
-        rbutr.fromUrls[rbutr.fromUrls.length] = rbutr.canonical_urls[tabId];
+        rbutr.setProp('fromUrls', rbutr.getPropLen('fromUrls'), rbutr.getProp('canonicalUrls', tabId));
         refreshSubmissionData();
     }
 }
@@ -483,12 +483,12 @@ function submitData() {
 
     'use strict';
 
-    if (rbutr.tags.length > 6) {
-        rbutr.submitError = 'Maximum of 6 tags, please fix before submitting.';
+    if (rbutr.getPropLen('tags') > 6) {
+        rbutr.setProp('submitError', null, 'Maximum of 6 tags, please fix before submitting.');
         return false;
     }
-    if (rbutr.tags.length === 0) {
-        rbutr.submitError = 'Please enter at least one tag for this rebuttal.';
+    if (rbutr.getPropLen('tags') === 0) {
+        rbutr.setProp('submitError', null, 'Please enter at least one tag for this rebuttal.');
         return false;
     }
     browser.tabs.get(tabId, function (tab) {
@@ -511,14 +511,14 @@ function handleDelayOnLoadOfRebuttals() {
 
     setTimeout(function () {
         // not yet ready.
-        if (rbutr.rebuttals[tabId] === null) {
+        if (rbutr.getProp('rebuttals', tabId) === null) {
             waitCount++;
             if (waitCount < 50) {
                 // Recurse
                 handleDelayOnLoadOfRebuttals();
                 return;
             }
-            if (!rbutr.canonical_urls[tabId]) {
+            if (!rbutr.getProp('canonicalUrls', tabId)) {
                 $('#message').html('This doesn\'t look like a real web page.');
                 return;
             }
@@ -543,8 +543,8 @@ function loadData() {
     'use strict';
 
     // Loads the data from the background tab, which has likely already retrieved it.
-    var recordedClick = rbutr.getRecordedClickByToUrl(rbutr.canonical_urls[tabId]);
-    if (rbutr.submittingRebuttal) {
+    var recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
+    if (rbutr.getProp('submittingRebuttal')) {
         displaySubmissionForm();
 
         // This means we are on a rebuttal we clicked through to.
@@ -555,7 +555,7 @@ function loadData() {
     }
 
     // Don't show current rebuttals if adding, too messy.
-    if (!rbutr.submittingRebuttal) {
+    if (!rbutr.getProp('submittingRebuttal')) {
         // Needs to be set for following call which is recursive
         waitCount = 0;
         handleDelayOnLoadOfRebuttals();
@@ -575,11 +575,11 @@ function vote(voteScore) {
 
     'use strict';
 
-    var recordedClick = rbutr.getRecordedClickByToUrl(rbutr.canonical_urls[tabId]);
+    var recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
     $.get(rbutrUtils.getServerUrl(), {
         'linkId': recordedClick.linkId,
         'vote': voteScore,
-        'cid': rbutr.cid
+        'cid': rbutr.getCid()
     }, function (data) {
         $('#currentScore').html(data);
     });
@@ -636,10 +636,10 @@ function submitIdeaData() {
     document.forms['ideaForm'].submitLink.value = 'Please wait..';
     document.forms['ideaForm'].submitLink.disabled = true;
     $.post(rbutrUtils.getServerUrl(), {
-        url: rbutr.canonical_urls[tabId],
-        title: rbutr.page_title[rbutr.canonical_urls[tabId]],
+        url: rbutr.getProp('canonicalUrls', tabId),
+        title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tabId)),
         idea: document.forms['ideaForm'].idea.value,
-        cid: rbutr.cid
+        cid: rbutr.getCid()
     }).success(function (data) {
         $('#message').html(data);
     }).error(function (msg) {
@@ -664,7 +664,7 @@ function loadMenu() {
     $.post(rbutrUtils.getServerUrl(), {
         getMenu: true,
         version: browser.runtime.getManifest().version,
-        cid: rbutr.cid
+        cid: rbutr.getCid()
     }).success(function (data) {
         $('#message').html(data);
     }).error(function (msg) {
@@ -703,7 +703,7 @@ $(document)
     .on('change', '#direct', function () {
 
         'use strict';
-        rbutr.direct = this.checked;
+        rbutr.setProp('direct', null, this.checked);
     })
     .on('click', '#requestRebuttals', requestRebuttals)  // Hook up the clickable stuff that might come back.
     .on('click', '#directShowLink', function () {
@@ -743,6 +743,10 @@ $(document)
 
 
 
+
+
+
+
 /**
  * @description Set canonical url in background
  */
@@ -755,7 +759,7 @@ browser.tabs.query({currentWindow: true, active: true}, function (tab) {
     // This happens AFTER document.ready, so I'll do everything here, which means I get access to the URL
     tabId = tab[0].id;
 
-    if (!rbutr.canonical_urls[tabId]) {
+    if (!rbutr.getProp('canonicalUrls', tabId)) {
         browser.runtime.sendMessage({action: 'setCanonical', tab: tab[0]});
     }
 

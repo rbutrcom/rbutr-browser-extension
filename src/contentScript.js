@@ -11,7 +11,7 @@ if (typeof chrome !== 'undefined' && typeof browser === 'undefined') {
 
 
 
-const rbutrUtils = new RbutrUtils();
+const rbutrUtils = RbutrUtils();
 
 
 /**
@@ -49,7 +49,7 @@ const platforms = {
 
             'use strict';
 
-            var
+            let
                 testLink = '',
                 thisUrl = '';
 
@@ -74,47 +74,66 @@ const platforms = {
  * @param {void}
  * @return {object}
  */
-function Platform() {
+const Platform = () => {
 
     'use strict';
 
-    this.name = 'none';
-    this.config = platforms.none;
-    this.url = '';
-
-    return this;
-}
-
+    let properties = {
+        name : 'none',
+        config : platforms.none,
+        url : ''
+    };
 
 
-Platform.prototype = {
 
-    constructor: Platform,
+    /**
+     * @description Property getter
+     *
+     * @method getProp
+     * @param {string} name
+     * @return {mixed}
+     */
+    const getProp = (name) => {
+        return properties[name];
+    };
+
+
+
+    /**
+     * @description Property setter
+     *
+     * @method setProp
+     * @param {string} name
+     * @param {mixed} value
+     * @return {void}
+     */
+    const setProp = (name, value) => {
+        properties[name] = value;
+    };
+
 
 
     /**
      * @description Strip urls down to hostname
      *
      * @method cleanUrl
-     * @param {string} url
+     * @param {string} dirtyUrl
      * @return {string}
      */
-    cleanUrl: function (url) {
+    const cleanUrl = (dirtyUrl) => {
 
-        'use strict';
-
-        var
+        let
             cleanedUrl = '',
-            fn = platforms[this.name].cleanurl;
+            fn = platforms[getProp('name')].cleanurl;
 
         if (typeof fn === 'function') {
-            cleanedUrl = fn(url);
+            cleanedUrl = fn(dirtyUrl);
         } else {
-            cleanedUrl = url;
+            cleanedUrl = dirtyUrl;
         }
 
         return rbutrUtils.url2Domain(cleanedUrl);
-    },
+    };
 
 
 
@@ -125,16 +144,14 @@ Platform.prototype = {
      * @param {object} element
      * @return {string}
      */
-    expandExternalLinks: function ($element) {
+    const expandExternalLinks = ($element) => {
 
-        'use strict';
-
-        var
+        let
             matches = null,
             matchedUrl = null;
 
-        if (this.config.externalLinkPattern !== null) {
-            if (matches = this.config.externalLinkPattern.exec($element.attr('href'))) {
+        if (getProp('config').externalLinkPattern !== null) {
+            if (matches = getProp('config').externalLinkPattern.exec($element.attr('href'))) {
                 matchedUrl = decodeURIComponent(matches[1]);
 
                 if (matchedUrl !== null) {
@@ -144,7 +161,7 @@ Platform.prototype = {
         }
 
         return false;
-    },
+    };
 
 
 
@@ -155,26 +172,25 @@ Platform.prototype = {
      * @param {void}
      * @return {void}
      */
-    refresh: function () {
-
-        'use strict';
+    const refresh = () => {
 
 
-        this.url = rbutrUtils.url2Domain(window.location.hostname);
+        setProp('url', rbutrUtils.url2Domain(window.location.hostname));
 
-        switch (this.url) {
+        switch (getProp('url')) {
         case 'www.facebook.com':
         case 'facebook.com':
-            this.name = 'facebook';
+            setProp('name', 'facebook');
             break;
         default:
-            this.name = 'none';
+            setProp('name', 'none');
             break;
         }
 
-        this.config = platforms[this.name];
-    }
+        setProp('config', platforms[getProp('name')]);
+    };
 
+    return {getProp, setProp, cleanUrl, expandExternalLinks, refresh};
 };
 
 
@@ -186,30 +202,22 @@ Platform.prototype = {
  * @param {void}
  * @return {object}
  */
-function Content() {
+const Content = () => {
 
     'use strict';
 
-    this.canonicalValue = $('head link[rel=canonical]').attr('href');
-    this.title = $('title').text();
-    this.mutationObserver = {};
+    let canonicalValue = $('head link[rel=canonical]').attr('href');
+    let title = $('title').text();
+    let mutationObserver = {};
 
-    this.cid = 0;
-    this.serverUrl = '';
-    this.serverDomain = '';
-    this.version = 0;
+    let cid = 0;
+    let serverUrl = '';
+    let serverDomain = '';
+    let version = 0;
 
-    this.platform = new Platform();
-    this.platform.refresh();
+    let platform = Platform();
+    platform.refresh();
 
-    return this;
-}
-
-
-
-Content.prototype = {
-
-    constructor: Content,
 
 
     /**
@@ -219,13 +227,11 @@ Content.prototype = {
      * @param {string} url
      * @return {boolean}
      */
-    shouldShowMessage: function (url) {
+    const shouldShowMessage = (url) => {
 
-        'use strict';
-
-        var result = !localStorage.getItem('rbutr.dontshow.' + url);
+        let result = localStorage.getItem('rbutr.dontshow.' + url);
         return result === undefined || result === null;
-    },
+    };
 
 
 
@@ -237,7 +243,7 @@ Content.prototype = {
      * @param {string} type
      * @return {string}
      */
-    createSingleMessageEntry: function ($entry, type) {
+    const createSingleMessageEntry = ($entry, type) => {
         return `
             <div class="rbutr-message-entry">
                 <h6>${$entry[type].title}</h6>
@@ -260,13 +266,13 @@ Content.prototype = {
                         <tr>
                             <td class="rbutr-footer" colspan="4"><small>
                                 Created on ${$entry.creationDate}
-                                by <a href="${this.serverDomain}/rbutr/LoginServlet?requestType=userPage&personId=${$entry.person.id}">${$entry.person.username}</a>
+                                by <a href="${content.serverDomain}/rbutr/LoginServlet?requestType=userPage&personId=${$entry.person.id}">${$entry.person.username}</a>
                             </small></td>
                     </table>
                 </div>
             </div>
         `;
-    },
+    };
 
 
 
@@ -278,11 +284,11 @@ Content.prototype = {
      * @param {string} requestedUrl
      * @return {string}
      */
-    createMessageTemplate: function ($data, requestedUrl) {
+    const createMessageTemplate = ($data, requestedUrl) => {
 
         let
             messageTemplate = '',
-            rbutrLogo = '<img src="' + this.serverDomain + '/images/logohomepagelowres.png" width="24" class="rbutr-logo" alt="Rbutr">',
+            rbutrLogo = '<img src="' + content.serverDomain + '/images/logohomepagelowres.png" width="24" class="rbutr-logo" alt="Rbutr">',
             detailsButton = '<div><button class="more" onclick="this.parentNode.nextElementSibling.classList.toggle(\'hidden\');">Details</button><div class="clearfix"></div></div>',
             rebuttedCount = 0,
             rebuttalCount = 0,
@@ -301,10 +307,10 @@ Content.prototype = {
 
                     if (rbutrUtils.unicode2String($data.direct[index].fromPage.url) === requestedUrl) {
                         rebuttedCount++;
-                        rebuttedList += this.createSingleMessageEntry($data.direct[index], 'toPage');
+                        rebuttedList += createSingleMessageEntry($data.direct[index], 'toPage');
                     } else if (rbutrUtils.unicode2String($data.direct[index].toPage.url) === requestedUrl) {
                         rebuttalCount++;
-                        rebuttalList += this.createSingleMessageEntry($data.direct[index], 'fromPage');
+                        rebuttalList += createSingleMessageEntry($data.direct[index], 'fromPage');
                     }
                 }
             }
@@ -313,10 +319,10 @@ Content.prototype = {
 
                     if (rbutrUtils.unicode2String($data.general[index].fromPage.url) === requestedUrl) {
                         rebuttedCount++;
-                        rebuttedList += this.createSingleMessageEntry($data.general[index], 'toPage');
+                        rebuttedList += createSingleMessageEntry($data.general[index], 'toPage');
                     } else if (rbutrUtils.unicode2String($data.general[index].toPage.url) === requestedUrl) {
                         rebuttalCount++;
-                        rebuttalList += this.createSingleMessageEntry($data.general[index], 'fromPage');
+                        rebuttalList += createSingleMessageEntry($data.general[index], 'fromPage');
                     }
                 }
             }
@@ -360,7 +366,7 @@ Content.prototype = {
         }
 
         return messageTemplate;
-    },
+    };
 
 
 
@@ -373,7 +379,7 @@ Content.prototype = {
      * @param {function} callback
      * @return {void}
      */
-    getRbutrData: function (url, $element, callback) {
+    const getRbutrData = (url, $element, callback) => {
 
         $.get(content.serverUrl, {
             getLinks: true,
@@ -384,7 +390,7 @@ Content.prototype = {
         }, 'json').done( function (data) {
             callback(data, url, $element);
         });
-    },
+    };
 
 
 
@@ -395,20 +401,18 @@ Content.prototype = {
      * @param {void}
      * @return {boolean}
      */
-    setAlertOnPosts: function () {
+    const setAlertOnPosts = () => {
 
-        'use strict';
-
-        var
+        let
             index = 0,
-            itemSelectors = content.platform.config.itemSelectors,
+            itemSelectors = platform.getProp('config').itemSelectors,
             $linkWrapper = {},
             ownHostRegExp = new RegExp(window.location.host),
             expandedUrl;
 
         for (index in itemSelectors) {
 
-            var
+            let
                 parentSelector = itemSelectors[index].parent,
                 bodySelector = itemSelectors[index].body;
 
@@ -417,11 +421,11 @@ Content.prototype = {
                 if (ownHostRegExp.test(this.href) === false) {
                     $linkWrapper = $(this).closest(bodySelector);
                     if ($linkWrapper.attr('data-rbutr-processed') !== 'true') {
-                        var
+                        let
                             $currentLink = $(this),
                             messageTemplate = '';
 
-                        expandedUrl = content.platform.expandExternalLinks($currentLink);
+                        expandedUrl = platform.expandExternalLinks($currentLink);
 
                         if(expandedUrl) {
                             content.getRbutrData(expandedUrl, $linkWrapper, function (result, url, $element) {
@@ -436,7 +440,7 @@ Content.prototype = {
         }
 
         return true;
-    },
+    };
 
 
 
@@ -447,12 +451,10 @@ Content.prototype = {
      * @param {void}
      * @return {void}
      */
-    observe: function () {
+    const observe = () => {
 
-        'use strict';
-
-        var
-            observerRoot = content.platform.config.observer.root,
+        let
+            observerRoot = platform.getProp('config').observer.root,
             observerRootObj = document.querySelector(observerRoot),
             //observerFilter = content.platform.config.observer.filter,
 
@@ -464,16 +466,16 @@ Content.prototype = {
             };
 
 
-        this.mutationObserver = new MutationObserver(function(mutations, thisInstance) {
-            var result = content.setAlertOnPosts();
+        mutationObserver = new MutationObserver(function(mutations, thisInstance) {
+            let result = content.setAlertOnPosts();
             if(result === true) {
                 thisInstance.disconnect();
                 content.execute();
             }
         });
 
-        this.mutationObserver.observe(observerRootObj, observerConfig);
-    },
+        mutationObserver.observe(observerRootObj, observerConfig);
+    };
 
 
 
@@ -484,18 +486,20 @@ Content.prototype = {
      * @param {void}
      * @return {void}
      */
-    execute: function () {
+    const execute = () => {
 
-        'use strict';
+        if (platform.getProp('name') !== 'none') {
+            window.setTimeout(content.observe, 1000);
+            window.setTimeout(content.setAlertOnPosts, 2000);
+        }
+    };
 
-        window.setTimeout(content.observe, 1000);
-        window.setTimeout(content.setAlertOnPosts, 2000);
-    }
+    return {canonicalValue, title, mutationObserver, cid, serverUrl, serverDomain, version, shouldShowMessage, createSingleMessageEntry, createMessageTemplate, getRbutrData, setAlertOnPosts, observe, execute};
 };
 
 
 
-const content = new Content();
+const content = Content();
 
 document.onreadystatechange = function () {
 
@@ -561,7 +565,7 @@ document.onreadystatechange = function () {
 
         // When the user clicks through from our webpage, rather than the plugin, we hide the click details in the re-direct page.
         if ($('#clickDataForRbutrPlugin').length) { // jQuery never returns null.. http://stackoverflow.com/questions/477667/how-to-check-null-objects-in-jquery
-            var click = JSON.parse($('#clickDataForRbutrPlugin').text());
+            let click = JSON.parse($('#clickDataForRbutrPlugin').text());
             browser.runtime.sendMessage({'action': 'setClick', 'click': click});
         }
 
