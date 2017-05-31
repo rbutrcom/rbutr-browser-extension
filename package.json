@@ -6,20 +6,24 @@
   "repository": "github:tomlutzenberger/rbutr-browser-extension.git",
   "author": "rbutr Community",
   "license": "LGPL-3.0",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "concurrently": "^3.4.0",
     "eslint": "^3.19.0",
     "eslint-config-google": "^0.7.1",
     "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-mocha": "^4.9.0",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "htmlhint": "^0.9.13",
+    "jsdom": "^11.0.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^3.4.1",
+    "mock-local-storage": "^1.0.2",
     "node-sass": "^4.5.2",
+    "rewire": "^2.5.2",
     "stylelint": "^7.10.1",
     "stylelint-config-standard": "^16.0.0"
-
   },
   "scripts": {
     "sass": "node-sass src/scss/main.scss --output src/css --source-map-embed --source-map-contents && node-sass src/scss/platforms.scss --output src/css --source-map-embed --source-map-contents",
@@ -28,6 +32,7 @@
     "lint:style": "stylelint --config .stylelintrc src/scss/*.scss;",
     "lint:html": "htmlhint --config .htmlhintrc src/**/*.html;",
     "lint": "concurrently --names  lint:html, lint:style, lint:js -p name 'yarn run lint:html' 'yarn run lint:style' 'yarn run lint:js';",
+    "test": "mocha --colors --sort --check-leaks --use_strict -r mock-local-storage -r jsdom-global/register",
     "zip": "mkdir -p build && zip -r build/rbutr.zip ./src/*",
     "build": "yarn run lint && yarn run sass && yarn run zip"
   }
