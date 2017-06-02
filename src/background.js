@@ -61,7 +61,15 @@ const Rbutr = () => {
      * @return {mixed}
      */
     const getProp = (name, key) => {
-        return key === null ? properties[name] : properties[name][key];
+        let result = null;
+
+        if (Array.isArray(properties[name])) {
+            result = key !== null && key !== undefined ? properties[name][key]: properties[name];
+        } else {
+            result = properties[name];
+        }
+
+        return result;
     };
 
 
@@ -76,7 +84,8 @@ const Rbutr = () => {
      * @return {void}
      */
     const setProp = (name, key, value) => {
-        if (key !== null) {
+
+        if (Array.isArray(properties[name])) {
             if (value === null) {
                 properties[name].splice(key, 1);
             } else {
@@ -97,7 +106,11 @@ const Rbutr = () => {
      * @return {integer}
      */
     const getPropLen = (name) => {
-        return properties[name].length;
+        if (Array.isArray(properties[name])) {
+            return Object.keys(properties[name]).length;
+        } else {
+            return properties[name].length;
+        }
     };
 
 
@@ -368,15 +381,15 @@ const Rbutr = () => {
 
         $.post(rbutrUtils.getServerUrl(), {
             submitLinks: true,
-            fromUrls: getProp('fromUrls', null),
-            toUrls: getProp('toUrls', null),
+            fromUrls: getProp('fromUrls'),
+            toUrls: getProp('toUrls'),
             fromPageTitles: fromPageTitles,
             toPageTitles: toPageTitles,
-            comments: getProp('comment', null),
+            comments: getProp('comment'),
             canonicalFromPages: canonicalFromPages,
             canonicalToPages: canonicalToPages,
-            direct: getProp('direct', null),
-            tags: getProp('tags', null),
+            direct: getProp('direct'),
+            tags: getProp('tags'),
             cid: rbutr.getCid()
         }, function (data) {
             rbutrUtils.log('debug', 'success status ', data.status);
