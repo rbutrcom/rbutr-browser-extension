@@ -73,4 +73,4 @@ The Dev-Mode has currently 2 functionalities implemented.
 
 ## How can I help?
 
-Please see http://blog.rbutr.com/support-rbutr/ or have a look at the [issues](https://github.com/tomlutzenberger/rbutr-browser-extension/issues)
+Please see http://blog.rbutr.com/support-rbutr/ or have a look at the [issues](https://github.com/rbutrcom/rbutr-browser-extension/issues)
