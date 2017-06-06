@@ -319,7 +319,7 @@ const Rbutr = () => {
             rbutr.setProp('rebuttals', tabId, data);
             rbutr.setProp('loggedIn', null, true);
 
-            let m = rbutr.getProp('rebuttals', tabId).match(/id="notLoggedIn"/g);
+            let m = rbutr.getProp('rebuttals', tabId).match(/id="not-logged-in"/g);
             let titleMessage = '';
 
             if (m !== null && m.length > ZERO) {

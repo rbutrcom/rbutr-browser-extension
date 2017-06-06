@@ -49,8 +49,8 @@ function setPage(page) {
     if (page === 'rebuttals') {
         $('#message').html(rbutr.getProp('rebuttals', tabId));
     } else {
-        document.querySelectorAll('#popupContent > div').forEach( x => x.setAttribute('class','hide'));
-        document.querySelector('#view-' + page).removeAttribute('class', 'hide');
+        document.querySelectorAll('.view').forEach( x => x.setAttribute('class','hidden'));
+        document.querySelector('#view-' + page).removeAttribute('class', 'hidden');
     }
 }
 
@@ -66,7 +66,7 @@ function setPage(page) {
 function appendPage(page) {
 
     'use strict';
-    document.querySelector('#popupContent > ' + '#view-' + page).removeAttribute('class', 'hide');
+    document.querySelector('#view-wrap > ' + '#view-' + page).removeAttribute('class', 'hidden');
 }
 
 
@@ -84,17 +84,17 @@ function refreshSubmissionData() {
     const HTTP_LENGTH = 4;
 
     if (rbutr.getPropLen('fromUrls') > ONE) {
-        $('#submitSources').html('<h3 class="sourceHeading">Rebut these sources</h3><div class="UserOptionsButton StartRebutal3">Menu</div><div style="clear:both"></div>');
+        $('#submit-sources').html('<h3 class="source-heading">Rebut these sources</h3><div class="menu-wrap"><div class="menu">Menu</div></div>');
     } else {
-        $('#submitSources').html('<h3 class="sourceHeading">Rebut this source</h3><div class="UserOptionsButton StartRebutal3">Menu</div><div style="clear:both"></div>');
+        $('#submit-sources').html('<h3 class="source-heading">Rebut this source</h3><div class="menu-wrap"><div class="menu">Menu</div></div>');
     }
     // This data lives in the background so it can be shared between tabs (popups are one per tab)
 
     for (let i = 0; i < rbutr.getPropLen('fromUrls'); i++) {
         let url = rbutr.getProp('fromUrls', i);
-        let source = $('<div class="linkBlock" id="source_' + i +
-            '"><span class="linkTitle">' + rbutr.getPageTitle(url) + '</span><br>' +
-            '<span class="linkUrl">' + url + '</span></div>').appendTo('#submitSources');
+        let source = $('<div class="link-block" id="source_' + i +
+            '"><span class="link-title">' + rbutr.getPageTitle(url) + '</span><br>' +
+            '<span class="link-url">' + url + '</span></div>').appendTo('#submit-sources');
         $('<img class="close" src="http://rbutr.com/images/button-removetag.png" id="s_x_' + i + '"/>').click(function (event) {
             event.preventDefault();
             event.stopPropagation();
@@ -104,24 +104,24 @@ function refreshSubmissionData() {
     }
 
     if (rbutr.getPropLen('fromUrls') > ZERO) {
-        $('#submitSources').append('<div id="captureSourceButton" class="fakeLink">+ add another source</div>');
+        $('#submit-sources').append('<div id="btn-capture-src" class="fake-link">+ add another source</div>');
     } else {
-        $('#submitSources').append('<div id="captureSourceButton" class="button">Click to capture current page as source link.</div>');
+        $('#submit-sources').append('<div id="btn-capture-src" class="btn">Click to capture current page as source link.</div>');
     }
 
     if (rbutr.getPropLen('toUrls') > ONE) {
-        $('#submitRebuttals').html('<h3 class="rebuttalHeading">With these pages</h3><div style="clear:both"></div>');
+        $('#submit-rebuttals').html('<h3 class="rebuttalHeading">With these pages</h3><div style="clear:both"></div>');
     } else {
-        $('#submitRebuttals').html('<h3 class="rebuttalHeading">With this page</h3><div style="clear:both"></div>');
+        $('#submit-rebuttals').html('<h3 class="rebuttalHeading">With this page</h3><div style="clear:both"></div>');
     }
 
     for (let j = 0; j < rbutr.getPropLen('toUrls'); j++) {
         let toUrl = rbutr.getProp('toUrls', j);
         let rebuttal = $(
-            '<div class="linkBlock" id="rebuttal_' + j +
-            '"><span class="linkTitle">' + rbutr.getPageTitle(toUrl) + '</span><br>' +
-            '<span class="linkUrl">' + toUrl + '</span><br>' +
-            '</div>').appendTo('#submitRebuttals');
+            '<div class="link-block" id="rebuttal_' + j +
+            '"><span class="link-title">' + rbutr.getPageTitle(toUrl) + '</span><br>' +
+            '<span class="link-url">' + toUrl + '</span><br>' +
+            '</div>').appendTo('#submit-rebuttals');
         $('<input id="c_x_' + j +
             '" size="60" type="text" placeholder="Optional : Describe the relationship between these two pages in a few words" ' +
             'name="c_x_' + j + '">')
@@ -139,18 +139,18 @@ function refreshSubmissionData() {
     }
 
     if (rbutr.getPropLen('toUrls') >= MAX_URL_COUNT) {
-        $('#captureRebuttalButton').disable();
+        $('#btn-capture-rebuttal').disable();
     } else if (rbutr.getPropLen('toUrls') > ZERO) {
-        $('#submitRebuttals').append('<div id="captureRebuttalButton" class="fakeLink">+ add another rebuttal</div>');
+        $('#submit-rebuttals').append('<div id="btn-capture-rebuttal" class="fake-link">+ add another rebuttal</div>');
     } else {
-        $('#submitRebuttals').append('<div id="captureRebuttalButton" class="button">Click to capture current page as rebuttal link.</div>');
+        $('#submit-rebuttals').append('<div id="btn-capture-rebuttal" class="button">Click to capture current page as rebuttal link.</div>');
     }
 
-    $('#captureRebuttalButton').click(function () {
+    $('#btn-capture-rebuttal').click(function () {
         toTagged();
     });
 
-    $('#submitError').text(rbutr.getProp('submitError'));
+    $('#submission-error').text(rbutr.getProp('submitError'));
 
     if (rbutr.getPropLen('fromUrls') > ZERO &&
         rbutr.getProp('fromUrls', FIRST_ARRAY_ELEMENT).substring(ZERO, HTTP_LENGTH).toLowerCase() === 'http' &&
@@ -177,14 +177,14 @@ function refreshTags() {
 
     'use strict';
 
-    $('#tagHolder').html(''); // Wipe and recreate
+    $('#tag-holder').html(''); // Wipe and recreate
     for (let i = 0; i < rbutr.getPropLen('tags'); i++) {
-        $('#tagHolder').append('<a class="tagForSubmission" href="#">' + rbutr.getProp('tags', i) + '</a>');
+        $('#tag-holder').append('<a class="tag-for-submission" href="#">' + rbutr.getProp('tags', i) + '</a>');
     }
-    $('.tagForSubmission').click(function () {
+    $('.tag-for-submission').click(function () {
         rbutr.removeTag(this.text);
         refreshTags();
-        $('#tagTypeahead').val(''); // Somehow this gets reset on removing the actual tags?
+        $('#tag-typeahead').val(''); // Somehow this gets reset on removing the actual tags?
         refreshSubmissionData();
     });
 }
@@ -227,14 +227,14 @@ function setupTagTypeahead() {
     const KEY_SEMICOLON = 186;
     const KEY_COMMA = 188;
 
-    $('#tagTypeahead').typeahead({
+    $('#tag-typeahead').typeahead({
         name: 'tags',
         limit: 10,
         prefetch: rbutrUtils.getServerUrl() + '?getPlainTagsJson=true'
         // local: rbutr.getTagsData()
     }).on('typeahead:selected', function (event, data) {
         recordTag(data.value);
-        document.getElementById('#tagTypeahead').value = '';
+        document.getElementById('#tag-typeahead').value = '';
     }).keydown(function (event) {
         const key = event.which;
         rbutrUtils.log('debug', 'key = ', key);
@@ -242,8 +242,8 @@ function setupTagTypeahead() {
 
         if (key === KEY_ENTER || key === KEY_SEMICOLON || key === KEY_COMMA) {
             event.preventDefault();
-            recordTag($('#tagTypeahead').val());
-            $('#tagTypeahead').val('');
+            recordTag($('#tag-typeahead').val());
+            $('#tag-typeahead').val('');
         }
     });
 }
@@ -264,7 +264,7 @@ function displaySubmissionForm() {
     refreshTags();
     setupTagTypeahead();
 
-    $('#StartSubmissionDiv').hide();
+    $('#start-submission').hide();
     refreshSubmissionData();
 }
 
@@ -374,10 +374,10 @@ function requestRebuttals() {
     } else {
         appendPage('request');
         setupTagTypeahead();
-        $('#requestUrl').val(rbutr.getProp('canonicalUrls', tabId));
-        rbutrUtils.log('debug', 'input = ', $('#requestUrl').val());
+        $('#request-url').val(rbutr.getProp('canonicalUrls', tabId));
+        rbutrUtils.log('debug', 'input = ', $('#request-url').val());
         rbutrUtils.log('debug', 'bg = ', rbutr.getProp('canonicalUrls', tabId));
-        $('#StartSubmissionDiv').hide();
+        $('#start-submission').hide();
     }
 }
 
@@ -394,8 +394,8 @@ function submitRequestData() {
     'use strict';
 
     if (rbutr.getPropLen('tags') > MAX_TAG_COUNT) {
-        document.forms['requestData'].submitLink.value = 'Maximum of 6 tags, please fix before submitting.';
-        document.forms['requestData'].submitLink.disabled = false;
+        document.forms['request-rebuttal'].submitLink.value = 'Maximum of 6 tags, please fix before submitting.';
+        document.forms['request-rebuttal'].submitLink.disabled = false;
         return false;
     }
     $.post(rbutrUtils.getServerUrl(), {
@@ -469,7 +469,7 @@ function cancelRequestSubmission() {
 
     'use strict';
 
-    $('#StartSubmissionDiv').show();
+    $('#start-submission').show();
     setPage('rebuttals');
 }
 
@@ -552,8 +552,8 @@ function loadData() {
 
         // This means we are on a rebuttal we clicked through to.
     } else if (recordedClick && recordedClick !== null) {
-        $('.votingFromUrl').attr('href', recordedClick.linkFromUrl);
-        $('#currentScore').html(recordedClick.score);
+        $('.voting-rebutted-url').attr('href', recordedClick.linkFromUrl);
+        $('#current-score').html(recordedClick.score);
         displayVoteForm(recordedClick);
     }
 
@@ -584,7 +584,7 @@ function vote(voteScore) {
         'vote': voteScore,
         'cid': rbutr.getCid()
     }, function (data) {
-        $('#currentScore').html(data);
+        $('#current-score').html(data);
     });
     recordedClick.score += voteScore;
     recordedClick.yourVote = voteScore;
@@ -633,12 +633,12 @@ function submitIdeaData() {
 
     'use strict';
 
-    document.forms['ideaForm'].submitLink.value = 'Please wait..';
-    document.forms['ideaForm'].submitLink.disabled = true;
+    document.forms['idea-form'].submitLink.value = 'Please wait..';
+    document.forms['idea-form'].submitLink.disabled = true;
     $.post(rbutrUtils.getServerUrl(), {
         url: rbutr.getProp('canonicalUrls', tabId),
         title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tabId)),
-        idea: document.forms['ideaForm'].idea.value,
+        idea: document.forms['idea-form'].idea.value,
         cid: rbutr.getCid()
     }).success(function (data) {
         $('#message').html(data);
@@ -680,25 +680,24 @@ function loadMenu() {
 $(document)
     .on('click', '#tagTo', toTagged)
     .on('click', '#tagFrom', fromTagged)
-    .on('click', '#startToSubmission', function () {
+    .on('click', '.btn-rebuttal', function () {
 
         'use strict';
         showSubmissionPopup('to');
     })
-    .on('click', '#startFromSubmission', function () {
+    .on('click', '.btn-rebutted', function () {
 
         'use strict';
         showSubmissionPopup('from');
     })
-    .on('click', '#clickable-down', voteDown)
-    .on('click', '#clickable-up', voteUp)
-    .on('click', '.UserOptionsButton', loadMenu)
-    .on('submit', '#ideaForm', submitIdeaData)
-    .on('click', '#cancelSubmission', cancelSubmission)
+    .on('click', '.clickable-down', voteDown)
+    .on('click', '.clickable-up', voteUp)
+    .on('click', '.menu', loadMenu)
+    .on('submit', '#idea-form', submitIdeaData)
     .on('submit', '#data', submitData)
-    .on('submit', '#requestData', submitRequestData)
-    .on('click', '#cancelSubmissionLink', cancelSubmission)
-    .on('click', '#cancelRequestLink', cancelRequestSubmission)
+    .on('submit', '#request-rebuttal', submitRequestData)
+    .on('click', '#cancel-submission', cancelSubmission)
+    .on('click', '#cancel-rebuttal-request', cancelRequestSubmission)
     .on('change', '#direct', function () {
 
         'use strict';
@@ -733,7 +732,7 @@ $(document)
         $('#generalShower').show();
         return false;
     })
-    .on('click', '#captureSourceButton', fromTagged)
+    .on('click', '#btn-capture-src', fromTagged)
     .on('click', '#thanks', function () {
 
         'use strict';
