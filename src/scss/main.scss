@@ -3,6 +3,7 @@
 body {
   font-family: sans-serif;
   overflow-x: hidden;
+  position: relative;
   width: 500px;
 }
 
@@ -34,11 +35,11 @@ h2 {
   }
 }
 
-.clickableImages:hover {
+.clickable:hover {
   cursor: pointer;
 }
 
-.hide {
+.hidden {
   display: none;
 }
 
@@ -51,10 +52,6 @@ p.rebuttals {
   font-size: 12px;
 }
 
-#wholePopupDiv {
-  position: relative;
-}
-
 a {
   color: #599bc5;
   text-decoration: none;
@@ -63,11 +60,11 @@ a {
     text-decoration: underline;
   }
 
-  &.linkTitle {
+  &.link-title {
     font-size: 11px;
   }
 
-  &.tagForSubmission {
+  &.tag-for-submission {
     background-color: #ccffe6;
     background-image: url("http://rbutr.com/images/button-removetag.png");
     background-position: 4% 50%;
@@ -78,7 +75,7 @@ a {
   }
 }
 
-.fakeLink {
+.fake-link {
   color: blue;
   cursor: pointer;
   font-size: 12px;
@@ -86,7 +83,7 @@ a {
   text-decoration: none;
 }
 
-.button {
+.btn {
   background: -webkit-gradient(linear, left top, left bottom, from(#efefef), to(#e6e6e6));
   background: -moz-linear-gradient(top, #efefef, #e6e6e6);
   border: 0;
@@ -96,37 +93,51 @@ a {
   margin: 0;
   padding: 5px 10px;
   position: relative;
+
+  &:hover {
+    color: #c33;
+    text-decoration: none;
+  }
+}
+
+.btn-start {
+  padding-left: 40px;
+  padding-right: 40px;
+  width: 100px;
+}
+
+.btn-rebutted {
+  color: #c00 !important;
+}
+
+.btn-rebuttal {
+  color: #126fcd;
 }
 
 .direct {
   margin: 20px auto 20px 5px;
 }
 
-.button:hover {
-  color: #c33;
-  text-decoration: none;
-}
-
 ul {
   -webkit-padding-start: 30px;
 }
 
-.linkTitle {
+.link-title {
   font-size: 85%;
 }
 
-.linkUrl {
+.link-url {
   color: gray;
   font-size: 60%;
 }
 
-.linkBlock {
+.link-block {
   background-color: #f3f3f3;
   margin: 3px 2px;
   padding: 3px 10px;
 }
 
-.sourceHeading {
+.source-heading {
   color: #c00;
   float: left;
   margin: 3px;
@@ -152,17 +163,11 @@ ul {
   padding-top: 20px;
 }
 
-.cancelSubmissionLink {
+.cancel-submission {
   float: right;
   font-size: 12px;
   position: relative;
   text-decoration: none;
-}
-
-#StartSubmissionDiv,
-#SubmitDiv {
-  border-top: 0;
-  margin: 0;
 }
 
 .firstHalf,
@@ -190,22 +195,15 @@ ul {
   margin: 0 10px 10px 30px;
 }
 
-#swapUrlsLink {
-  background-color: #c66;
-  color: #fff;
-  display: block;
-  font-weight: bold;
-  left: -30px;
-  padding: 5px 0;
-  position: absolute;
-  text-align: center;
-  top: 21px;
-  width: 60px;
-}
-
 /* User options */
 
-.UserOptionsButton {
+.menu-wrap {
+  float: right;
+  position: relative;
+  top: -2px;
+}
+
+.menu {
   background-color: #fbfbfb;
   border: 1px solid #e5e5e5;
   color: #777;
@@ -215,54 +213,16 @@ ul {
   width: 30px;
 }
 
-.StartRebut {
+.start-rebut {
   float: left;
   padding-right: 10px;
   position: relative;
 }
 
-.StartRebutal {
-  float: left;
-  padding-right: 10px;
-  position: relative;
-}
-
-.StartRebutal2 {
-  float: right;
-  position: relative;
-  top: -2px;
-}
-
-.StartRebutal3 {
-  float: right;
-  position: relative;
-  top: -2px;
-}
-
-.Random {
+.random {
   text-align: right;
   font-size: 12px;
   clear: both;
-}
-
-#startFromSubmission {
-  color: #c00 !important;
-  padding-left: 40px;
-  padding-right: 40px;
-  width: 100px;
-}
-
-#startToSubmission {
-  color: #126fcd;
-  padding-left: 40px;
-  padding-right: 40px;
-  width: 100px;
-}
-
-.Ryleandom {
-  float: right;
-  font-size: 12px;
-  margin: 10px;
 }
 
 .RebuttalsContainer {
@@ -363,6 +323,12 @@ ul {
   padding: 2px 7px;
 }
 
+.tag-typeahead {
+  background-color: transparent;
+  position: relative;
+  vertical-align: top;
+}
+
 .address {
   color: #a4a4a4 !important;
   font-size: 10px;
@@ -401,39 +367,36 @@ img.close {
   width: 500px;
 }
 
-#captureSourceButton {
+.submission-error {
+  color: red;
+}
+
+#btn-capture-src {
   left: 5px;
   position: relative;
   top: 2px;
 }
 
-#captureRebuttalButton {
+#btn-capture-rebuttal {
   left: 5px;
   position: relative;
   top: 2px;
 }
 
-#tagDiv {
-  position: relative;
-  top: 8px;
-}
-
-#tagHolder {
+#tag-holder {
   margin-top: 20px;
   position: relative;
 }
 
-#notLoggedIn {
+#not-logged-in {
   margin: 15px;
 }
 
-#cancelRequestLink,
-#cancelSubmissionLink,
-#swapUrlsLink {
+#cancel-rebuttal-request {
   cursor: pointer;
 }
 
-#popupContent {
+#view-wrap {
   border: none;
   height: auto;
   width: auto;
