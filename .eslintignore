@@ -1,2 +1,3 @@
 src/vendors/*
 node_modules/*
+test/*
