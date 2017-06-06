@@ -52,7 +52,6 @@
     "no-param-reassign": "error",
     "no-redeclare": "error",
     "no-unused-expressions": "error",
-    "vars-on-top": "error",
     "yoda": "error",
     "mocha/no-exclusive-tests": "error"
   },
