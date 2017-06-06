@@ -2,6 +2,12 @@
 /*jslint browser:true,esnext:true */
 
 
+
+// Necessary usage of 'var' because popup will not get variable if it's 'const' or 'let' in Chrome
+var rbutrUtils = RbutrUtils();
+
+
+
 /**
  * @description Multi-Browser support
  */
@@ -13,10 +19,6 @@ window.browser = (function () {
         window.browser ||
         window.chrome;
 })();
-
-
-
-const rbutrUtils = RbutrUtils();
 
 
 
@@ -557,7 +559,9 @@ const Rbutr = () => {
 
 
 
-const rbutr = Rbutr();
+// Necessary usage of 'var' because popup will not get variable if it's 'const' or 'let' in Chrome
+var rbutr = Rbutr();
+
 
 document.addEventListener('DOMContentLoaded', function () {
 

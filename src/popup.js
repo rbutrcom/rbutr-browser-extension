@@ -27,7 +27,7 @@ const MAX_TAG_COUNT = 6;
 const MAX_URL_COUNT = 3;
 
 const rbutrUtils = RbutrUtils();
-let rbutr = browser.extension.getBackgroundPage().rbutr;
+const rbutr = browser.extension.getBackgroundPage().rbutr;
 
 
 
@@ -547,7 +547,7 @@ function loadData() {
 
     // Loads the data from the background tab, which has likely already retrieved it.
     let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
-    if (rbutr.getProp('submittingRebuttal')) {
+    if (rbutr.getProp('submittingRebuttal') === true) {
         displaySubmissionForm();
 
         // This means we are on a rebuttal we clicked through to.
