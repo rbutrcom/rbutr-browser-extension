@@ -53,8 +53,5 @@
     "no-redeclare": "error",
     "no-unused-expressions": "error",
     "yoda": "error"
-  },
-  "plugins": [
-    "mocha"
-  ]
+  }
 }
