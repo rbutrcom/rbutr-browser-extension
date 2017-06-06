@@ -1,29 +1,62 @@
 {
-    "env": {
-        "browser": true,
-        "es6": true
-    },
-    "extends": "eslint:recommended",
-    "rules": {
-        "indent": [
-            "error",
-            4
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "mocha/no-exclusive-tests": "error"
-    },
-    "plugins": [
-      "mocha"
-    ]
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "indent": [
+      "error",
+      4
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "no-extra-parens": [
+      "error",
+      "all"
+    ],
+    "valid-jsdoc": [
+      "error",
+      {
+        "prefer": { "arg": "param", "argument": "param" },
+        "preferType": { "Boolean": "Boolean", "Number": "Number", "object": "Object", "String": "String" },
+        "requireReturn": false,
+        "requireReturnType": true
+      }
+    ],
+    "curly": "error",
+    "eqeqeq": [
+      "error",
+      "always"
+    ],
+    "no-alert": "error",
+    "no-implicit-coercion": "error",
+    "no-magic-numbers": "error",
+    "no-multi-spaces": [
+      "error",
+      {
+        "exceptions": { "VariableDeclarator": true }
+      }
+    ],
+    "no-multi-str": "error",
+    "no-param-reassign": "error",
+    "no-redeclare": "error",
+    "no-unused-expressions": "error",
+    "vars-on-top": "error",
+    "yoda": "error",
+    "mocha/no-exclusive-tests": "error"
+  },
+  "plugins": [
+    "mocha"
+  ]
 }

@@ -1,2 +1,2 @@
-src/vendors/
-node_modules/
+src/vendors/*
+node_modules/*
