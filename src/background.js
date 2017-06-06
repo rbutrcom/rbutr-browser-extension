@@ -21,9 +21,10 @@ const rbutrUtils = RbutrUtils();
 
 
 /**
+ * @method Rbutr
  * @description Class constructor with variable initialisation
  *
- * @method Rbutr
+ * @return {Object} Public object methods
  */
 const Rbutr = () => {
 
@@ -50,15 +51,27 @@ const Rbutr = () => {
         direct : false
     };
 
+    const ZERO = 0;
+    const ONE = 1;
+    const FIRST_ARRAY_ELEMENT = 0;
+    const NO_MATCH_CODE = -1;
+
+    const COLOR_VAL_ZERO  = 0;
+    const COLOR_VAL_HALF  = 100;
+    const COLOR_VAL_FULL  = 255;
+    const COLOR_RED       = [COLOR_VAL_FULL, COLOR_VAL_ZERO, COLOR_VAL_ZERO, COLOR_VAL_FULL];
+    const COLOR_MAGENTA   = [COLOR_VAL_FULL, COLOR_VAL_FULL, COLOR_VAL_ZERO, COLOR_VAL_FULL];
+    const COLOR_LIGHT_RED = [COLOR_VAL_FULL, COLOR_VAL_HALF, COLOR_VAL_HALF, COLOR_VAL_FULL];
+
 
 
     /**
+     * @method getProp
      * @description Property getter
      *
-     * @method getProp
-     * @param {string} name
-     * @param {mixed} key
-     * @return {mixed}
+     * @param {String} name - Object name in variable "properties"
+     * @param {(Number|String)} key - The key of an element in "properties.<name>"
+     * @return {*} Property value
      */
     const getProp = (name, key) => {
         let result = null;
@@ -75,19 +88,21 @@ const Rbutr = () => {
 
 
     /**
-     * @description Property setter
-     *
      * @method setProp
-     * @param {string} name
-     * @param {mixed} key
-     * @param {mixed} value
+     * @description Property setter; If value = null, delete element;
+     *
+     * @param {String} name - Object name in variable "properties"
+     * @param {(Number|String)} key - The key of an element in "properties.<name>"
+     * @param {*} value - The value to be set in "properties.<name>"
      * @return {void}
      */
     const setProp = (name, key, value) => {
 
+        const DELETE_ELEMENT_COUNT = 1;
+
         if (Array.isArray(properties[name])) {
             if (value === null) {
-                properties[name].splice(key, 1);
+                properties[name].splice(key, DELETE_ELEMENT_COUNT);
             } else {
                 properties[name][key] = value;
             }
@@ -99,11 +114,11 @@ const Rbutr = () => {
 
 
     /**
+     * @method getPropLen
      * @description Get length of property array
      *
-     * @method getPropLen
-     * @param {string} name
-     * @return {integer}
+     * @param {String} name - Object name in variable "properties"
+     * @return {Number} Length of selected array or string
      */
     const getPropLen = (name) => {
         if (Array.isArray(properties[name])) {
@@ -116,10 +131,9 @@ const Rbutr = () => {
 
 
     /**
+     * @method initialize
      * @description Initialize rbutr
      *
-     * @method initialize
-     * @param {void}
      * @return {void}
      */
     const initialize = () => {
@@ -130,43 +144,46 @@ const Rbutr = () => {
 
 
     /**
+     * @method getCid
      * @description Get stored client id or generate and store a new one
      *
-     * @method getCid
-     * @param {void}
-     * @return {integer}
+     * @return {Number} Unique 17-digit integer
      */
     const getCid = () => {
 
         const CID_KEY = 'rbutr.cid';
+        const RAND_NUM_MULTIPLIER = 1000;
+        const RAND_NUM_ADDITION = 1;
         let cid = localStorage.getItem(CID_KEY);
+
         if (!cid) {
             let ms = new Date().getTime();
-            let rnd = Math.floor((Math.random() * 1000) + 1);
-            cid = ms + ('0000' + rnd).slice(-4);
+            let rand = Math.floor(Math.random() * RAND_NUM_MULTIPLIER + RAND_NUM_ADDITION);
+            cid = ms + rand.toString();
             localStorage.setItem(CID_KEY, cid);
         }
+
         return parseInt(cid, 10);
     };
 
 
 
     /**
-     * @description Check if the given url already exist in property arrays
-     *
      * @method alreadyExists
-     * @param {string} url
-     * @return {boolean}
+     * @description Check if given url already exists in property arrays
+     *
+     * @param {String} url - URL to be checked
+     * @return {Boolean} State of url existence
      */
     const alreadyExists = (url) => {
 
         for (let i = 0; i < getPropLen('fromUrls'); i++) {
-            if (getProp('fromUrls', i) == url) {
+            if (getProp('fromUrls', i) === url) {
                 return true;
             }
         }
         for (let j = 0; j < getPropLen('toUrls'); j++) {
-            if (getProp('toUrls', j) == url) {
+            if (getProp('toUrls', j) === url) {
                 return true;
             }
         }
@@ -176,11 +193,11 @@ const Rbutr = () => {
 
 
     /**
+     * @method getPageTitle
      * @description Get page title for the given url
      *
-     * @method getPageTitle
-     * @param {string} url
-     * @return {string}
+     * @param {String} url - URL to get the title from
+     * @return {String} A website title
      */
     const getPageTitle = (url) => {
 
@@ -195,17 +212,16 @@ const Rbutr = () => {
 
 
     /**
+     * @method getPopup
      * @description Get currently displayed popup
      *
-     * @method getPopup
-     * @param {void}
-     * @return {object}
+     * @return {?Object} Returns a view object or null
      */
     const getPopup = () => {
 
         let popups = browser.extension.getViews({type: 'popup'});
-        if (popups.length > 0) {
-            return popups[0];
+        if (popups.length >= ZERO) {
+            return popups[FIRST_ARRAY_ELEMENT];
         } else {
             return null;
         }
@@ -214,10 +230,10 @@ const Rbutr = () => {
 
 
     /**
-     * @description Display a message in the current popup
-     *
      * @method displayMessage
-     * @param {string} message
+     * @description Display a message in the popup
+     *
+     * @param {String} message - The message to be displayed
      * @return {void}
      */
     const displayMessage = (message) => {
@@ -234,12 +250,11 @@ const Rbutr = () => {
 
 
     /**
+     * @method postMessage
      * @description Post a message to content script to request an action
      *
-     * @method postMessage
-     * @param {integer} tabId
-     * @param {string} action
-     * @param {object} data
+     * @param {String} action - Action to be executed in contentScript
+     * @param {Object} data - Date to be send
      * @return {void}
      */
     const postMessage = (action, data) => {
@@ -250,8 +265,8 @@ const Rbutr = () => {
             lastFocusedWindow: true
         }, function (tab) {
             let $data = Object.assign({}, {rbutr: rbutr, action: action}, data);
-            rbutrUtils.log('debug', tab[0]);
-            browser.tabs.sendMessage(tab[0].id, $data, function (response) {
+            rbutrUtils.log('debug', tab[FIRST_ARRAY_ELEMENT]);
+            browser.tabs.sendMessage(tab[FIRST_ARRAY_ELEMENT].id, $data, function (response) {
                 rbutrUtils.log('debug', response);
             });
         });
@@ -260,11 +275,11 @@ const Rbutr = () => {
 
 
     /**
-     * @description Get recordec click object by given toUrl
-     *
      * @method getRecordedClickByToUrl
-     * @param {string} toUrl
-     * @return {object}
+     * @description Get recorded click object by given toUrl
+     *
+     * @param {String} toUrl - Rebuttal page URL
+     * @return {?Object} Return click object for URL or null
      */
     const getRecordedClickByToUrl = (toUrl) => {
 
@@ -275,11 +290,11 @@ const Rbutr = () => {
 
 
     /**
+     * @method tabLoaded
      * @description Load data on tab switch
      *
-     * @method tabLoaded
-     * @param {integer} tabId
-     * @param {string} url
+     * @param {Number} tabId - Browser tab id
+     * @param {String} url - Browser tab URL
      * @return {void}
      */
     const tabLoaded = (tabId, url) => {
@@ -288,7 +303,7 @@ const Rbutr = () => {
         let vote = false;
         let recordedClick = getRecordedClickByToUrl(getProp('canonicalUrls', tabId));
         // Don't show voting after you've voted
-        if (recordedClick !== null && recordedClick.yourVote === 0) {
+        if (recordedClick !== null && recordedClick.yourVote === ZERO) {
             vote = true;
         }
 
@@ -305,16 +320,16 @@ const Rbutr = () => {
             let m = rbutr.getProp('rebuttals', tabId).match(/id="notLoggedIn"/g);
             let titleMessage = '';
 
-            if (m !== null && m.length > 0) {
+            if (m !== null && m.length > ZERO) {
                 rbutr.setProp('loggedIn', null, false);
             }
-            if (rbutr.getProp('rebuttals', tabId).indexOf('<h2 class="status">No Rebuttals</h2><br style="clear:left;">') != -1) {
-                rbutr.setProp('rebuttalCount', tabId, 0);
+            if (rbutr.getProp('rebuttals', tabId).indexOf('<h2 class="status">No Rebuttals</h2><br style="clear:left;">') !== NO_MATCH_CODE) {
+                rbutr.setProp('rebuttalCount', tabId, ZERO);
                 // No rebuttals
                 browser.browserAction.setBadgeText({text: '', tabId: tabId});
                 if (vote && rbutr.getProp('loggedIn')) {
                     browser.browserAction.setBadgeText({text: 'Vote', tabId: tabId});
-                    browser.browserAction.setBadgeBackgroundColor({color: [255, 255, 0, 255], tabId: tabId});
+                    browser.browserAction.setBadgeBackgroundColor({color: COLOR_MAGENTA, tabId: tabId});
                     titleMessage = 'You can vote on this.';
                     browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
                     rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.getProp('canonicalUrls', tabId)});
@@ -326,22 +341,18 @@ const Rbutr = () => {
                 }
             } else {
                 let matches = rbutr.getProp('rebuttals', tabId).match(/class="thumbsUp"/g);
-                let count = Number(matches === null ? 0 : matches.length).toString();
+                let count = Number(matches === null ? ZERO : matches.length);
                 rbutr.setProp('rebuttalCount', tabId, count);
-                let rebuttal_plural = 'rebuttals';
-
-                if (count == 1) {
-                    rebuttal_plural = 'rebuttal';
-                }
+                let rebuttal_plural = count === ONE ? 'rebuttal' : 'rebuttals';
 
                 if (vote && rbutr.getProp('loggedIn')) {
-                    browser.browserAction.setBadgeText({text: 'V ' + count, tabId: tabId});
-                    browser.browserAction.setBadgeBackgroundColor({color: [255, 100, 100, 255], tabId: tabId});
+                    browser.browserAction.setBadgeText({text: 'V ' + count.toString(), tabId: tabId});
+                    browser.browserAction.setBadgeBackgroundColor({color: COLOR_LIGHT_RED, tabId: tabId});
                     titleMessage = 'You can vote on this, and there is also ' + count + ' ' + rebuttal_plural + '.';
                     browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
                 } else {
-                    browser.browserAction.setBadgeText({text: count, tabId: tabId});
-                    browser.browserAction.setBadgeBackgroundColor({color: [255, 0, 0, 255], tabId: tabId});
+                    browser.browserAction.setBadgeText({text: count.toString(), tabId: tabId});
+                    browser.browserAction.setBadgeBackgroundColor({color: COLOR_RED, tabId: tabId});
                     titleMessage = 'This page has ' + count + ' ' + rebuttal_plural + '.';
                     browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
                 }
@@ -356,10 +367,10 @@ const Rbutr = () => {
 
 
     /**
+     * @method submitRebuttals
      * @description Submit rebuttal data to server
      *
-     * @method submitRebuttals
-     * @param {integer} tabId
+     * @param {Number} tabId - Browser tab id
      * @return {void}
      */
     const submitRebuttals = (tabId) => {
@@ -396,7 +407,7 @@ const Rbutr = () => {
             rbutr.displayMessage('<b>' + data.result + '</b>');
             window.open(data.redirectUrl);
             rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
-            rbutr.tabLoaded(tabId, getProp('canonicalUrls', tabId)); // This will reload the for the tab, and set the badge.
+            rbutr.tabLoaded(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
         }, 'json').done(function (msg) {
             rbutrUtils.log('debug', 'done status ', msg.status);
         }).fail(function (msg, arg2, arg3) {
@@ -411,11 +422,11 @@ const Rbutr = () => {
 
 
     /**
+     * @method startSubmission
      * @description Prepare data submission
      *
-     * @method startSubmission
-     * @param {integer} tabId
-     * @param {string} fromTo
+     * @param {Number} tabId - Browser tab id
+     * @param {String} fromTo - Type of URLs that should be submitted
      * @return {void}
      */
     const startSubmission = (tabId, fromTo) => {
@@ -424,13 +435,14 @@ const Rbutr = () => {
 
         setProp('submittingRebuttal', true);
 
-        if (fromTo == 'from') {
-            setProp('fromUrls', 0, canonUrlByTab);
+        if (fromTo === 'from') {
+            setProp('fromUrls', FIRST_ARRAY_ELEMENT, canonUrlByTab);
             // toUrl = 'Please navigate to the rebuttal page and select using above link';
-        } else {
-            setProp('toUrls', 0, canonUrlByTab);
+        } else if (fromTo === 'to') {
+            setProp('toUrls', FIRST_ARRAY_ELEMENT, canonUrlByTab);
             // fromUrl = 'Please navigate to the source page and select using above link';
         }
+
         setProp('comment', []);
         setProp('submitError', '');
         setProp('tags', []);
@@ -439,10 +451,9 @@ const Rbutr = () => {
 
 
     /**
+     * @method stopSubmission
      * @description Cleanup after data submission
      *
-     * @method stopSubmission
-     * @param {void}
      * @return {void}
      */
     const stopSubmission = () => {
@@ -457,10 +468,10 @@ const Rbutr = () => {
 
 
     /**
+     * @method removeTag
      * @description Remove a tag from tag list
      *
-     * @method removeTag
-     * @param {string} tagText
+     * @param {String} tagText - Content of the tag
      * @return {void}
      */
     const removeTag = (tagText) => {
@@ -472,15 +483,17 @@ const Rbutr = () => {
 
 
     /**
+     * @method addTag
      * @description Add a tag to tag list
      *
-     * @method addTag
-     * @param {string} tagText
+     * @param {String} tagText - Content of the tag
      * @return {void}
      */
     const addTag = (tagText) => {
 
-        if (getPropLen('tags') >= 6) {
+        const MAX_TAG_COUNT = 6;
+
+        if (getPropLen('tags') >= MAX_TAG_COUNT) {
             return;
         } else {
             removeTag(tagText); // Avoid duplicates.
@@ -491,10 +504,10 @@ const Rbutr = () => {
 
 
     /**
+     * @method recordLinkClick
      * @description Record click from rbutr website
      *
-     * @method recordLinkClick
-     * @param {object} clickData
+     * @param {Object} clickData - Click event data
      * @return {void}
      */
     const recordLinkClick = (clickData) => {
@@ -514,11 +527,11 @@ const Rbutr = () => {
 
 
     /**
+     * @method getCanonicalUrl
      * @description Generate an absolute url (protocol, host, path) from a canonicalValue that might be relative
      *
-     * @method getCanonicalUrl
-     * @param {string} canonicalValue
-     * @return {string}
+     * @param {String} canonicalValue - URL that should be made absolute
+     * @return {(String|Boolean)} Returns either the found URL or false
      */
     const getCanonicalUrl = (canonicalValue) => {
 
@@ -531,10 +544,10 @@ const Rbutr = () => {
                 return location.protocol + '//' + location.host + canonicalValue;
             } else {
                 rbutrUtils.log('error', 'The canonical URL is relative and does not start with "/". Not supported.');
-                return null;
+                return false;
             }
         } else {
-            return null;
+            return false;
         }
     };
 
@@ -544,7 +557,7 @@ const Rbutr = () => {
 
 
 
-var rbutr = Rbutr();
+const rbutr = Rbutr();
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -556,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'use strict';
 
         if (request.action) {
-            if (request.action == 'setCanonical') {
+            if (request.action === 'setCanonical') {
                 let tab = request.tab || sender.tab;
                 let canonicalUrl = rbutr.getCanonicalUrl(tab.url);
                 let url = canonicalUrl || tab.url;
@@ -565,27 +578,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                rbutr.setProp('urlIsCanonical', url, !!canonicalUrl);
+                rbutr.setProp('urlIsCanonical', url, Boolean(canonicalUrl));
                 rbutr.setProp('canonicalUrls', tab.id, canonicalUrl);
                 rbutr.setProp('plainUrls', tab.id, tab.url);
 
                 rbutr.setProp('pageTitle', url, tab.title);
                 rbutr.tabLoaded(tab.id, url);
 
-            } else if (request.action == 'setClick') {
+            } else if (request.action === 'setClick') {
                 let click = request.click;
                 rbutr.recordLinkClick(click);
                 rbutrUtils.log('debug', 'click recorded: ', click.linkToUrl);
-            } else if (request.action == 'getCid') {
+            } else if (request.action === 'getCid') {
                 sendResponse(rbutr.getCid());
                 return true;
-            } else if (request.action == 'getServerUrl') {
+            } else if (request.action === 'getServerUrl') {
                 sendResponse(rbutrUtils.getServerUrl());
                 return true;
-            } else if (request.action == 'getServerDomain') {
+            } else if (request.action === 'getServerDomain') {
                 sendResponse(rbutrUtils.getServerUrl(true));
                 return true;
-            } else if (request.action == 'getVersion') {
+            } else if (request.action === 'getVersion') {
                 sendResponse(browser.runtime.getManifest().version);
                 return true;
             }
@@ -615,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // ensure that the url data lives for the life of the page, not the tab
         if (changeInfo.status === 'loading') {
-            if (tab.url == rbutr.getProp('plainUrls', tabId)) {
+            if (tab.url === rbutr.getProp('plainUrls', tabId)) {
                 return;
             }
 

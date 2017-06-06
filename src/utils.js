@@ -1,14 +1,14 @@
 /*global console,JSON,*/
+/*exported RbutrUtils*/
 /*jslint browser:true,esnext:true */
 
 
 
 /**
+ * @method RbutrUtils
  * @description Class constructor with variable initialisation
  *
- * @method RbutrUtils
- * @param {void}
- * @return {object}
+ * @return {Object} Public object methods
  */
 const RbutrUtils = () => {
 
@@ -22,21 +22,27 @@ const RbutrUtils = () => {
 
 
     /**
+     * @method log
      * @description If developer mode is enabled, the passed parameters will be logged to the console. First parameter defines the log-level
      *
-     * @method log
-     * @param {mixed}
+     * @param {String} logLevel - The level in which the message should be logged (log, debug, error, ...)
+     * @param {...*} logParams - Variable amount of mixed parameters
      * @return {void}
      */
     const log = (logLevel, ...logParams) => {
 
+        const MIN_PARAM_COUNT = 1;
+
+        // Overwrite console to prevent eslint "no-console" errors
+        const LOGGER = window.console;
+
         // only continue in Dev-Mode and if there are more than 1 log params
-        if(isDev() && logParams.length > 0) {
-            if(typeof console[logLevel] === 'function') {
-                console[logLevel](logPrefix + logParams.join(''));
+        if(isDev() && logParams.length >= MIN_PARAM_COUNT) {
+            if(typeof LOGGER[logLevel] === 'function') {
+                LOGGER[logLevel](logPrefix + logParams.join(''));
             } else {
-                console.error(logPrefix + 'console.' + logLevel + ' is not a valid logging function.');
-                console.debug(logPrefix + logParams.join(''));
+                LOGGER.error(logPrefix + 'console.' + logLevel + ' is not a valid logging function.');
+                LOGGER.debug(logPrefix + logParams.join(''));
             }
         }
     };
@@ -44,11 +50,10 @@ const RbutrUtils = () => {
 
 
     /**
+     * @method isDev
      * @description Determine, wether development mode is enabled or not
      *
-     * @method isDev
-     * @param {void}
-     * @return {boolean}
+     * @return {Boolean} Dev-Mode state
      */
     const isDev = () => {
 
@@ -65,11 +70,11 @@ const RbutrUtils = () => {
 
 
     /**
+     * @method getServerUrl
      * @description Get server url or just domain
      *
-     * @method isDev
-     * @param {boolean} domainOnly
-     * @return {string}
+     * @param {Boolean} domainOnly - Flag to control if API URL or only domain will be returned
+     * @return {String} URL of the server, may contain only domain
      */
     const getServerUrl = (domainOnly) => {
 
@@ -84,11 +89,11 @@ const RbutrUtils = () => {
 
 
     /**
+     * @method url2Domain
      * @description Cleanup a url to get the domain out of it.
      *
-     * @method url2Domain
-     * @param {string} url
-     * @return {string}
+     * @param {String} url - URL where domain should be extracted
+     * @return {String} A domain
      */
     const url2Domain = (url) => {
 
@@ -105,15 +110,17 @@ const RbutrUtils = () => {
 
 
     /**
+     * @method unicode2String
      * @description Convert Unicode escaped string to regular string, see http://stackoverflow.com/questions/7885096/how-do-i-decode-a-string-with-escaped-unicode
      *
-     * @method unicode2String
-     * @param {string} str
-     * @return {string}
+     * @param {String} str - A string that may contain unicode characters
+     * @return {String} Cleaned string
      */
     const unicode2String = (str) => {
         return decodeURIComponent(JSON.parse('"' + str.replace(/\"/g, '\\"') + '"'));
     };
+
+
 
     return {log, isDev, getServerUrl, url2Domain, unicode2String};
 };

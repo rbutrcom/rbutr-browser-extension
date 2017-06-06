@@ -5,11 +5,15 @@
 /**
  * @description Multi-Browser support:If we don't have a chrome object, check for browser and rename.
  */
-if (typeof chrome !== 'undefined' && typeof browser === 'undefined') {
-    browser = chrome;
+if (typeof window.chrome !== 'undefined' && typeof window.browser === 'undefined') {
+    window.browser = window.chrome;
 }
 
 
+
+const ZERO = 0;
+const ONE = 1;
+const FIRST_ARRAY_ELEMENT = 0;
 
 const rbutrUtils = RbutrUtils();
 
@@ -45,22 +49,23 @@ const platforms = {
             filter: [{ element: 'div' }]
         },
         externalLinkPattern: new RegExp(/^https?:\/\/l\.facebook\.com\/l\.php\?u=([^&]+)/),
-        cleanurl: function (url) {
+        cleanurl: function (dirtyUrl) {
 
             'use strict';
 
+            const TEST_LINK_LENGTH = 30;
             let
-                testLink = '',
-                thisUrl = '';
+                cleanedUrl = '',
+                testLink = decodeURIComponent(dirtyUrl).substring(ZERO, TEST_LINK_LENGTH);
 
-            testLink = decodeURIComponent(url).substring(0, 30);
 
             if (testLink === 'https://l.facebook.com/l.php?u=' || testLink === 'http://l.facebook.com/l.php?u=') {
-                thisUrl = decodeURIComponent(url).substring(30).split('&h=', 1);
-                url = thisUrl;
+                cleanedUrl = decodeURIComponent(dirtyUrl).substring(TEST_LINK_LENGTH).split('&h=', ONE);
+            } else {
+                cleanedUrl = dirtyUrl;
             }
 
-            return url;
+            return cleanedUrl;
         }
     }
 };
@@ -68,11 +73,10 @@ const platforms = {
 
 
 /**
+ * @method Platform
  * @description Platform class constructor with variable initialisation
  *
- * @method Platform
- * @param {void}
- * @return {object}
+ * @return {Object} Public object methods
  */
 const Platform = () => {
 
@@ -87,11 +91,11 @@ const Platform = () => {
 
 
     /**
+     * @method getProp
      * @description Property getter
      *
-     * @method getProp
-     * @param {string} name
-     * @return {mixed}
+     * @param {String} name - Object name in variable "properties"
+     * @return {(String|Object)} Property value
      */
     const getProp = (name) => {
         return properties[name];
@@ -100,11 +104,11 @@ const Platform = () => {
 
 
     /**
+     * @method setProp
      * @description Property setter
      *
-     * @method setProp
-     * @param {string} name
-     * @param {mixed} value
+     * @param {String} name - Object name in variable "properties"
+     * @param {*} value - The value to be set in "properties.<name>"
      * @return {void}
      */
     const setProp = (name, value) => {
@@ -114,11 +118,11 @@ const Platform = () => {
 
 
     /**
+     * @method cleanUrl
      * @description Strip urls down to hostname
      *
-     * @method cleanUrl
-     * @param {string} dirtyUrl
-     * @return {string}
+     * @param {String} dirtyUrl - The URL to be cleaned
+     * @return {String} - Returns domain contained in the given URL
      */
     const cleanUrl = (dirtyUrl) => {
 
@@ -138,21 +142,23 @@ const Platform = () => {
 
 
     /**
+     * @method expandExternalLinks
      * @description Extract and expand external links from platform urls
      *
-     * @method expandExternalLinks
-     * @param {object} element
-     * @return {string}
+     * @param {Object} $element - An <a href> DOM object
+     * @return {(String|Boolean)} Returns the expanded URL or false
      */
     const expandExternalLinks = ($element) => {
 
+        const SECOND_ARR_ELEMENT = 1;
         let
             matches = null,
             matchedUrl = null;
 
         if (getProp('config').externalLinkPattern !== null) {
-            if (matches = getProp('config').externalLinkPattern.exec($element.attr('href'))) {
-                matchedUrl = decodeURIComponent(matches[1]);
+            matches = getProp('config').externalLinkPattern.exec($element.attr('href'));
+            if (matches.length >= SECOND_ARR_ELEMENT) {
+                matchedUrl = decodeURIComponent(matches[SECOND_ARR_ELEMENT]);
 
                 if (matchedUrl !== null) {
                     return matchedUrl;
@@ -166,10 +172,9 @@ const Platform = () => {
 
 
     /**
+     * @method refresh
      * @description Refresh the platform
      *
-     * @method refresh
-     * @param {void}
      * @return {void}
      */
     const refresh = () => {
@@ -196,11 +201,10 @@ const Platform = () => {
 
 
 /**
+ * @method Content
  * @description Content class constructor with variable initialisation
  *
- * @method Content
- * @param {void}
- * @return {object}
+ * @return {Object} Public object methods
  */
 const Content = () => {
 
@@ -221,11 +225,11 @@ const Content = () => {
 
 
     /**
+     * @method shouldShowMessage
      * @description Determine, wether rbutr message box should appear or not
      *
-     * @method shouldShowMessage
-     * @param {string} url
-     * @return {boolean}
+     * @param {String} url - URL to be checked
+     * @return {Boolean} Resulting state
      */
     const shouldShowMessage = (url) => {
 
@@ -236,12 +240,12 @@ const Content = () => {
 
 
     /**
+     * @method createMessageTemplate
      * @description Create html template and fill it with data from given object
      *
-     * @method createMessageTemplate
-     * @param {object} $entry
-     * @param {string} type
-     * @return {string}
+     * @param {Object} $entry - Data object to be rendered
+     * @param {String} type - Type of data
+     * @return {String} Returns a HTML template string
      */
     const createSingleMessageEntry = ($entry, type) => {
         return `
@@ -277,12 +281,12 @@ const Content = () => {
 
 
     /**
+     * @method createMessageTemplate
      * @description Create html template and fill it with data from given object
      *
-     * @method createMessageTemplate
-     * @param {object} $data
-     * @param {string} requestedUrl
-     * @return {string}
+     * @param {Object} $data - The fetched data as object
+     * @param {String} requestedUrl - URL the data is for; For etermining if it's rebutted or a rebuttal
+     * @return {String} Returns a HTML template string
      */
     const createMessageTemplate = ($data, requestedUrl) => {
 
@@ -290,19 +294,19 @@ const Content = () => {
             messageTemplate = '',
             rbutrLogo = '<img src="' + content.serverDomain + '/images/logohomepagelowres.png" width="24" class="rbutr-logo" alt="Rbutr">',
             detailsButton = '<div><button class="more" onclick="this.parentNode.nextElementSibling.classList.toggle(\'hidden\');">Details</button><div class="clearfix"></div></div>',
-            rebuttedCount = 0,
-            rebuttalCount = 0,
+            rebuttedCount = ZERO,
+            rebuttalCount = ZERO,
             rebuttedList = '',
             rebuttalList = '';
 
 
-        if ($data.direct.length > 0 || $data.general.length > 0) {
+        if ($data.direct.length > ZERO || $data.general.length > ZERO) {
             messageTemplate += `
                 <div class="rbutr-message">
                     ${rbutrLogo}
                 `;
 
-            if ($data.direct.length > 0) {
+            if ($data.direct.length > ZERO) {
                 for (let index in $data.direct) {
 
                     if (rbutrUtils.unicode2String($data.direct[index].fromPage.url) === requestedUrl) {
@@ -314,7 +318,7 @@ const Content = () => {
                     }
                 }
             }
-            if ($data.general.length > 0) {
+            if ($data.general.length > ZERO) {
                 for (let index in $data.general) {
 
                     if (rbutrUtils.unicode2String($data.general[index].fromPage.url) === requestedUrl) {
@@ -328,10 +332,10 @@ const Content = () => {
             }
 
 
-            if (rebuttalCount > 0 && rebuttedCount > 0) {
+            if (rebuttalCount > ZERO && rebuttedCount > ZERO) {
                 messageTemplate += `
-                    <h4>This page has been rebutted by ${rebuttedCount} ${rebuttedCount > 1 ? 'pages' : 'page'}
-                    and rebuts ${rebuttalCount} other ${rebuttalCount > 1 ? 'pages' : 'page'}</h4>
+                    <h4>This page has been rebutted by ${rebuttedCount} ${rebuttedCount > ONE ? 'pages' : 'page'}
+                    and rebuts ${rebuttalCount} other ${rebuttalCount > ONE ? 'pages' : 'page'}</h4>
                     ${detailsButton}
                     <div class="details hidden">
                         <h5>Rebutted by</h5>
@@ -340,18 +344,18 @@ const Content = () => {
                         ${rebuttalList}
                     </div>
                 `;
-            } else if (rebuttalCount > 0) {
+            } else if (rebuttalCount > ZERO) {
                 messageTemplate += `
-                    <h4>This page rebuts ${rebuttalCount} other ${rebuttalCount > 1 ? 'pages' : 'page'}</h4>
+                    <h4>This page rebuts ${rebuttalCount} other ${rebuttalCount > ONE ? 'pages' : 'page'}</h4>
                     ${detailsButton}
                     <div class="details hidden">
                         <h5>Rebuttal for</h5>
                         ${rebuttalList}
                     </div>
                 `;
-            } else if (rebuttedCount > 0) {
+            } else if (rebuttedCount > ZERO) {
                 messageTemplate += `
-                    <h4>This page has been rebutted by ${rebuttedCount} ${rebuttedCount > 1 ? 'pages' : 'page'}</h4>
+                    <h4>This page has been rebutted by ${rebuttedCount} ${rebuttedCount > ONE ? 'pages' : 'page'}</h4>
                     ${detailsButton}
                     <div class="details hidden">
                         <h5>Rebutted by</h5>
@@ -371,12 +375,12 @@ const Content = () => {
 
 
     /**
+     * @method getRbutrData
      * @description Get data from server by url
      *
-     * @method getRbutrData
-     * @param {string} url
-     * @param {object} $element
-     * @param {function} callback
+     * @param {String} url - URL which data is needed
+     * @param {Object} $element - Target DOM element to operate in
+     * @param {Function} callback - Function to handle data after retrieving
      * @return {void}
      */
     const getRbutrData = (url, $element, callback) => {
@@ -395,11 +399,10 @@ const Content = () => {
 
 
     /**
+     * @method setAlertOnPosts
      * @description Target and modify platform post based on platform config
      *
-     * @method setAlertOnPosts
-     * @param {void}
-     * @return {boolean}
+     * @return {Boolean} Returns true after it's done
      */
     const setAlertOnPosts = () => {
 
@@ -445,10 +448,9 @@ const Content = () => {
 
 
     /**
+     * @method observe
      * @description Turn on the mutation observer
      *
-     * @method observe
-     * @param {void}
      * @return {void}
      */
     const observe = () => {
@@ -480,17 +482,19 @@ const Content = () => {
 
 
     /**
+     * @method execute
      * @description Execute the script
      *
-     * @method execute
-     * @param {void}
      * @return {void}
      */
     const execute = () => {
 
+        const TIMEOUT_OBSERVE = 1000;
+        const TIMEOUT_ALERTING = 2000;
+
         if (platform.getProp('name') !== 'none') {
-            window.setTimeout(content.observe, 1000);
-            window.setTimeout(content.setAlertOnPosts, 2000);
+            window.setTimeout(content.observe, TIMEOUT_OBSERVE);
+            window.setTimeout(content.setAlertOnPosts, TIMEOUT_ALERTING);
         }
     };
 
@@ -505,7 +509,7 @@ document.onreadystatechange = function () {
 
     'use strict';
 
-    if (document.readyState == 'complete') {
+    if (document.readyState === 'complete') {
 
         browser.runtime.sendMessage({'action': 'getCid'}, function (response) {
             content.cid = response;
@@ -527,6 +531,8 @@ document.onreadystatechange = function () {
          * @description Handle requests from background script
          */
         browser.runtime.onMessage.addListener(function (request) {
+
+            const TIMEOUT_HIDE_FLOATER = 5000;
 
             if (request.action === 'showMessageBox') {
                 if (content.shouldShowMessage(request.url)) {
@@ -550,10 +556,10 @@ document.onreadystatechange = function () {
 
                     window.setTimeout(function () {
                         $('#rbutrfloatdiv').remove();
-                    }, 5000);
+                    }, TIMEOUT_HIDE_FLOATER);
 
                     $('#dontShowAgain').click(function () {
-                        localStorage.setItem('rbutr.dontshow.' + request.url, $('#dontShowAgain')[0].checked);
+                        localStorage.setItem('rbutr.dontshow.' + request.url, $('#dontShowAgain')[FIRST_ARRAY_ELEMENT].checked);
                     });
                 }
             }

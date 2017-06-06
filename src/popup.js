@@ -2,8 +2,8 @@
 /*jslint browser:true,esnext:true */
 
 
-var waitCount;
-var tabId;
+let waitCount;
+let tabId;
 
 
 /**
@@ -20,17 +20,22 @@ window.browser = (function () {
 
 
 
+const ZERO = 0;
+const ONE = 1;
+const FIRST_ARRAY_ELEMENT = 0;
+const MAX_TAG_COUNT = 6;
+const MAX_URL_COUNT = 3;
+
 const rbutrUtils = RbutrUtils();
-var rbutr = browser.extension.getBackgroundPage().rbutr;
-rbutrUtils.log('debug', 'in popup');
+let rbutr = browser.extension.getBackgroundPage().rbutr;
 
 
 
 /**
+ * @method setPage
  * @description Toggle currently displayed popup page
  *
- * @method setPage
- * @param {string} page
+ * @param {String} page - Name of the page/view to display
  * @return {void}
  */
 function setPage(page) {
@@ -52,10 +57,10 @@ function setPage(page) {
 
 
 /**
+ * @method appendPage
  * @description Append page to currently displayed popup page
  *
- * @method appendPage
- * @param {string} page
+ * @param {String} page - Name of the page/view to display
  * @return {void}
  */
 function appendPage(page) {
@@ -67,51 +72,52 @@ function appendPage(page) {
 
 
 /**
+ * @method refreshSubmissionData
  * @description Refresh stored data certain user interactions
  *
- * @method refreshSubmissionData
- * @param {void}
  * @return {void}
  */
 function refreshSubmissionData() {
 
     'use strict';
 
-    if (rbutr.getPropLen('fromUrls') > 1) {
+    const HTTP_LENGTH = 4;
+
+    if (rbutr.getPropLen('fromUrls') > ONE) {
         $('#submitSources').html('<h3 class="sourceHeading">Rebut these sources</h3><div class="UserOptionsButton StartRebutal3">Menu</div><div style="clear:both"></div>');
     } else {
         $('#submitSources').html('<h3 class="sourceHeading">Rebut this source</h3><div class="UserOptionsButton StartRebutal3">Menu</div><div style="clear:both"></div>');
     }
     // This data lives in the background so it can be shared between tabs (popups are one per tab)
 
-    for (var i = 0; i < rbutr.getPropLen('fromUrls'); i++) {
-        var url = rbutr.getProp('fromUrls', i);
-        var source = $('<div class="linkBlock" id="source_' + i +
+    for (let i = 0; i < rbutr.getPropLen('fromUrls'); i++) {
+        let url = rbutr.getProp('fromUrls', i);
+        let source = $('<div class="linkBlock" id="source_' + i +
             '"><span class="linkTitle">' + rbutr.getPageTitle(url) + '</span><br>' +
             '<span class="linkUrl">' + url + '</span></div>').appendTo('#submitSources');
         $('<img class="close" src="http://rbutr.com/images/button-removetag.png" id="s_x_' + i + '"/>').click(function (event) {
             event.preventDefault();
             event.stopPropagation();
-            rbutr.setProp('fromUrls', this.id.substring(4, 5), null);
+            rbutr.setProp('fromUrls', i, null);
             refreshSubmissionData();
         }).appendTo(source);
     }
 
-    if (rbutr.getPropLen('fromUrls') > 0) {
+    if (rbutr.getPropLen('fromUrls') > ZERO) {
         $('#submitSources').append('<div id="captureSourceButton" class="fakeLink">+ add another source</div>');
     } else {
         $('#submitSources').append('<div id="captureSourceButton" class="button">Click to capture current page as source link.</div>');
     }
 
-    if (rbutr.getPropLen('toUrls') > 1) {
+    if (rbutr.getPropLen('toUrls') > ONE) {
         $('#submitRebuttals').html('<h3 class="rebuttalHeading">With these pages</h3><div style="clear:both"></div>');
     } else {
         $('#submitRebuttals').html('<h3 class="rebuttalHeading">With this page</h3><div style="clear:both"></div>');
     }
 
-    for (var j = 0; j < rbutr.getPropLen('toUrls'); j++) {
-        var toUrl = rbutr.getProp('toUrls', j);
-        var rebuttal = $(
+    for (let j = 0; j < rbutr.getPropLen('toUrls'); j++) {
+        let toUrl = rbutr.getProp('toUrls', j);
+        let rebuttal = $(
             '<div class="linkBlock" id="rebuttal_' + j +
             '"><span class="linkTitle">' + rbutr.getPageTitle(toUrl) + '</span><br>' +
             '<span class="linkUrl">' + toUrl + '</span><br>' +
@@ -120,21 +126,21 @@ function refreshSubmissionData() {
             '" size="60" type="text" placeholder="Optional : Describe the relationship between these two pages in a few words" ' +
             'name="c_x_' + j + '">')
             .val(rbutr.getProp('comment', j))
-            .on('keyup', function (event) {
-                rbutr.setProp('comment', event.target.id.substring(4, 5), this.value);
+            .on('keyup', function () {
+                rbutr.setProp('comment', j, this.value);
             })
             .appendTo(rebuttal);
         $('<img class="close" src="http://rbutr.com/images/button-removetag.png" id="r_x_' + j + '">').click(function (event) {
             event.preventDefault();
             event.stopPropagation();
-            rbutr.setProp('toUrls', this.id.substring(4, 5), null);
+            rbutr.setProp('toUrls', j, null);
             refreshSubmissionData();
         }).appendTo(rebuttal);
     }
 
-    if (rbutr.getPropLen('toUrls') >= 3) {
+    if (rbutr.getPropLen('toUrls') >= MAX_URL_COUNT) {
         $('#captureRebuttalButton').disable();
-    } else if (rbutr.getPropLen('toUrls') > 0) {
+    } else if (rbutr.getPropLen('toUrls') > ZERO) {
         $('#submitRebuttals').append('<div id="captureRebuttalButton" class="fakeLink">+ add another rebuttal</div>');
     } else {
         $('#submitRebuttals').append('<div id="captureRebuttalButton" class="button">Click to capture current page as rebuttal link.</div>');
@@ -146,9 +152,11 @@ function refreshSubmissionData() {
 
     $('#submitError').text(rbutr.getProp('submitError'));
 
-    if (rbutr.getPropLen('fromUrls') > 0 && rbutr.getProp('fromUrls', 0).substring(0, 4).toLowerCase() == 'http' &&
-        rbutr.getPropLen('toUrls') > 0 && rbutr.getProp('toUrls', 0).substring(0, 4).toLowerCase() == 'http' &&
-        rbutr.getPropLen('tags') > 0) {
+    if (rbutr.getPropLen('fromUrls') > ZERO &&
+        rbutr.getProp('fromUrls', FIRST_ARRAY_ELEMENT).substring(ZERO, HTTP_LENGTH).toLowerCase() === 'http' &&
+        rbutr.getPropLen('toUrls') > ZERO &&
+        rbutr.getProp('toUrls', FIRST_ARRAY_ELEMENT).substring(ZERO, HTTP_LENGTH).toLowerCase() === 'http' &&
+        rbutr.getPropLen('tags') > ZERO) {
         document.forms['data'].submitLink.title = 'Submit this rebuttal';
         document.forms['data'].submitLink.disabled = false;
     } else {
@@ -160,10 +168,9 @@ function refreshSubmissionData() {
 
 
 /**
+ * @method refreshTags
  * @description Refresh stored tags
  *
- * @method refreshTags
- * @param {void}
  * @return {void}
  */
 function refreshTags() {
@@ -171,7 +178,7 @@ function refreshTags() {
     'use strict';
 
     $('#tagHolder').html(''); // Wipe and recreate
-    for (var i = 0; i < rbutr.getPropLen('tags'); i++) {
+    for (let i = 0; i < rbutr.getPropLen('tags'); i++) {
         $('#tagHolder').append('<a class="tagForSubmission" href="#">' + rbutr.getProp('tags', i) + '</a>');
     }
     $('.tagForSubmission').click(function () {
@@ -185,10 +192,10 @@ function refreshTags() {
 
 
 /**
+ * @method recordTag
  * @description Add tag to taglist and refresh stored data
  *
- * @method recordTag
- * @param {string} tagText
+ * @param {String} tagText - Content of the tag
  * @return {void}
  */
 function recordTag(tagText) {
@@ -207,15 +214,18 @@ function recordTag(tagText) {
 
 
 /**
+ * @method setupTagTypeahead
  * @description Setup typeahead autocomplete library
  *
- * @method setupTagTypeahead
- * @param {void}
  * @return {void}
  */
 function setupTagTypeahead() {
 
     'use strict';
+
+    const KEY_ENTER = 13;
+    const KEY_SEMICOLON = 186;
+    const KEY_COMMA = 188;
 
     $('#tagTypeahead').typeahead({
         name: 'tags',
@@ -226,10 +236,11 @@ function setupTagTypeahead() {
         recordTag(data.value);
         document.getElementById('#tagTypeahead').value = '';
     }).keydown(function (event) {
-        var key = event.which;
+        const key = event.which;
         rbutrUtils.log('debug', 'key = ', key);
         rbutrUtils.log('debug', 'event = ', event);
-        if (key == 13 || key == 186 || key == 188) {
+
+        if (key === KEY_ENTER || key === KEY_SEMICOLON || key === KEY_COMMA) {
             event.preventDefault();
             recordTag($('#tagTypeahead').val());
             $('#tagTypeahead').val('');
@@ -240,10 +251,9 @@ function setupTagTypeahead() {
 
 
 /**
+ * @method displaySubmissionForm
  * @description Prepare and display submission page
  *
- * @method displaySubmissionForm
- * @param {void}
  * @return {void}
  */
 function displaySubmissionForm() {
@@ -261,17 +271,17 @@ function displaySubmissionForm() {
 
 
 /**
+ * @method displayVoteForm
  * @description Show voting page if no votes have been made, otherwise thankyou page
  *
- * @method displayVoteForm
- * @param {integer} recordedClick
+ * @param {Object} recordedClick - Object which holds voting click data
  * @return {void}
  */
 function displayVoteForm(recordedClick) {
 
     'use strict';
 
-    if (recordedClick.yourVote !== 0) {
+    if (recordedClick.yourVote !== ZERO) {
         setPage('thankyou');
     } else {
         setPage('vote');
@@ -281,10 +291,10 @@ function displayVoteForm(recordedClick) {
 
 
 /**
+ * @method displayMessage
  * @description Display given message in popup
  *
- * @method displayMessage
- * @param {string} htmlMessage
+ * @param {String} htmlMessage - The message to be displayed
  * @return {void}
  */
 function displayMessage(htmlMessage) {
@@ -297,10 +307,9 @@ function displayMessage(htmlMessage) {
 
 
 /**
+ * @method displayNotLoggedInMessage
  * @description Display message if user is not logged in
  *
- * @method displayNotLoggedInMessage
- * @param {void}
  * @return {void}
  */
 function displayNotLoggedInMessage() {
@@ -314,10 +323,10 @@ function displayNotLoggedInMessage() {
 
 
 /**
+ * @method showSubmissionPopup
  * @description Display submission page if user is logged in
  *
- * @method showSubmissionPopup
- * @param {string} fromTo
+ * @param {String} fromTo - Type of URL that should be submitted
  * @return {void}
  */
 function showSubmissionPopup(fromTo) {
@@ -335,10 +344,9 @@ function showSubmissionPopup(fromTo) {
 
 
 /**
+ * @method cancelSubmission
  * @description Stop submission and close popup
  *
- * @method cancelSubmission
- * @param {void}
  * @return {void}
  */
 function cancelSubmission() {
@@ -352,10 +360,9 @@ function cancelSubmission() {
 
 
 /**
+ * @method requestRebuttals
  * @description Display rebuttal request page
  *
- * @method requestRebuttals
- * @param {void}
  * @return {void}
  */
 function requestRebuttals() {
@@ -377,17 +384,16 @@ function requestRebuttals() {
 
 
 /**
+ * @method submitRequestData
  * @description Submit rebuttal request data to server
  *
- * @method submitRequestData
- * @param {void}
- * @return {boolean}
+ * @return {Boolean} Returns false if preconditions are not correct
  */
 function submitRequestData() {
 
     'use strict';
 
-    if (rbutr.getPropLen('tags') > 6) {
+    if (rbutr.getPropLen('tags') > MAX_TAG_COUNT) {
         document.forms['requestData'].submitLink.value = 'Maximum of 6 tags, please fix before submitting.';
         document.forms['requestData'].submitLink.disabled = false;
         return false;
@@ -414,10 +420,9 @@ function submitRequestData() {
 
 
 /**
+ * @method toTagged
  * @description Add canonical url to stored toUrl list and reresh data
  *
- * @method toTagged
- * @param {void}
  * @return {void}
  */
 function toTagged() {
@@ -435,10 +440,9 @@ function toTagged() {
 
 
 /**
+ * @method fromTagged
  * @description Add canonical url to stored fromUrl list and reresh data
  *
- * @method fromTagged
- * @param {void}
  * @return {void}
  */
 function fromTagged() {
@@ -456,10 +460,9 @@ function fromTagged() {
 
 
 /**
+ * @method cancelRequestSubmission
  * @description Return from request to submission page
  *
- * @method cancelRequestSubmission
- * @param {void}
  * @return {void}
  */
 function cancelRequestSubmission() {
@@ -473,21 +476,20 @@ function cancelRequestSubmission() {
 
 
 /**
+ * @method submitData
  * @description Submit data
  *
- * @method submitData
- * @param {void}
- * @return {boolean}
+ * @return {Boolean} Returns false if preconditions are not correct
  */
 function submitData() {
 
     'use strict';
 
-    if (rbutr.getPropLen('tags') > 6) {
+    if (rbutr.getPropLen('tags') > MAX_TAG_COUNT) {
         rbutr.setProp('submitError', null, 'Maximum of 6 tags, please fix before submitting.');
         return false;
     }
-    if (rbutr.getPropLen('tags') === 0) {
+    if (rbutr.getPropLen('tags') === ZERO) {
         rbutr.setProp('submitError', null, 'Please enter at least one tag for this rebuttal.');
         return false;
     }
@@ -499,21 +501,23 @@ function submitData() {
 
 
 /**
+ * @method handleDelayOnLoadOfRebuttals
  * @description Recursively sleep until the rebuttal data is ready
  *
- * @method handleDelayOnLoadOfRebuttals
- * @param {void}
  * @return {void}
  */
 function handleDelayOnLoadOfRebuttals() {
 
     'use strict';
 
+    const DELAY = 50;
+    const TIMEOUT = 100;
+
     setTimeout(function () {
         // not yet ready.
         if (rbutr.getProp('rebuttals', tabId) === null) {
             waitCount++;
-            if (waitCount < 50) {
+            if (waitCount < DELAY) {
                 // Recurse
                 handleDelayOnLoadOfRebuttals();
                 return;
@@ -526,16 +530,15 @@ function handleDelayOnLoadOfRebuttals() {
         } else {
             setPage('rebuttals');
         }
-    }, 100);
+    }, TIMEOUT);
 }
 
 
 
 /**
+ * @method loadData
  * @description Load recorded click data
  *
- * @method loadData
- * @param {void}
  * @return {void}
  */
 function loadData() {
@@ -543,7 +546,7 @@ function loadData() {
     'use strict';
 
     // Loads the data from the background tab, which has likely already retrieved it.
-    var recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
+    let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
     if (rbutr.getProp('submittingRebuttal')) {
         displaySubmissionForm();
 
@@ -557,7 +560,7 @@ function loadData() {
     // Don't show current rebuttals if adding, too messy.
     if (!rbutr.getProp('submittingRebuttal')) {
         // Needs to be set for following call which is recursive
-        waitCount = 0;
+        waitCount = ZERO;
         handleDelayOnLoadOfRebuttals();
     }
 }
@@ -565,17 +568,17 @@ function loadData() {
 
 
 /**
+ * @method vote
  * @description Update vote score with given value
  *
- * @method vote
- * @param {integer} voteScore
+ * @param {Number} voteScore - Integer representing the score of a URL
  * @return {void}
  */
 function vote(voteScore) {
 
     'use strict';
 
-    var recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
+    let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
     $.get(rbutrUtils.getServerUrl(), {
         'linkId': recordedClick.linkId,
         'vote': voteScore,
@@ -591,42 +594,39 @@ function vote(voteScore) {
 
 
 /**
+ * @method voteUp
  * @description Increment vote score
  *
- * @method voteUp
- * @param {void}
  * @return {void}
  */
 function voteUp() {
 
     'use strict';
 
-    vote(1);
+    vote(ONE);
 }
 
 
 
 /**
+ * @method voteDown
  * @description Decrement vote score
  *
- * @method voteDown
- * @param {void}
  * @return {void}
  */
 function voteDown() {
 
     'use strict';
 
-    vote(-1);
+    vote(-ONE);
 }
 
 
 
 /**
+ * @method submitIdeaData
  * @description Submit rebuttal idea to the server
  *
- * @method submitIdeaData
- * @param {void}
  * @return {void}
  */
 function submitIdeaData() {
@@ -650,10 +650,9 @@ function submitIdeaData() {
 
 
 /**
+ * @method loadMenu
  * @description Load menu from server and show message afterwards
  *
- * @method loadMenu
- * @param {void}
  * @return {void}
  */
 function loadMenu() {
@@ -743,10 +742,6 @@ $(document)
 
 
 
-
-
-
-
 /**
  * @description Set canonical url in background
  */
@@ -757,10 +752,10 @@ browser.tabs.query({currentWindow: true, active: true}, function (tab) {
     'use strict';
 
     // This happens AFTER document.ready, so I'll do everything here, which means I get access to the URL
-    tabId = tab[0].id;
+    tabId = tab[FIRST_ARRAY_ELEMENT].id;
 
     if (!rbutr.getProp('canonicalUrls', tabId)) {
-        browser.runtime.sendMessage({action: 'setCanonical', tab: tab[0]});
+        browser.runtime.sendMessage({action: 'setCanonical', tab: tab[FIRST_ARRAY_ELEMENT]});
     }
 
     loadData();
