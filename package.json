@@ -8,7 +8,6 @@
   "license": "LGPL-3.0",
   "dependencies": {},
   "devDependencies": {
-    "concurrently": "^3.4.0",
     "eslint": "^3.19.0",
     "eslint-config-google": "^0.7.1",
     "eslint-config-standard": "^10.2.1",
@@ -31,7 +30,7 @@
     "lint:js": "eslint --config .eslintrc.json src;",
     "lint:style": "stylelint --config .stylelintrc src/scss/*.scss;",
     "lint:html": "htmlhint --config .htmlhintrc src/**/*.html;",
-    "lint": "concurrently --names  lint:html, lint:style, lint:js -p name 'yarn run lint:html' 'yarn run lint:style' 'yarn run lint:js';",
+    "lint": "yarn run lint:html && yarn run lint:style && yarn run lint:js",
     "test": "mocha --colors --sort --check-leaks --use_strict -r mock-local-storage -r jsdom-global/register",
     "zip": "mkdir -p build && zip -r build/rbutr.zip ./src/*",
     "build": "yarn run lint && yarn run sass && yarn run zip"
