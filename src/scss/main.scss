@@ -10,7 +10,7 @@ body {
 h1 {
   color: #333;
   font-size: 40px;
-  font-weight: normal;
+  font-weight: 400;
   letter-spacing: 0;
   line-height: 1.3em;
   margin: 0;
@@ -21,7 +21,7 @@ h2 {
   color: #777;
   float: left;
   font-size: 22px;
-  font-weight: normal;
+  font-weight: 400;
   letter-spacing: 0;
   line-height: 1.3em;
   margin-bottom: 10px;
@@ -76,7 +76,7 @@ a {
 }
 
 .fake-link {
-  color: blue;
+  color: #00f;
   cursor: pointer;
   font-size: 12px;
   padding: 2px 0;
@@ -84,8 +84,7 @@ a {
 }
 
 .btn {
-  background: -webkit-gradient(linear, left top, left bottom, from(#efefef), to(#e6e6e6));
-  background: -moz-linear-gradient(top, #efefef, #e6e6e6);
+  background: linear-gradient(to bottom, #efefef, #e6e6e6);
   border: 0;
   border-radius: 0;
   cursor: pointer;
@@ -107,7 +106,7 @@ a {
 }
 
 .btn-rebutted {
-  color: #c00 !important;
+  color: #c00;
 }
 
 .btn-rebuttal {
@@ -118,16 +117,12 @@ a {
   margin: 20px auto 20px 5px;
 }
 
-ul {
-  -webkit-padding-start: 30px;
-}
-
 .link-title {
   font-size: 85%;
 }
 
 .link-url {
-  color: gray;
+  color: #808080;
   font-size: 60%;
 }
 
@@ -159,7 +154,7 @@ ul {
 .CaptureHeader {
   color: #2a2;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 700;
   padding-top: 20px;
 }
 
@@ -225,6 +220,35 @@ ul {
   clear: both;
 }
 
+.thumbsUp,
+.thumbsDown {
+  background-repeat: no-repeat;
+  display: block;
+  height: 23px;
+  margin-bottom: 10px;
+
+  a {
+    padding-left: 28px;
+    text-decoration: none;
+  }
+}
+
+.thumbsUp {
+  background-image: url("http://rbutr.com/images/thumbsUp.png");
+
+  a {
+    color: #3c0;
+  }
+}
+
+.thumbsDown {
+  background-image: url("http://rbutr.com/images/thumbsDown.png");
+
+  a {
+    color: #f00;
+  }
+}
+
 .RebuttalsContainer {
   width: 100%;
 
@@ -252,7 +276,7 @@ ul {
   }
 
   thead td {
-    background-color: #fff !important;
+    background-color: #fff;
     padding: 0 10px;
 
     h3 {
@@ -265,7 +289,7 @@ ul {
   }
 
   .link {
-    background-image: url('http://rbutr.com/images/link.png');
+    background-image: url("http://rbutr.com/images/link.png");
     display: block;
     height: 20px;
     margin-bottom: 10px;
@@ -281,35 +305,6 @@ ul {
   .bottom {
     float: left;
     vertical-align: bottom;
-  }
-}
-
-.thumbsUp,
-.thumbsDown {
-  background-repeat: no-repeat;
-  display: block;
-  height: 23px;
-  margin-bottom: 10px;
-
-  a {
-    padding-left: 28px;
-    text-decoration: none;
-  }
-}
-
-.thumbsUp {
-  background-image: url('http://rbutr.com/images/thumbsUp.png');
-
-  a {
-    color: #3c0 !important;
-  }
-}
-
-.thumbsDown {
-  background-image: url('http://rbutr.com/images/thumbsDown.png');
-
-  a {
-    color: #f00 !important;
   }
 }
 
@@ -330,7 +325,7 @@ ul {
 }
 
 .address {
-  color: #a4a4a4 !important;
+  color: #a4a4a4;
   font-size: 10px;
   position: relative;
   top: -3px;
@@ -342,7 +337,7 @@ ul {
   vertical-align: bottom;
 }
 
-img.close {
+.close {
   float: right;
 }
 
@@ -368,7 +363,7 @@ img.close {
 }
 
 .submission-error {
-  color: red;
+  color: #f00;
 }
 
 #btn-capture-src {
