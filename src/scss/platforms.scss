@@ -23,33 +23,6 @@
       margin-right: 10px;
     }
 
-    .rbutr-message-entry {
-      padding: 10px 20px 5px;
-      position: relative;
-
-      &:hover {
-        background: #bde;
-
-        .rbutr-info {
-          display: table;
-        }
-      }
-    }
-
-    button {
-      background: #06c;
-      border: 0;
-      color: #fff;
-      float: right;
-      padding: 4px 8px;
-    }
-
-    table {
-      border: 0;
-      margin-bottom: 5px;
-      width: 100%;
-    }
-
     .rbutr-info {
       background: #cef;
       border: 1px solid #06c;
@@ -83,6 +56,33 @@
         text-align: right;
       }
     }
+
+    .rbutr-message-entry {
+      padding: 10px 20px 5px;
+      position: relative;
+
+      &:hover {
+        background: #bde;
+
+        .rbutr-info {
+          display: table;
+        }
+      }
+    }
+
+    button {
+      background: #06c;
+      border: 0;
+      color: #fff;
+      float: right;
+      padding: 4px 8px;
+    }
+
+    table {
+      border: 0;
+      margin-bottom: 5px;
+      width: 100%;
+    }
   }
 }
 
@@ -90,8 +90,8 @@
   background: #fff;
   border: 2px solid #26a;
   color: #000;
-  font-size: 9pt;
-  font-weight: bold;
+  font-size: 12px;
+  font-weight: 700;
   padding: 16px;
   position: fixed;
   right: 10px;
@@ -102,12 +102,12 @@
 
   span {
     font-size: x-small;
-    font-weight: normal;
+    font-weight: 400;
   }
 
   label {
     font-size: x-small;
-    font-weight: normal;
+    font-weight: 400;
     margin-top: 10px;
     text-align: center;
     width: 100%;
