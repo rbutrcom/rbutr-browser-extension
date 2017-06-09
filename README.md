@@ -1,3 +1,11 @@
+[![Releases](https://img.shields.io/github/release/rbutrcom/rbutr-browser-extension.svg)](https://github.com/rbutrcom/rbutr-browser-extension/releases)
+[![NSP Status](https://nodesecurity.io/orgs/rbutrcom/projects/df6fef46-875a-4713-be11-70206dd48f3d/badge)](https://nodesecurity.io/orgs/rbutrcom/projects/df6fef46-875a-4713-be11-70206dd48f3d)
+[![David](https://img.shields.io/david/rbutrcom/rbutr-browser-extension.svg)]()
+[![David Dev](https://img.shields.io/david/dev/rbutrcom/rbutr-browser-extension.svg?label=devDep)]()
+[![Code Climate](https://img.shields.io/codeclimate/github/rbutrcom/rbutr-browser-extension.svg)](https://codeclimate.com/github/rbutrcom/rbutr-browser-extension)
+[![Documentation](https://inch-ci.org/github/rbutrcom/rbutr-browser-extension.svg?branch=master)](https://inch-ci.org/github/rbutrcom/rbutr-browser-extension)
+
+
 # rbutr
 rbutr destroys misinformation and promotes critical thinking online.
 
@@ -21,10 +29,11 @@ Click here for more information and screenshots
 
 ## Which browsers are supported?
 
-![Browser Support Chrome: passing](https://img.shields.io/badge/Chrome-passing-brightgreen.svg)
-![Browser Support Firefox: passing](https://img.shields.io/badge/Firefox-passing-brightgreen.svg)
-![Browser Support Opera: passinga](https://img.shields.io/badge/Opera-passing-brightgreen.svg)
-![Browser Support Vivaldi: passing](https://img.shields.io/badge/Vivaldi-passing-brightgreen.svg)
+![Browser Support Chrome: supported](https://img.shields.io/badge/Chrome-supported-brightgreen.svg)
+![Browser Support Firefox: supported](https://img.shields.io/badge/Firefox-supported-brightgreen.svg)
+![Browser Support Opera: supported](https://img.shields.io/badge/Opera-supported-brightgreen.svg)
+![Browser Support Vivaldi: supported](https://img.shields.io/badge/Vivaldi-supported-brightgreen.svg)
+![Browser Support Edge: not supported](https://img.shields.io/badge/Edge-not_supported-red.svg)
 
 
 ## How do I build it?
