@@ -1,0 +1,38 @@
+[:bug: BUGFIX
+:ambulance: HOTFIX
+:lock: SECURITY
+:boom: BREAKING CHANGE
+:construction: WIP
+:sparkles: FEATURE
+:hammer: REFACTOR
+:zap: PERFORMANCE
+:art: FORMATTING
+:rotating_light: LINTING
+:lipstick: STYLING
+:bento: ASSET
+:fire: REMOVE
+:truck: RENAME
+:memo: DOCS
+:bulb: CODE DOCS
+:globe_with_meridians: I18N L10N
+:wheelchair: ACCESSIBILITY
+:pencil2: TYPO
+:wrench: CONFIG
+:rewind: REVERT
+:white_check_mark: TESTS
+:bookmark: RELEASE
+:rocket: DEPLOY
+:construction_worker: ADD CI
+:green_heart: FIX CI
+:heavy_plus_sign: ADD DEPENDENCY
+:heavy_minus_sign: REMOVE DEPENDENCY
+:arrow_down: DOWNGRADE DEPENDENCY
+:arrow_up: UPGRADE DEPENDENCY
+:page_facing_up: LICENSE
+:tada: INITIAL
+] Commit message
+
+Detailed description
+
+Fixes <ISSUE>
+Related to <ISSUE>
