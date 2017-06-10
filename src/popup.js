@@ -1,4 +1,4 @@
-/*global browser,$,MutationObserver,RbutrUtils*/
+/*global browser,$,MutationObserver*/
 /*jslint browser:true,esnext:true */
 
 
@@ -26,7 +26,6 @@ const FIRST_ARRAY_ELEMENT = 0;
 const MAX_TAG_COUNT = 6;
 const MAX_URL_COUNT = 3;
 
-const rbutrUtils = RbutrUtils();
 let rbutr = {};
 browser.runtime.getBackgroundPage(function (background) {
     rbutr = background.rbutr;
@@ -45,7 +44,7 @@ browser.runtime.getBackgroundPage(function (background) {
 function setPage(page) {
 
     'use strict';
-    rbutrUtils.log('debug', 'show page: ', page);
+    rbutr.utils.log('debug', 'show page: ', page);
 
     // clear all message
     document.querySelector('#message').innerHTML = '';
@@ -234,15 +233,15 @@ function setupTagTypeahead() {
     $('#tag-typeahead').typeahead({
         name: 'tags',
         limit: 10,
-        prefetch: rbutrUtils.getServerUrl() + '?getPlainTagsJson=true'
+        prefetch: rbutr.utils.getServerUrl() + '?getPlainTagsJson=true'
         // local: rbutr.getTagsData()
     }).on('typeahead:selected', function (event, data) {
         recordTag(data.value);
         document.getElementById('#tag-typeahead').value = '';
     }).keydown(function (event) {
         const key = event.which;
-        rbutrUtils.log('debug', 'key = ', key);
-        rbutrUtils.log('debug', 'event = ', event);
+        rbutr.utils.log('debug', 'key = ', key);
+        rbutr.utils.log('debug', 'event = ', event);
 
         if (key === KEY_ENTER || key === KEY_SEMICOLON || key === KEY_COMMA) {
             event.preventDefault();
@@ -321,7 +320,7 @@ function displayNotLoggedInMessage() {
     'use strict';
 
     displayMessage('You are not logged in! rbutr requires you to be logged in to submit rebuttals and to vote. ' +
-        'Click <a target="_blank" href="' + rbutrUtils.getServerUrl(true) + '/rbutr/LoginServlet">here</a> to login or register.');
+        'Click <a target="_blank" href="' + rbutr.utils.getServerUrl(true) + '/rbutr/LoginServlet">here</a> to login or register.');
 }
 
 
@@ -379,8 +378,8 @@ function requestRebuttals() {
         appendPage('request');
         setupTagTypeahead();
         $('#request-url').val(rbutr.getProp('canonicalUrls', tabId));
-        rbutrUtils.log('debug', 'input = ', $('#request-url').val());
-        rbutrUtils.log('debug', 'bg = ', rbutr.getProp('canonicalUrls', tabId));
+        rbutr.utils.log('debug', 'input = ', $('#request-url').val());
+        rbutr.utils.log('debug', 'bg = ', rbutr.getProp('canonicalUrls', tabId));
         $('#start-submission').hide();
     }
 }
@@ -402,21 +401,21 @@ function submitRequestData() {
         document.forms['request-rebuttal'].submitLink.disabled = false;
         return false;
     }
-    $.post(rbutrUtils.getServerUrl(), {
+    $.post(rbutr.utils.getServerUrl(), {
         subscribeToPage: rbutr.getProp('canonicalUrls', tabId),
         title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tabId)),
         tags: rbutr.getProp('tags'),
         pageIsCanonical: rbutr.getProp('urlIsCanonical', rbutr.getProp('canonicalUrls', tabId)),
         cid: rbutr.getCid()
     }, function (data) {
-        rbutrUtils.log('debug', 'Success : ', data);
+        rbutr.utils.log('debug', 'Success : ', data);
         $('#message').html(data);
     }).fail(function (msg, arg2, arg3) {
-        rbutrUtils.log('debug', 'fail : ', msg);
-        rbutrUtils.log('debug', 'fail status ', msg.status);
-        rbutrUtils.log('debug', 'msg = ', msg);
-        rbutrUtils.log('debug', 'arg2 = ', arg2);
-        rbutrUtils.log('debug', 'arg3 = ', arg3);
+        rbutr.utils.log('debug', 'fail : ', msg);
+        rbutr.utils.log('debug', 'fail status ', msg.status);
+        rbutr.utils.log('debug', 'msg = ', msg);
+        rbutr.utils.log('debug', 'arg2 = ', arg2);
+        rbutr.utils.log('debug', 'arg3 = ', arg3);
         displayMessage('An error occurred : ' + msg.responseText);
     });
 }
@@ -583,7 +582,7 @@ function vote(voteScore) {
     'use strict';
 
     let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
-    $.get(rbutrUtils.getServerUrl(), {
+    $.get(rbutr.utils.getServerUrl(), {
         'linkId': recordedClick.linkId,
         'vote': voteScore,
         'cid': rbutr.getCid()
@@ -639,7 +638,7 @@ function submitIdeaData() {
 
     document.forms['idea-form'].submitLink.value = 'Please wait..';
     document.forms['idea-form'].submitLink.disabled = true;
-    $.post(rbutrUtils.getServerUrl(), {
+    $.post(rbutr.utils.getServerUrl(), {
         url: rbutr.getProp('canonicalUrls', tabId),
         title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tabId)),
         idea: document.forms['idea-form'].idea.value,
@@ -664,15 +663,7 @@ function loadMenu() {
     'use strict';
 
     $('#message').html('Loading..');
-    $.post(rbutrUtils.getServerUrl(), {
-        getMenu: true,
-        version: browser.runtime.getManifest().version,
-        cid: rbutr.getCid()
-    }).success(function (data) {
-        $('#message').html(data);
-    }).error(function (msg) {
-        $('#message').html(msg.responseText);
-    });
+    rbutr.api.getMenu();
 }
 
 

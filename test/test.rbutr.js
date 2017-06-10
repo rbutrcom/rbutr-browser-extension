@@ -4,7 +4,7 @@
 var assert = require('assert');
 var rewire = require('rewire');
 
-// Because background.js need utils.js we need to include it and set it as a global
+// Because background.js need utils.js we need to include it and overwrite the global
 var utils = rewire('../src/utils.js');
 var RbutrUtils = utils.__get__('RbutrUtils');
 global.RbutrUtils = RbutrUtils;
@@ -19,6 +19,12 @@ describe('Rbutr', function() {
     describe('#Rbutr()', function() {
         it('should return an object', function() {
             assert.strictEqual(typeof Rbutr(), 'object');
+        });
+    });
+
+    describe('#Rbutr.utils', function() {
+        it('should return an object', function() {
+            assert.strictEqual(typeof rbutrObj.utils, 'object');
         });
     });
 

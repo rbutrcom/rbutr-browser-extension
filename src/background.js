@@ -3,11 +3,6 @@
 
 
 
-// Necessary usage of 'var' because popup will not get variable if it's 'const' or 'let' in Chrome
-var rbutrUtils = RbutrUtils();
-
-
-
 /**
  * @description Multi-Browser support
  */
@@ -64,6 +59,17 @@ const Rbutr = () => {
     const COLOR_RED       = [COLOR_VAL_FULL, COLOR_VAL_ZERO, COLOR_VAL_ZERO, COLOR_VAL_FULL];
     const COLOR_MAGENTA   = [COLOR_VAL_FULL, COLOR_VAL_FULL, COLOR_VAL_ZERO, COLOR_VAL_FULL];
     const COLOR_LIGHT_RED = [COLOR_VAL_FULL, COLOR_VAL_HALF, COLOR_VAL_HALF, COLOR_VAL_FULL];
+
+
+
+
+    /**
+     * @property utils
+     * @description Composing RbutrUtils object into Rbutr for easier usage
+     *
+     * @type {Object} RbutrUtils object
+     */
+    const utils = RbutrUtils();
 
 
 
@@ -140,7 +146,7 @@ const Rbutr = () => {
      */
     const initialize = () => {
 
-        rbutrUtils.log('log','rbutr initialised ', new Date());
+        utils.log('log','rbutr initialised ', new Date());
     };
 
 
@@ -243,7 +249,7 @@ const Rbutr = () => {
         let popup = getPopup();
 
         if (popup === null) {
-            rbutrUtils.log('error', 'Popup was null, couldn\'t display : ', message);
+            utils.log('error', 'Popup was null, couldn\'t display : ', message);
         } else {
             popup.displayMessage(message);
         }
@@ -267,9 +273,9 @@ const Rbutr = () => {
             lastFocusedWindow: true
         }, function (tab) {
             let $data = Object.assign({}, {rbutr: rbutr, action: action}, data);
-            rbutrUtils.log('debug', tab[FIRST_ARRAY_ELEMENT]);
+            utils.log('debug', tab[FIRST_ARRAY_ELEMENT]);
             browser.tabs.sendMessage(tab[FIRST_ARRAY_ELEMENT].id, $data, function (response) {
-                rbutrUtils.log('debug', response);
+                utils.log('debug', response);
             });
         });
     };
@@ -310,7 +316,7 @@ const Rbutr = () => {
         }
 
 
-        $.get(rbutrUtils.getServerUrl(), {
+        $.get(utils.getServerUrl(), {
             getLinks: true,
             fromPageUrlHash: b64_md5(url),
             version: browser.runtime.getManifest().version,
@@ -392,7 +398,7 @@ const Rbutr = () => {
             canonicalFromPages[j] = getProp('urlIsCanonical', getProp('fromUrls', j));
         }
 
-        $.post(rbutrUtils.getServerUrl(), {
+        $.post(utils.getServerUrl(), {
             submitLinks: true,
             fromUrls: getProp('fromUrls'),
             toUrls: getProp('toUrls'),
@@ -405,19 +411,19 @@ const Rbutr = () => {
             tags: getProp('tags'),
             cid: rbutr.getCid()
         }, function (data) {
-            rbutrUtils.log('debug', 'success status ', data.status);
+            utils.log('debug', 'success status ', data.status);
             rbutr.displayMessage('<b>' + data.result + '</b>');
             window.open(data.redirectUrl);
             rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
             rbutr.tabLoaded(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
         }, 'json').done(function (msg) {
-            rbutrUtils.log('debug', 'done status ', msg.status);
+            utils.log('debug', 'done status ', msg.status);
         }).fail(function (msg, arg2, arg3) {
             rbutr.displayMessage('Failed to submit : ' + msg.responseText);
-            rbutrUtils.log('debug', 'fail status ', msg.status);
-            rbutrUtils.log('debug', 'msg = ', msg);
-            rbutrUtils.log('debug', 'arg2 = ', arg2);
-            rbutrUtils.log('debug', 'arg3 = ', arg3);
+            utils.log('debug', 'fail status ', msg.status);
+            utils.log('debug', 'msg = ', msg);
+            utils.log('debug', 'arg2 = ', arg2);
+            utils.log('debug', 'arg3 = ', arg3);
         });
     };
 
@@ -545,7 +551,7 @@ const Rbutr = () => {
                 // canonicalValue is an absolute url in the current host
                 return location.protocol + '//' + location.host + canonicalValue;
             } else {
-                rbutrUtils.log('error', 'The canonical URL is relative and does not start with "/". Not supported.');
+                utils.log('error', 'The canonical URL is relative and does not start with "/". Not supported.');
                 return false;
             }
         } else {
@@ -554,7 +560,7 @@ const Rbutr = () => {
     };
 
 
-    return {getProp, setProp, getPropLen, initialize, getCid, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, tabLoaded, submitRebuttals, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
+    return {utils, getProp, setProp, getPropLen, initialize, getCid, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, tabLoaded, submitRebuttals, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
 };
 
 
@@ -592,15 +598,15 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (request.action === 'setClick') {
                 let click = request.click;
                 rbutr.recordLinkClick(click);
-                rbutrUtils.log('debug', 'click recorded: ', click.linkToUrl);
+                rbutr.utils.log('debug', 'click recorded: ', click.linkToUrl);
             } else if (request.action === 'getCid') {
                 sendResponse(rbutr.getCid());
                 return true;
             } else if (request.action === 'getServerUrl') {
-                sendResponse(rbutrUtils.getServerUrl());
+                sendResponse(rbutr.utils.getServerUrl());
                 return true;
             } else if (request.action === 'getServerDomain') {
-                sendResponse(rbutrUtils.getServerUrl(true));
+                sendResponse(rbutr.utils.getServerUrl(true));
                 return true;
             } else if (request.action === 'getVersion') {
                 sendResponse(browser.runtime.getManifest().version);
