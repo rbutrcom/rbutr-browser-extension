@@ -27,7 +27,11 @@ const MAX_TAG_COUNT = 6;
 const MAX_URL_COUNT = 3;
 
 const rbutrUtils = RbutrUtils();
-const rbutr = browser.extension.getBackgroundPage().rbutr;
+let rbutr = {};
+browser.runtime.getBackgroundPage(function (background) {
+    rbutr = background.rbutr;
+    execute();
+});
 
 
 
@@ -740,22 +744,23 @@ $(document)
     });
 
 
+function execute() {
+    /**
+     * @description Set canonical url in background
+     */
+    /** @namespace rbutr.fromUrls */
+    /** @namespace rbutr.toUrls */
+    browser.tabs.query({currentWindow: true, active: true}, function (tab) {
 
-/**
- * @description Set canonical url in background
- */
-/** @namespace rbutr.fromUrls */
-/** @namespace rbutr.toUrls */
-browser.tabs.query({currentWindow: true, active: true}, function (tab) {
+        'use strict';
 
-    'use strict';
+        // This happens AFTER document.ready, so I'll do everything here, which means I get access to the URL
+        tabId = tab[FIRST_ARRAY_ELEMENT].id;
 
-    // This happens AFTER document.ready, so I'll do everything here, which means I get access to the URL
-    tabId = tab[FIRST_ARRAY_ELEMENT].id;
+        if (!rbutr.getProp('canonicalUrls', tabId)) {
+            browser.runtime.sendMessage({action: 'setCanonical', tab: tab[FIRST_ARRAY_ELEMENT]});
+        }
 
-    if (!rbutr.getProp('canonicalUrls', tabId)) {
-        browser.runtime.sendMessage({action: 'setCanonical', tab: tab[FIRST_ARRAY_ELEMENT]});
-    }
-
-    loadData();
-});
+        loadData();
+    });
+}
