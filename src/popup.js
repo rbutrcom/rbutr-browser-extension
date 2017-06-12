@@ -590,16 +590,19 @@ function vote(voteScore) {
     'use strict';
 
     let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
-    $.get(rbutr.utils.getServerUrl(), {
-        'linkId': recordedClick.linkId,
-        'vote': voteScore,
-        'cid': rbutr.getCid()
-    }, function (data) {
-        $('#current-score').html(data);
-    });
-    recordedClick.score += voteScore;
-    recordedClick.yourVote = voteScore;
-    setPage('thankyou');
+
+    if(recordedClick !== null) {
+        $.get(rbutr.utils.getServerUrl(), {
+            'linkId': recordedClick.linkId,
+            'vote': voteScore,
+            'cid': rbutr.getCid()
+        }, function (data) {
+            $('#current-score').html(data);
+        });
+        recordedClick.score += voteScore;
+        recordedClick.yourVote = voteScore;
+        setPage('thankyou');
+    }
 }
 
 
