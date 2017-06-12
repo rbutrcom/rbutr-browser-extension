@@ -154,7 +154,7 @@ const Rbutr = () => {
      */
     const initialize = () => {
 
-        utils.log('log','rbutr initialised ', new Date());
+        utils.log('log','Initialised on', new Date());
     };
 
 
@@ -258,7 +258,7 @@ const Rbutr = () => {
         let popup = getPopup();
 
         if (popup === null) {
-            utils.log('error', 'Popup was null, couldn\'t display : ', message);
+            utils.log('error', 'Popup was null, couldn\'t display:', message);
         } else {
             popup.displayMessage(message);
         }
@@ -282,10 +282,9 @@ const Rbutr = () => {
             lastFocusedWindow: true
         }, function (tab) {
             let $data = Object.assign({}, {rbutr: rbutr, action: action}, data);
-            utils.log('debug', tab[FIRST_ARRAY_ELEMENT]);
-            browser.tabs.sendMessage(tab[FIRST_ARRAY_ELEMENT].id, $data, function (response) {
-                utils.log('debug', response);
-            });
+
+            utils.log('debug', 'Active tab:', tab[FIRST_ARRAY_ELEMENT]);
+            browser.tabs.sendMessage(tab[FIRST_ARRAY_ELEMENT].id, $data);
         });
     };
 
@@ -320,7 +319,7 @@ const Rbutr = () => {
         let vote = false;
         let recordedClick = getRecordedClickByToUrl(getProp('canonicalUrls', tabId));
         // Don't show voting after you've voted
-        if (recordedClick !== null && recordedClick.yourVote === ZERO) {
+        if (recordedClick !== null && recordedClick.yourVote && recordedClick.yourVote === ZERO) {
             vote = true;
         }
 
@@ -420,19 +419,16 @@ const Rbutr = () => {
             tags: getProp('tags'),
             cid: rbutr.getCid()
         }, function (data) {
-            utils.log('debug', 'success status ', data.status);
-            rbutr.displayMessage('<b>' + data.result + '</b>');
+            utils.log('debug', 'Submit rebuttal success:', data.status);
+            rbutr.displayMessage('<strong>' + data.result + '</strong>');
             window.open(data.redirectUrl);
             rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
             rbutr.tabLoaded(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
         }, 'json').done(function (msg) {
-            utils.log('debug', 'done status ', msg.status);
-        }).fail(function (msg, arg2, arg3) {
+            utils.log('debug', 'Submit rebuttal done:', msg.status);
+        }).fail(function (msg) {
             rbutr.displayMessage('Failed to submit : ' + msg.responseText);
-            utils.log('debug', 'fail status ', msg.status);
-            utils.log('debug', 'msg = ', msg);
-            utils.log('debug', 'arg2 = ', arg2);
-            utils.log('debug', 'arg3 = ', arg3);
+            utils.log('debug', 'Submit rebuttal fail:', msg);
         });
     };
 
@@ -607,7 +603,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (request.action === 'setClick') {
                 let click = request.click;
                 rbutr.recordLinkClick(click);
-                rbutr.utils.log('debug', 'click recorded: ', click.linkToUrl);
+                rbutr.utils.log('debug', 'Click recorded:', click.linkToUrl);
             } else if (request.action === 'getCid') {
                 sendResponse(rbutr.getCid());
                 return true;
