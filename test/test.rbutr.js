@@ -76,7 +76,7 @@ describe('Rbutr', function() {
             assert.ok(Number.isInteger(Rbutr().getCid()));
         });
         it('should return a 17 character long value', function() {
-            assert.equal(Rbutr().getCid().toString().length, 17);
+            assert.equal(Rbutr().getCid(true).toString().length, 17);
         });
     });
 

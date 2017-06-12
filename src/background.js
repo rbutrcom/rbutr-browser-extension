@@ -155,18 +155,19 @@ const Rbutr = () => {
      * @method getCid
      * @description Get stored client id or generate and store a new one
      *
+     * @param {Boolean} regenerate - Flag to force a complete new generation
      * @return {Number} Unique 17-digit integer
      */
-    const getCid = () => {
+    const getCid = (regenerate) => {
 
         const CID_KEY = 'rbutr.cid';
-        const RAND_NUM_MULTIPLIER = 1000;
-        const RAND_NUM_ADDITION = 1;
+        const RAND_NUM_MULTIPLIER = 9000;
+        const RAND_NUM_ADDITION = 1000;
         let cid = localStorage.getItem(CID_KEY);
 
-        if (!cid) {
+        if (!cid || regenerate === true) {
             let ms = new Date().getTime();
-            let rand = Math.floor(Math.random() * RAND_NUM_MULTIPLIER + RAND_NUM_ADDITION);
+            let rand = Math.floor(RAND_NUM_ADDITION + Math.random() * RAND_NUM_MULTIPLIER);
             cid = ms + rand.toString();
             localStorage.setItem(CID_KEY, cid);
         }
