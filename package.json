@@ -1,6 +1,6 @@
 {
   "name": "rbutr-browser-extension",
-  "version": "0.9.5",
+  "version": "0.9.7",
   "description": "Get bias-proofed! Use rbutr to Follow inter-website disagreements and keep yourself more fully informed.",
   "main": "index.js",
   "repository": "github:rbutrcom/rbutr-browser-extension.git",
