@@ -1,4 +1,4 @@
-[![Releases](https://img.shields.io/github/release/rbutrcom/rbutr-browser-extension.svg)](https://github.com/rbutrcom/rbutr-browser-extension/releases)
+[![Releases](https://img.shields.io/github/release/rbutrcom/rbutr-browser-extension/all.svg)](https://github.com/rbutrcom/rbutr-browser-extension/releases)
 [![NSP Status](https://nodesecurity.io/orgs/rbutrcom/projects/df6fef46-875a-4713-be11-70206dd48f3d/badge)](https://nodesecurity.io/orgs/rbutrcom/projects/df6fef46-875a-4713-be11-70206dd48f3d)
 [![David](https://img.shields.io/david/rbutrcom/rbutr-browser-extension.svg)]()
 [![David Dev](https://img.shields.io/david/dev/rbutrcom/rbutr-browser-extension.svg?label=devDep)]()
