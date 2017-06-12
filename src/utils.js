@@ -1,3 +1,11 @@
+/*!
+ * Rbutr Browser Extension v0.9.7
+ * https://github.com/rbutrcom/rbutr-browser-extension
+ *
+ * Copyright 2012-2017 The Rbutr Community
+ * Licensed under LGPL-3.0
+ */
+
 /*global console,JSON,*/
 /*exported RbutrUtils*/
 /*jslint browser:true,esnext:true */
