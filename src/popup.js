@@ -52,7 +52,7 @@ browser.runtime.getBackgroundPage(function (background) {
 function setPage(page) {
 
     'use strict';
-    rbutr.utils.log('debug', 'show page: ', page);
+    rbutr.utils.log('log', 'Display view: ', page);
 
     // clear all message
     document.querySelector('#message').innerHTML = '';
@@ -248,8 +248,8 @@ function setupTagTypeahead() {
         document.getElementById('#tag-typeahead').value = '';
     }).keydown(function (event) {
         const key = event.which;
-        rbutr.utils.log('debug', 'key = ', key);
-        rbutr.utils.log('debug', 'event = ', event);
+        rbutr.utils.log('log', 'Tagging pressed key:', key);
+        rbutr.utils.log('log', 'Tagging event:', event);
 
         if (key === KEY_ENTER || key === KEY_SEMICOLON || key === KEY_COMMA) {
             event.preventDefault();
@@ -386,8 +386,6 @@ function requestRebuttals() {
         appendPage('request');
         setupTagTypeahead();
         $('#request-url').val(rbutr.getProp('canonicalUrls', tabId));
-        rbutr.utils.log('debug', 'input = ', $('#request-url').val());
-        rbutr.utils.log('debug', 'bg = ', rbutr.getProp('canonicalUrls', tabId));
         $('#start-submission').hide();
     }
 }
@@ -416,14 +414,10 @@ function submitRequestData() {
         pageIsCanonical: rbutr.getProp('urlIsCanonical', rbutr.getProp('canonicalUrls', tabId)),
         cid: rbutr.getCid()
     }, function (data) {
-        rbutr.utils.log('debug', 'Success : ', data);
+        rbutr.utils.log('debug', 'Submit request success:', data);
         $('#message').html(data);
-    }).fail(function (msg, arg2, arg3) {
-        rbutr.utils.log('debug', 'fail : ', msg);
-        rbutr.utils.log('debug', 'fail status ', msg.status);
-        rbutr.utils.log('debug', 'msg = ', msg);
-        rbutr.utils.log('debug', 'arg2 = ', arg2);
-        rbutr.utils.log('debug', 'arg3 = ', arg3);
+    }).fail(function (msg) {
+        rbutr.utils.log('debug', 'Submit request fail:', msg);
         displayMessage('An error occurred : ' + msg.responseText);
     });
 }
