@@ -15,7 +15,6 @@ const RbutrUtils = () => {
     'use strict';
 
     const devStorageKey = 'rbutr.isDev';
-    const logPrefix = '[rbutr] ';
     const devDomain = 'https://russell.rbutr.com';
     const liveDomain = 'http://rbutr.com';
 
@@ -31,18 +30,22 @@ const RbutrUtils = () => {
      */
     const log = (logLevel, ...logParams) => {
 
-        const MIN_PARAM_COUNT = 1;
+        const MIN_PARAM_COUNT = 2;
 
         // Overwrite console to prevent eslint "no-console" errors
         const LOGGER = window.console;
 
+        // Convert logParams object to array
+        let params = Object.keys(logParams).map(index => logParams[index]);
+        params.unshift('[rbutr] ');
+
         // only continue in Dev-Mode and if there are more than 1 log params
-        if(isDev() && logParams.length >= MIN_PARAM_COUNT) {
+        if(isDev() && params.length >= MIN_PARAM_COUNT) {
             if(typeof LOGGER[logLevel] === 'function') {
-                LOGGER[logLevel](logPrefix + logParams.join(''));
+                LOGGER[logLevel].apply(console, params);
             } else {
-                LOGGER.error(logPrefix + 'console.' + logLevel + ' is not a valid logging function.');
-                LOGGER.debug(logPrefix + logParams.join(''));
+                LOGGER.error('console.' + logLevel + ' is not a valid logging function.');
+                LOGGER.debug.apply(console, params);
             }
         }
     };
