@@ -292,7 +292,7 @@ function displayVoteForm(recordedClick) {
 
     'use strict';
 
-    if (recordedClick.yourVote !== ZERO) {
+    if (recordedClick.yourVote && recordedClick.yourVote !== ZERO) {
         setPage('thankyou');
     } else {
         setPage('vote');
