@@ -404,3 +404,40 @@ a {
   height: auto;
   width: auto;
 }
+
+.msg {
+  color: #fff;
+  padding: 12px 15px;
+  position: relative;
+
+  & + & {
+    margin-top: 10px;
+  }
+
+  &.msg-success {
+    background: #5bc3a2;
+  }
+
+  &.msg-info {
+    background: #6fb1c7;
+  }
+
+  &.msg-warning {
+    background: #ecbf58;
+  }
+
+  &.msg-error {
+    background: #d84a49;
+  }
+
+  & > .msg-remove {
+    color: inherit;
+    font-size: 2em;
+    font-weight: 700;
+    line-height: 1em;
+    position: absolute;
+    right: 10px;
+    text-decoration: none;
+    top: 5px;
+  }
+}
