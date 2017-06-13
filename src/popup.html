@@ -8,22 +8,22 @@
 <body>
 
 
-  <div id="start-submission">
-    <div class="start-rebut">
-      <a href="#" class="btn btn-start btn-rebutted">Rebut this page</a>
-    </div>
-    <div class="start-rebut">
-      <a href="#" class="btn btn-start btn-rebuttal">Use this page as Rebuttal</a>
-    </div>
+  <header role="banner">
     <div class="menu-wrap">
       <div class="menu">Menu</div>
     </div>
-  </div>
+  </header>
+
+
+  <div id="messages"></div>
 
 
   <div id="view-wrap">
 
-    <div id="message"></div>
+    <div id="view-menu" class="view hidden"></div>
+
+
+    <div id="view-rebuttals" class="view"></div>
 
 
     <div id="view-idea" class="view hidden">
@@ -89,6 +89,16 @@
       <img title="Vote this rebuttal up" class="clickable clickable-up" src="http://rbutr.com/images/thumbsUp.png" alt="Thumbs up">
       &nbsp;&nbsp;
       <img title="Vote this rebuttal down" class="clickable clickable-down" src="http://rbutr.com/images/thumbsDown.png" alt="Thumbs down">
+    </div>
+
+
+    <div id="view-action" class="view">
+      <div class="start-rebut">
+        <a href="#" class="btn btn-start btn-rebutted">Rebut this page</a>
+      </div>
+      <div class="start-rebut">
+        <a href="#" class="btn btn-start btn-rebuttal">Use this page as Rebuttal</a>
+      </div>
     </div>
 
 

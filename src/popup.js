@@ -29,6 +29,92 @@ window.browser = (function () {
 
 
 /**
+ * @method Message
+ * @description Composed object handling messages
+ *
+ * @return {Object} Public object methods
+ */
+const Message = () => {
+
+    'use strict';
+
+    const $messageContainer = document.getElementById('messages');
+
+
+    /**
+     * @method initialize
+     * @description Initialize Message handler
+     *
+     * @return {void}
+     */
+    const initialize = () => {
+
+        window.addEventListener('click', (event) => {
+            if (event.target.className === 'msg-remove') {
+                remove(event.target.parentNode);
+            }
+        });
+    };
+
+
+
+    /**
+     * @method add
+     * @description Add given message to message container
+     *
+     * @param {String} type - The message type (success|info|warning|error)
+     * @param {String} message - The message to be displayed
+     * @return {void}
+     */
+    const add = (type, message) => {
+
+        if (type === 'success' || type === 'info' || type === 'warning' || type === 'error') {
+            const messageClose = '<a href="#" class="msg-remove">&times;</a>';
+            const $newMessage = document.createElement('div');
+
+            $newMessage.setAttribute('class', 'msg msg-' + type);
+            $newMessage.insertAdjacentHTML('beforeend', messageClose + message);
+
+            $messageContainer.appendChild($newMessage);
+        } else {
+            rbutr.utils.log('warn', `Message of type "${type}" is invalid.`);
+        }
+    };
+
+
+
+    /**
+     * @method remove
+     * @description Remove message from message container
+     *
+     * @param {Object} $element - The element to be removed
+     * @return {void}
+     */
+    const remove = ($element) => {
+
+        $messageContainer.removeChild($element);
+    };
+
+
+
+    /**
+     * @method displayNotLoggedInMessage
+     * @description Display message if user is not logged in
+     *
+     * @return {void}
+     */
+    /*const displayNotLoggedInMessage = () => {
+
+        msg.add('You are not logged in! rbutr requires you to be logged in to submit rebuttals and to vote. ' +
+            'Click <a target="_blank" href="' + rbutr.utils.getServerUrl(true) + '/rbutr/LoginServlet">here</a> to login or register.');
+    };*/
+
+    return {initialize, add, remove};
+};
+
+
+
+/**
  * @method Popup
  * @description Composed object handling all popup and view logic
  *
@@ -44,6 +130,11 @@ const Popup = () => {
     const MAX_TAG_COUNT = 6;
     const MAX_URL_COUNT = 3;
 
+    let notLoggedInMsg = '';
+
+    const msg = Message();
+    msg.initialize();
+
 
 
     /**
@@ -54,13 +145,21 @@ const Popup = () => {
      */
     const initialize = () => {
 
+        notLoggedInMsg = `
+            You are not logged in!
+            rbutr requires you to be logged in to submit rebuttals and to vote.
+            <a target="_blank" href="${rbutr.utils.getServerUrl(true)}/rbutr/LoginServlet">
+                Click here
+            </a> to login or register.
+        `;
+
         getView('rebuttals').innerHTML = rbutr.getProp('rebuttals', tabId);
 
         getMenu((success, result) => {
             if (success === true) {
                 getView('menu').innerHTML = result;
             } else {
-                displayMessage(result);
+                msg.add('error', result);
             }
 
         });
@@ -132,7 +231,6 @@ const Popup = () => {
      * @return {void}
      */
     const refreshSubmissionData = () => {
-
 
         const HTTP_LENGTH = 4;
 
@@ -335,34 +433,6 @@ const Popup = () => {
 
 
     /**
-     * @method displayMessage
-     * @description Display given message in popup
-     *
-     * @param {String} htmlMessage - The message to be displayed
-     * @return {void}
-     */
-    const displayMessage = (htmlMessage) => {
-
-        $('#message').html(htmlMessage + '<p><a href="#" id="thanks" class="button">Ok (Esc)</a></p>');
-    };
-
-
-
-    /**
-     * @method displayNotLoggedInMessage
-     * @description Display message if user is not logged in
-     *
-     * @return {void}
-     */
-    const displayNotLoggedInMessage = () => {
-
-        displayMessage('You are not logged in! rbutr requires you to be logged in to submit rebuttals and to vote. ' +
-            'Click <a target="_blank" href="' + rbutr.utils.getServerUrl(true) + '/rbutr/LoginServlet">here</a> to login or register.');
-    };
-
-
-
-    /**
      * @method showSubmissionPopup
      * @description Display submission page if user is logged in
      *
@@ -372,7 +442,7 @@ const Popup = () => {
     const showSubmissionPopup = (fromTo) => {
 
         if (!rbutr.getProp('loggedIn')) {
-            displayNotLoggedInMessage();
+            msg.add('warning', notLoggedInMsg);
         } else {
             rbutr.startSubmission(tabId, fromTo);
             displaySubmissionForm();
@@ -404,7 +474,7 @@ const Popup = () => {
     const requestRebuttals = () => {
 
         if (!rbutr.getProp('loggedIn')) {
-            displayNotLoggedInMessage();
+            msg.add('warning', notLoggedInMsg);
         } else {
             showView('request');
             setupTagTypeahead();
@@ -436,10 +506,10 @@ const Popup = () => {
             cid: rbutr.getCid()
         }, (data) => {
             rbutr.utils.log('debug', 'Submit request success:', data);
-            $('#message').html(data);
+            msg.add('info', data);
         }).fail((msg) => {
             rbutr.utils.log('debug', 'Submit request fail:', msg);
-            displayMessage('An error occurred : ' + msg.responseText);
+            msg.add('error', msg.responseText);
         });
     };
 
@@ -539,10 +609,10 @@ const Popup = () => {
                     return;
                 }
                 if (!rbutr.getProp('canonicalUrls', tabId)) {
-                    $('#message').html('This doesn\'t look like a real web page.');
+                    msg.add('error', 'This doesn\'t look like a real web page.');
                     return;
                 }
-                $('#message').html('Server connection timed out, try again.');
+                msg.add('error', 'Server connection timed out, try again.');
             } else {
                 showView('rebuttals');
             }
@@ -650,9 +720,9 @@ const Popup = () => {
             idea: document.forms['idea-form'].idea.value,
             cid: rbutr.getCid()
         }).success((data) => {
-            $('#message').html(data);
+            msg.add('info', data);
         }).error((msg) => {
-            $('#message').html(msg.responseText);
+            msg.add('error', msg.responseText);
         });
     };
 
@@ -660,7 +730,7 @@ const Popup = () => {
 
     /**
      * @method getMenu
-     * @description Load menu from server and show message afterwards
+     * @description Load menu from server
      *
      * @param {Function} callback - Function to handle the result
      * @return {void}
@@ -753,7 +823,7 @@ const Popup = () => {
         });
     };
 
-    return {initialize, execute};
+    return {initialize, msg, execute};
 };
 
 
