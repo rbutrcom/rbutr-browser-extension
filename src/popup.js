@@ -96,19 +96,6 @@ const Message = () => {
     };
 
 
-
-    /**
-     * @method displayNotLoggedInMessage
-     * @description Display message if user is not logged in
-     *
-     * @return {void}
-     */
-    /*const displayNotLoggedInMessage = () => {
-
-        msg.add('You are not logged in! rbutr requires you to be logged in to submit rebuttals and to vote. ' +
-            'Click <a target="_blank" href="' + rbutr.utils.getServerUrl(true) + '/rbutr/LoginServlet">here</a> to login or register.');
-    };*/
-
     return {initialize, add, remove};
 };
 
@@ -376,11 +363,12 @@ const Popup = () => {
             name: 'tags',
             limit: 10,
             prefetch: rbutr.utils.getServerUrl() + '?getPlainTagsJson=true'
-            // local: rbutr.getTagsData()
         }).on('typeahead:selected', (event, data) => {
+
             recordTag(data.value);
             document.getElementById('#tag-typeahead').value = '';
         }).keydown((event) => {
+
             const key = event.which;
             rbutr.utils.log('log', 'Tagging pressed key:', key);
             rbutr.utils.log('log', 'Tagging event:', event);
@@ -498,6 +486,7 @@ const Popup = () => {
             document.forms['request-rebuttal'].submitLink.disabled = false;
             return false;
         }
+
         $.post(rbutr.utils.getServerUrl(), {
             subscribeToPage: rbutr.getProp('canonicalUrls', tabId),
             title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tabId)),
@@ -753,7 +742,6 @@ const Popup = () => {
     /**
      * @description Set up event listeners
      */
-    // As per http://developer.browser.com/extensions/contentSecurityPolicy.html
     $(document)
         .on('click', '#tagTo', toTagged)
         .on('click', '#tagFrom', fromTagged)
@@ -777,7 +765,8 @@ const Popup = () => {
         .on('change', '#direct', () => {
             rbutr.setProp('direct', null, this.checked);
         })
-        .on('click', '#requestRebuttals', requestRebuttals)  // Hook up the clickable stuff that might come back.
+        .on('click', '#requestRebuttals', requestRebuttals)
+        // Hook up the clickable stuff that might come back.
         .on('click', '#directShowLink', () => {
             $('#hiddenDirects').show();
             $('#directShower').hide();
@@ -804,12 +793,18 @@ const Popup = () => {
         });
 
 
+
+    /**
+     * @method execute
+     * @description Start execution in popup
+     *
+     * @return {void}
+     */
     const execute = () => {
+
         /**
          * @description Set canonical url in background
          */
-        /** @namespace rbutr.fromUrls */
-        /** @namespace rbutr.toUrls */
         browser.tabs.query({currentWindow: true, active: true}, (tab) => {
 
             // This happens AFTER document.ready, so I'll do everything here, which means I get access to the URL
@@ -827,6 +822,10 @@ const Popup = () => {
 };
 
 
+
+/**
+ * @description Prepare popup to be executed
+ */
 const popup = Popup();
 let rbutr = {};
 
@@ -836,5 +835,3 @@ browser.runtime.getBackgroundPage((background) => {
     popup.initialize();
     popup.execute();
 });
-
-
