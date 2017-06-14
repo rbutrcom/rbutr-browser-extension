@@ -102,6 +102,98 @@ const Message = () => {
 
 
 /**
+ * @method View
+ * @description Composed object handling views
+ *
+ * @return {Object} Public object methods
+ */
+const View = () => {
+
+    'use strict';
+
+
+
+    /**
+     * @method get
+     * @description Retrieve view DOM object
+     *
+     * @param {String} view - Name of the view to retrieve
+     * @return {(Boolean|Object)} Return DOM object if exists, otherwise false
+     */
+    const get = (view) => {
+
+        const $viewObj = document.getElementById('view-' + view);
+
+        if (typeof $viewObj === 'object' && $viewObj !== null) {
+            return $viewObj;
+        } else {
+            rbutr.utils.log('error', `View "${view}" does not exist.`);
+            return false;
+        }
+    };
+
+
+
+    /**
+     * @method show
+     * @description Display given popup view
+     *
+     * @param {String} view - Name of the view to display
+     * @return {void}
+     */
+    const show = (view) => {
+
+        rbutr.utils.log('log', 'Show view: ', view);
+
+        get(view).classList.remove('hidden');
+    };
+
+
+
+    /**
+     * @method hide
+     * @description Hide given popup view
+     *
+     * @param {?String} view - Name of the view to hide
+     * @return {void}
+     */
+    const hide = (view) => {
+
+        rbutr.utils.log('log', 'Hide view: ', view);
+
+        if (view === 'all' || view === null) {
+            document.querySelectorAll('.view').forEach( x => x.classList.add('hidden'));
+        } else {
+            get(view).classList.add('hidden');
+        }
+    };
+
+
+
+    /**
+     * @method setContent
+     * @description Hide given popup view
+     *
+     * @param {?String} view - Name of the view
+     * @param {?String} content - HTML that should be set in given view
+     * @return {void}
+     */
+    const setContent = (view, content) => {
+
+        if (view === 'menu' || view === 'rebuttals') {
+            get(view).innerHTML = content;
+        } else {
+            rbutr.utils.log('error', `It's not allowed to overwrite the content of view "${view}"`);
+        }
+    };
+
+
+    return {get, show, hide, setContent};
+};
+
+
+
+/**
  * @method Popup
  * @description Composed object handling all popup and view logic
  *
@@ -122,6 +214,8 @@ const Popup = () => {
     const msg = Message();
     msg.initialize();
 
+    const view = View();
+
 
 
     /**
@@ -140,73 +234,16 @@ const Popup = () => {
             </a> to login or register.
         `;
 
-        getView('rebuttals').innerHTML = rbutr.getProp('rebuttals', tabId);
+        view.setContent('rebuttals', rbutr.getProp('rebuttals', tabId));
 
         getMenu((success, result) => {
             if (success === true) {
-                getView('menu').innerHTML = result;
+                view.setContent('menu', result);
             } else {
                 msg.add('error', result);
             }
 
         });
-    };
-
-
-
-    /**
-     * @method getView
-     * @description Retrieve view DOM object
-     *
-     * @param {String} view - Name of the view to retrieve
-     * @return {(Boolean|Object)} Return DOM object if exists, otherwise false
-     */
-    const getView = (view) => {
-
-        const $viewObj = document.getElementById('view-' + view);
-
-        if (typeof $viewObj === 'object' && $viewObj !== null) {
-            return $viewObj;
-        } else {
-            rbutr.utils.log('error', `View "${view}" does not exist.`);
-            return false;
-        }
-    };
-
-
-
-    /**
-     * @method showView
-     * @description Display given popup view
-     *
-     * @param {String} view - Name of the view to display
-     * @return {void}
-     */
-    const showView = (view) => {
-
-        rbutr.utils.log('log', 'Show view: ', view);
-
-        getView(view).removeAttribute('class', 'hidden');
-    };
-
-
-
-    /**
-     * @method hideView
-     * @description Hide given popup view
-     *
-     * @param {?String} view - Name of the view to hide
-     * @return {void}
-     */
-    const hideView = (view) => {
-
-        rbutr.utils.log('log', 'Hide view: ', view);
-
-        if (view === 'all' || view === null) {
-            document.querySelectorAll('.view').forEach( x => x.setAttribute('class','hidden'));
-        } else {
-            getView(view).setAttribute('class', 'hidden');
-        }
     };
 
 
@@ -391,12 +428,10 @@ const Popup = () => {
      */
     const displaySubmissionForm = () => {
 
-        hideView('all');
-        showView('submission');
+        view.hide('all');
+        view.show('submission');
         refreshTags();
         setupTagTypeahead();
-
-        $('#start-submission').hide();
         refreshSubmissionData();
     };
 
@@ -412,9 +447,9 @@ const Popup = () => {
     const displayVoteForm = (recordedClick) => {
 
         if (recordedClick.yourVote && recordedClick.yourVote !== ZERO) {
-            showView('thankyou');
+            view.show('thankyou');
         } else {
-            showView('vote');
+            view.show('vote');
         }
     };
 
@@ -448,7 +483,7 @@ const Popup = () => {
     const cancelSubmission = () => {
 
         rbutr.stopSubmission();
-        window.close();
+        view.show('rebuttals');
     };
 
 
@@ -464,10 +499,10 @@ const Popup = () => {
         if (!rbutr.getProp('loggedIn')) {
             msg.add('warning', notLoggedInMsg);
         } else {
-            showView('request');
+            view.hide('all');
+            view.show('request');
             setupTagTypeahead();
             $('#request-url').val(rbutr.getProp('canonicalUrls', tabId));
-            $('#start-submission').hide();
         }
     };
 
@@ -548,8 +583,9 @@ const Popup = () => {
      */
     const cancelRequestSubmission = () => {
 
-        $('#start-submission').show();
-        showView('rebuttals');
+        view.hide('all');
+        view.show('rebuttals');
+        view.show('action');
     };
 
 
@@ -603,7 +639,9 @@ const Popup = () => {
                 }
                 msg.add('error', 'Server connection timed out, try again.');
             } else {
-                showView('rebuttals');
+                view.hide('all');
+                view.show('rebuttals');
+                view.show('action');
             }
         }, TIMEOUT);
     };
@@ -661,7 +699,7 @@ const Popup = () => {
             });
             recordedClick.score += voteScore;
             recordedClick.yourVote = voteScore;
-            showView('thankyou');
+            view.show('thankyou');
         }
     };
 
@@ -754,8 +792,19 @@ const Popup = () => {
         .on('click', '.clickable-down', voteDown)
         .on('click', '.clickable-up', voteUp)
         .on('click', '.menu', () => {
-            hideView('all');
-            showView('menu');
+
+            const menu = document.querySelector('.menu');
+            menu.classList.toggle('active');
+
+            if (menu.classList.contains('active')) {
+                menu.innerHTML = 'close';
+                view.hide('all');
+                view.show('menu');
+            } else {
+                menu.innerHTML = 'Menu';
+                view.hide('menu');
+                view.show('rebuttals');
+            }
         })
         .on('submit', '#idea-form', submitIdea)
         .on('submit', '#data', submitData)
@@ -789,7 +838,7 @@ const Popup = () => {
         })
         .on('click', '#btn-capture-src', fromTagged)
         .on('click', '#thanks', () => {
-            window.close();
+            view.show('rebuttals');
         });
 
 
