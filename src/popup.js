@@ -229,20 +229,19 @@ const Popup = () => {
         notLoggedInMsg = `
             You are not logged in!
             rbutr requires you to be logged in to submit rebuttals and to vote.
-            <a target="_blank" href="${rbutr.utils.getServerUrl(true)}/rbutr/LoginServlet">
+            <a target="_blank" href="${rbutr.api.getServerUrl(true)}/rbutr/LoginServlet">
                 Click here
             </a> to login or register.
         `;
 
         view.setContent('rebuttals', rbutr.getProp('rebuttals', tabId));
 
-        getMenu((success, result) => {
+        rbutr.api.getMenu((success, result) => {
             if (success === true) {
                 view.setContent('menu', result);
             } else {
                 msg.add('error', result);
             }
-
         });
     };
 
@@ -399,7 +398,7 @@ const Popup = () => {
         $('#tag-typeahead').typeahead({
             name: 'tags',
             limit: 10,
-            prefetch: rbutr.utils.getServerUrl() + '?getPlainTagsJson=true'
+            prefetch: rbutr.api.getServerUrl() + '?getPlainTagsJson=true'
         }).on('typeahead:selected', (event, data) => {
 
             recordTag(data.value);
@@ -522,12 +521,12 @@ const Popup = () => {
             return false;
         }
 
-        $.post(rbutr.utils.getServerUrl(), {
+        $.post(rbutr.api.getServerUrl(), {
             subscribeToPage: rbutr.getProp('canonicalUrls', tabId),
             title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tabId)),
             tags: rbutr.getProp('tags'),
             pageIsCanonical: rbutr.getProp('urlIsCanonical', rbutr.getProp('canonicalUrls', tabId)),
-            cid: rbutr.getCid()
+            cid: rbutr.api.getCid()
         }, (data) => {
             rbutr.utils.log('debug', 'Submit request success:', data);
             msg.add('info', data);
@@ -690,10 +689,10 @@ const Popup = () => {
         let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
 
         if(recordedClick !== null) {
-            $.get(rbutr.utils.getServerUrl(), {
+            $.get(rbutr.api.getServerUrl(), {
                 'linkId': recordedClick.linkId,
                 'vote': voteScore,
-                'cid': rbutr.getCid()
+                'cid': rbutr.api.getCid()
             }, (data) => {
                 $('#current-score').html(data);
             });
@@ -741,37 +740,15 @@ const Popup = () => {
 
         document.forms['idea-form'].submitLink.value = 'Please wait..';
         document.forms['idea-form'].submitLink.disabled = true;
-        $.post(rbutr.utils.getServerUrl(), {
+        $.post(rbutr.api.getServerUrl(), {
             url: rbutr.getProp('canonicalUrls', tabId),
             title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tabId)),
             idea: document.forms['idea-form'].idea.value,
-            cid: rbutr.getCid()
+            cid: rbutr.api.getCid()
         }).success((data) => {
             msg.add('info', data);
         }).error((msg) => {
             msg.add('error', msg.responseText);
-        });
-    };
-
-
-
-    /**
-     * @method getMenu
-     * @description Load menu from server
-     *
-     * @param {Function} callback - Function to handle the result
-     * @return {void}
-     */
-    const getMenu = (callback) => {
-
-        $.get(rbutr.utils.getServerUrl(), {
-            getMenu: true,
-            version: browser.runtime.getManifest().version,
-            cid: rbutr.getCid()
-        }).success((data) => {
-            callback(true, data);
-        }).error((msg) => {
-            callback(false, msg.responseText);
         });
     };
 

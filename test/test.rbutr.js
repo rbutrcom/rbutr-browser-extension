@@ -17,6 +17,11 @@ var utils = rewire('../src/utils.js');
 var RbutrUtils = utils.__get__('RbutrUtils');
 global.RbutrUtils = RbutrUtils;
 
+// Because background.js need utils.js we need to include it and overwrite the global
+var api = rewire('../src/rbutrApi.js');
+var RbutrApi = api.__get__('RbutrApi');
+global.RbutrApi = RbutrApi;
+
 var background = rewire('../src/background.js');
 var Rbutr = background.__get__('Rbutr');
 var rbutrObj = Rbutr();
@@ -27,6 +32,9 @@ describe('Rbutr', function() {
     describe('#Rbutr()', function() {
         it('should return an object', function() {
             assert.strictEqual(typeof Rbutr(), 'object');
+        });
+        it('should return an object containing 20 properties', () => {
+            assert.strictEqual(Object.keys(Rbutr()).length, 20);
         });
     });
 
@@ -73,18 +81,6 @@ describe('Rbutr', function() {
         it('should return the length of a string', function() {
             rbutrObj.setProp('submitError', null, 'Lorem ipsum.');
             assert.strictEqual(rbutrObj.getPropLen('submitError'), 12);
-        });
-    });
-
-    describe('#Rbutr.getCid()', function() {
-        afterEach(() => {
-            localStorage.clear();
-        });
-        it('should return an integer', function() {
-            assert.ok(Number.isInteger(Rbutr().getCid()));
-        });
-        it('should return a 17 character long value', function() {
-            assert.equal(Rbutr().getCid(true).toString().length, 17);
         });
     });
 

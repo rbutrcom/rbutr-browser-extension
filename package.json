@@ -27,9 +27,9 @@
   "scripts": {
     "sass": "node-sass src/scss/main.scss --output src/css --source-map-embed --source-map-contents && node-sass src/scss/platforms.scss --output src/css --source-map-embed --source-map-contents",
     "watch:sass": "yarn run sass -- --watch",
-    "lint:js": "eslint --config .eslintrc.json src;",
-    "lint:style": "stylelint --config .stylelintrc src/scss/*.scss;",
-    "lint:html": "htmlhint --config .htmlhintrc src/**/*.html;",
+    "lint:js": "eslint --config .eslintrc.json src",
+    "lint:style": "stylelint --config .stylelintrc src/scss/*.scss",
+    "lint:html": "htmlhint --config .htmlhintrc src/**/*.html",
     "lint": "yarn run lint:html && yarn run lint:style && yarn run lint:js",
     "test": "mocha --colors --sort --check-leaks --use_strict -r mock-local-storage -r jsdom-global/register",
     "zip": "mkdir -p build && zip -r build/rbutr.zip ./src/*",
