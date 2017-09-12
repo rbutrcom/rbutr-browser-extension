@@ -35,6 +35,7 @@
       "vendors/jquery.js",
       "vendors/md5.js",
       "utils.js",
+      "rbutrApi.js",
       "background.js"
     ]
   },

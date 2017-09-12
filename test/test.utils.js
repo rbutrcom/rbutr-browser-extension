@@ -22,6 +22,9 @@ describe('Utils', function() {
         it('should return an object', function() {
             assert.strictEqual(typeof RbutrUtils(), 'object');
         });
+        it('should return an object containing 5 properties', () => {
+            assert.strictEqual(Object.keys(RbutrUtils()).length, 6);
+        });
     });
 
     describe('#RbutrUtils.isDev()', function() {

@@ -23,8 +23,6 @@ const RbutrUtils = () => {
     'use strict';
 
     const devStorageKey = 'rbutr.isDev';
-    const devDomain = 'https://russell.rbutr.com';
-    const liveDomain = 'http://rbutr.com';
 
 
 
@@ -80,24 +78,6 @@ const RbutrUtils = () => {
 
 
 
-    /**
-     * @method getServerUrl
-     * @description Get server url or just domain
-     *
-     * @param {Boolean} domainOnly - Flag to control if API URL or only domain will be returned
-     * @return {String} URL of the server, may contain only domain
-     */
-    const getServerUrl = (domainOnly) => {
-
-        let
-            domain = isDev() ? devDomain : liveDomain,
-            apiPath = domainOnly === true ? '' : '/rbutr/PluginServlet';
-
-        return domain + apiPath;
-    };
-
-
-
 
     /**
      * @method url2Domain
@@ -133,5 +113,23 @@ const RbutrUtils = () => {
 
 
 
-    return {log, isDev, getServerUrl, url2Domain, unicode2String};
+    /**
+     * @method buildUrl
+     * @description Builds a URL from URL string and parameters object
+     * @see https://fetch.spec.whatwg.org/#fetch-api
+     *
+     * @param {String} urlStr - A string containing the basic URL
+     * @param {Object} params - An object containing all parameters
+     * @return {String} Built URL
+     */
+    const buildUrl = (urlStr, params) => {
+        let url = new URL(urlStr);
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+        return url;
+    };
+
+
+
+    return {log, isDev, url2Domain, unicode2String, buildUrl};
 };

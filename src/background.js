@@ -6,7 +6,7 @@
  * Licensed under LGPL-3.0
  */
 
-/*global browser,console,$,b64_md5,RbutrUtils*/
+/*global browser,console,$,b64_md5,RbutrUtils,RbutrApi*/
 /*jslint browser:true,esnext:true */
 
 
@@ -78,6 +78,14 @@ const Rbutr = () => {
      * @type {Object} RbutrUtils object
      */
     const utils = RbutrUtils();
+
+    /**
+     * @property api
+     * @description Composing RbutrApi object into Rbutr for easier usage
+     *
+     * @type {Object} RbutrApi object
+     */
+    const api = RbutrApi(utils);
 
 
 
@@ -155,32 +163,6 @@ const Rbutr = () => {
     const initialize = () => {
 
         utils.log('log','Initialised on', new Date());
-    };
-
-
-
-    /**
-     * @method getCid
-     * @description Get stored client id or generate and store a new one
-     *
-     * @param {Boolean} regenerate - Flag to force a complete new generation
-     * @return {Number} Unique 17-digit integer
-     */
-    const getCid = (regenerate) => {
-
-        const CID_KEY = 'rbutr.cid';
-        const RAND_NUM_MULTIPLIER = 9000;
-        const RAND_NUM_ADDITION = 1000;
-        let cid = localStorage.getItem(CID_KEY);
-
-        if (!cid || regenerate === true) {
-            let ms = new Date().getTime();
-            let rand = Math.floor(RAND_NUM_ADDITION + Math.random() * RAND_NUM_MULTIPLIER);
-            cid = ms + rand.toString();
-            localStorage.setItem(CID_KEY, cid);
-        }
-
-        return parseInt(cid, 10);
     };
 
 
@@ -324,11 +306,11 @@ const Rbutr = () => {
         }
 
 
-        $.get(utils.getServerUrl(), {
+        $.get(api.getServerUrl(), {
             getLinks: true,
             fromPageUrlHash: b64_md5(url),
             version: browser.runtime.getManifest().version,
-            cid: rbutr.getCid()
+            cid: api.getCid()
         }, function (data) {
             rbutr.setProp('rebuttals', tabId, data);
             rbutr.setProp('loggedIn', null, true);
@@ -406,7 +388,7 @@ const Rbutr = () => {
             canonicalFromPages[j] = getProp('urlIsCanonical', getProp('fromUrls', j));
         }
 
-        $.post(utils.getServerUrl(), {
+        $.post(api.getServerUrl(), {
             submitLinks: true,
             fromUrls: getProp('fromUrls'),
             toUrls: getProp('toUrls'),
@@ -417,7 +399,7 @@ const Rbutr = () => {
             canonicalToPages: canonicalToPages,
             direct: getProp('direct'),
             tags: getProp('tags'),
-            cid: rbutr.getCid()
+            cid: api.getCid()
         }, function (data) {
             utils.log('debug', 'Submit rebuttal success:', data.status);
             rbutr.displayMessage('<strong>' + data.result + '</strong>');
@@ -565,7 +547,7 @@ const Rbutr = () => {
     };
 
 
-    return {utils, getProp, setProp, getPropLen, initialize, getCid, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, tabLoaded, submitRebuttals, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
+    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, tabLoaded, submitRebuttals, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
 };
 
 
@@ -605,13 +587,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 rbutr.recordLinkClick(click);
                 rbutr.utils.log('debug', 'Click recorded:', click.linkToUrl);
             } else if (request.action === 'getCid') {
-                sendResponse(rbutr.getCid());
+                sendResponse(rbutr.api.getCid());
                 return true;
             } else if (request.action === 'getServerUrl') {
-                sendResponse(rbutr.utils.getServerUrl());
+                sendResponse(rbutr.api.getServerUrl());
                 return true;
             } else if (request.action === 'getServerDomain') {
-                sendResponse(rbutr.utils.getServerUrl(true));
+                sendResponse(rbutr.api.getServerUrl(true));
                 return true;
             } else if (request.action === 'getVersion') {
                 sendResponse(browser.runtime.getManifest().version);
