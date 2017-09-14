@@ -83,9 +83,7 @@ const RbutrApi = (utils) => {
 
         return domain + apiPath;
     };
-
 /*
-    const getRebuttals = () => {};
     const postRebuttals = () => {};
     const requestRebuttals = () => {};
     const getTags = () => {};
@@ -105,9 +103,47 @@ const RbutrApi = (utils) => {
 
         const url = utils.buildUrl(getServerUrl(false), {
             getMenu: true,
-            version: browser.runtime.getManifest().version,
+            version: utils.getExtVersion,
             cid: getCid()
         });
+
+        makeRequest(url, 'POST', callback);
+    };
+
+
+
+    /**
+     * @method getRebuttals
+     * @description Load menu from server and show message afterwards
+     *
+     * @param {String} urlHash - MD5 Hash of the desired rebuttal URL
+     * @param {Function} callback - Callback function to execute
+     * @return {void}
+     */
+    const getRebuttals = (urlHash, callback) => {
+
+        const url = utils.buildUrl(getServerUrl(), {
+            getLinks: true,
+            fromPageUrlHash: urlHash,
+            version: utils.getExtVersion,
+            cid: getCid()
+        });
+
+        makeRequest(url, 'GET', callback);
+    };
+
+
+
+    /**
+     * @method makeRequest
+     * @description Make a request to the server
+     *
+     * @param {String} url - Request URL
+     * @param {String} method - Request method, either "GET" or "POST"
+     * @param {Function} callback - Callback function to execute
+     * @return {void}
+     */
+    const makeRequest = (url, method, callback) => {
 
         fetch(url, {method: 'POST'}).then((response) => {
             if (response.ok) {
@@ -119,10 +155,10 @@ const RbutrApi = (utils) => {
             callback(true, html);
         }).catch((error) => {
             callback(false, error.message);
-            utils.log('error', 'There has been a problem with your fetch operation: ' + error.message);
+            utils.log('error', 'There has been a problem with your fetch operation: ', error.message);
         });
     };
 
 
-    return {getCid, getServerUrl, getMenu};
+    return {getCid, getServerUrl, getMenu, getRebuttals, makeRequest};
 };

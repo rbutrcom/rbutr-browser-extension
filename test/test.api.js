@@ -37,8 +37,8 @@ describe('RbutrApi', () => {
         it('should return an object', () => {
             assert.strictEqual(typeof RbutrApi(), 'object');
         });
-        it('should return an object containing 3 properties', () => {
-            assert.strictEqual(Object.keys(RbutrApi()).length, 3);
+        it('should return an object containing 5 properties', () => {
+            assert.strictEqual(Object.keys(RbutrApi()).length, 5);
         });
     });
 
