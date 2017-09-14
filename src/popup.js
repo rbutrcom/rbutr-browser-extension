@@ -17,7 +17,7 @@ let tabId;
 /**
  * @description Multi-Browser support
  */
-window.browser = (function () {
+window.browser = (() => {
 
     'use strict';
 

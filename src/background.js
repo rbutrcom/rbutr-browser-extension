@@ -14,7 +14,7 @@
 /**
  * @description Multi-Browser support
  */
-window.browser = (function () {
+window.browser = (() => {
 
     'use strict';
 
@@ -262,7 +262,7 @@ const Rbutr = () => {
         browser.tabs.query({
             active: true,
             lastFocusedWindow: true
-        }, function (tab) {
+        }, (tab) => {
             let $data = Object.assign({}, {rbutr: rbutr, action: action}, data);
 
             utils.log('debug', 'Active tab:', tab[FIRST_ARRAY_ELEMENT]);
@@ -311,7 +311,7 @@ const Rbutr = () => {
             fromPageUrlHash: b64_md5(url),
             version: browser.runtime.getManifest().version,
             cid: api.getCid()
-        }, function (data) {
+        }, (data) => {
             rbutr.setProp('rebuttals', tabId, data);
             rbutr.setProp('loggedIn', null, true);
 
@@ -357,7 +357,7 @@ const Rbutr = () => {
 
                 rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.getProp('canonicalUrls', tabId)});
             }
-        }).error(function (msg) {
+        }).error((msg) => {
             rbutr.setProp('rebuttals', tabId, msg.responseText);
         });
     };
@@ -400,15 +400,15 @@ const Rbutr = () => {
             direct: getProp('direct'),
             tags: getProp('tags'),
             cid: api.getCid()
-        }, function (data) {
+        }, (data) => {
             utils.log('debug', 'Submit rebuttal success:', data.status);
             rbutr.displayMessage('<strong>' + data.result + '</strong>');
             window.open(data.redirectUrl);
             rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
             rbutr.tabLoaded(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
-        }, 'json').done(function (msg) {
+        }, 'json').done((msg) => {
             utils.log('debug', 'Submit rebuttal done:', msg.status);
-        }).fail(function (msg) {
+        }).fail((msg) => {
             rbutr.displayMessage('Failed to submit : ' + msg.responseText);
             utils.log('debug', 'Submit rebuttal fail:', msg);
         });
@@ -556,12 +556,12 @@ const Rbutr = () => {
 var rbutr = Rbutr();
 
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
 
     rbutr.initialize();
 
 
-    browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         'use strict';
 
@@ -606,7 +606,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // tab is going away, remove the canonical data for it
-    browser.tabs.onRemoved.addListener(function (tabId) {
+    browser.tabs.onRemoved.addListener((tabId) => {
 
         'use strict';
 
@@ -619,7 +619,7 @@ document.addEventListener('DOMContentLoaded', function () {
     /**
      * @description Fires when a tab is updated
      */
-    browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
         'use strict';
 

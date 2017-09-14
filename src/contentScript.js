@@ -37,7 +37,7 @@ const platforms = {
             filter: []
         },
         externalLinkPattern: null,
-        cleanurl: function (url) {
+        cleanurl: (url) => {
             'use strict';
             return url;
         }
@@ -57,7 +57,7 @@ const platforms = {
             filter: [{ element: 'div' }]
         },
         externalLinkPattern: new RegExp(/^https?:\/\/l\.facebook\.com\/l\.php\?u=([^&]+)/),
-        cleanurl: function (dirtyUrl) {
+        cleanurl: (dirtyUrl) => {
 
             'use strict';
 
@@ -399,7 +399,7 @@ const Content = () => {
             version: content.version,
             cid: content.cid,
             json: true
-        }, 'json').done( function (data) {
+        }, 'json').done((data) => {
             callback(data, url, $element);
         });
     };
@@ -427,7 +427,7 @@ const Content = () => {
                 parentSelector = itemSelectors[index].parent,
                 bodySelector = itemSelectors[index].body;
 
-            $(parentSelector + ' ' + bodySelector + ':not([data-rbutr-processed]) a').each(function () {
+            $(parentSelector + ' ' + bodySelector + ':not([data-rbutr-processed]) a').each(() => {
                 // exclude links that have the same hostname
                 if (ownHostRegExp.test(this.href) === false) {
                     $linkWrapper = $(this).closest(bodySelector);
@@ -439,7 +439,7 @@ const Content = () => {
                         expandedUrl = platform.expandExternalLinks($currentLink);
 
                         if(expandedUrl) {
-                            content.getRbutrData(expandedUrl, $linkWrapper, function (result, url, $element) {
+                            content.getRbutrData(expandedUrl, $linkWrapper, (result, url, $element) => {
                                 messageTemplate = content.createMessageTemplate(result, url);
                                 $element.after($('<div class="rbutr-message-container"></div>').html(messageTemplate));
                             });
@@ -476,7 +476,7 @@ const Content = () => {
             };
 
 
-        mutationObserver = new MutationObserver(function(mutations, thisInstance) {
+        mutationObserver = new MutationObserver((mutations, thisInstance) => {
             let result = content.setAlertOnPosts();
             if(result === true) {
                 thisInstance.disconnect();
@@ -513,22 +513,22 @@ const Content = () => {
 
 const content = Content();
 
-document.onreadystatechange = function () {
+document.onreadystatechange = () => {
 
     'use strict';
 
     if (document.readyState === 'complete') {
 
-        browser.runtime.sendMessage({'action': 'getCid'}, function (response) {
+        browser.runtime.sendMessage({'action': 'getCid'}, (response) => {
             content.cid = response;
         });
-        browser.runtime.sendMessage({'action': 'getServerUrl'}, function (response) {
+        browser.runtime.sendMessage({'action': 'getServerUrl'}, (response) => {
             content.serverUrl = response;
         });
-        browser.runtime.sendMessage({'action': 'getServerDomain'}, function (response) {
+        browser.runtime.sendMessage({'action': 'getServerDomain'}, (response) => {
             content.serverDomain = response;
         });
-        browser.runtime.sendMessage({'action': 'getVersion'}, function (response) {
+        browser.runtime.sendMessage({'action': 'getVersion'}, (response) => {
             content.version = response;
         });
         browser.runtime.sendMessage({'action': 'setCanonical', 'url': content.canonicalValue || location.href, 'title': content.title});
@@ -538,7 +538,7 @@ document.onreadystatechange = function () {
         /**
          * @description Handle requests from background script
          */
-        browser.runtime.onMessage.addListener(function (request) {
+        browser.runtime.onMessage.addListener((request) => {
 
             const TIMEOUT_HIDE_FLOATER = 5000;
 
@@ -562,11 +562,11 @@ document.onreadystatechange = function () {
                         </div>`
                     );
 
-                    window.setTimeout(function () {
+                    window.setTimeout(() => {
                         $('#rbutrfloatdiv').remove();
                     }, TIMEOUT_HIDE_FLOATER);
 
-                    $('#dontShowAgain').click(function () {
+                    $('#dontShowAgain').click(() => {
                         localStorage.setItem('rbutr.dontshow.' + request.url, $('#dontShowAgain')[FIRST_ARRAY_ELEMENT].checked);
                     });
                 }
@@ -585,7 +585,7 @@ document.onreadystatechange = function () {
 
 
         $('body').append('<div id="rbutr-installed"></div>');
-        $('.rbutr-message .more').click(function () {
+        $('.rbutr-message .more').click(() => {
             $('.rbutr-message .details').toggleClass('hidden');
         });
         content.execute();
