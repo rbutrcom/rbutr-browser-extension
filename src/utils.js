@@ -6,9 +6,22 @@
  * Licensed under LGPL-3.0
  */
 
-/*global console,JSON,*/
+/*global browser,console,JSON,*/
 /*exported RbutrUtils*/
 /*jslint browser:true,esnext:true */
+
+
+/**
+ * @description Multi-Browser support
+ */
+window.browser = (() => {
+
+    'use strict';
+
+    return window.msBrowser ||
+        window.browser ||
+        window.chrome;
+})();
 
 
 
@@ -53,6 +66,24 @@ const RbutrUtils = () => {
                 LOGGER.error('console.' + logLevel + ' is not a valid logging function.');
                 LOGGER.debug.apply(console, params);
             }
+        }
+    };
+
+
+
+    /**
+     * @method getExtVersion
+     * @description Get extension version. Moved to separate method to make testing possible
+     *
+     * @return {String} Extension version
+     */
+    const getExtVersion = () => {
+        const runtime = browser.runtime;
+
+        if (typeof runtime === 'object') {
+            return runtime.getManifest().version;
+        } else {
+            return '0.1';
         }
     };
 
@@ -131,5 +162,59 @@ const RbutrUtils = () => {
 
 
 
-    return {log, isDev, url2Domain, unicode2String, buildUrl};
+    /**
+     * @method setExtBadgeText
+     * @description Display a small badge on extension button with a given text
+     *
+     * @param {Integer} tabId - Current browser tab ID
+     * @param {*} text - Text to be displayed in the badge
+     * @return {void}
+     */
+    const setExtBadgeText = (tabId, text) => {
+
+        browser.browserAction.setBadgeText({
+            tabId: tabId,
+            text: text.toString(),
+        });
+    };
+
+
+
+    /**
+     * @method setExtBadgeBg
+     * @description Set badge background color
+     *
+     * @param {Integer} tabId - Current browser tab ID
+     * @param {Array} color - An array containing RGBA values
+     * @return {void}
+     */
+    const setExtBadgeBg = (tabId, color) => {
+
+        browser.browserAction.setBadgeBackgroundColor({
+            tabId: tabId,
+            color: color,
+        });
+    };
+
+
+
+    /**
+     * @method setExtTitle
+     * @description Set Hover-Text on extension button
+     *
+     * @param {Integer} tabId - Current browser tab ID
+     * @param {String} title - Text to be displayed on hover
+     * @return {void}
+     */
+    const setExtTitle = (tabId, title) => {
+
+        browser.browserAction.setTitle({
+            tabId: tabId,
+            title: title,
+        });
+    };
+
+
+
+    return {log, getExtVersion, isDev, url2Domain, unicode2String, buildUrl, setExtBadgeText, setExtBadgeBg, setExtTitle};
 };

@@ -22,8 +22,8 @@ describe('Utils', function() {
         it('should return an object', function() {
             assert.strictEqual(typeof RbutrUtils(), 'object');
         });
-        it('should return an object containing 5 properties', () => {
-            assert.strictEqual(Object.keys(RbutrUtils()).length, 6);
+        it('should return an object containing 9 properties', () => {
+            assert.strictEqual(Object.keys(RbutrUtils()).length, 9);
         });
     });
 
@@ -37,32 +37,6 @@ describe('Utils', function() {
         });
         it('should return false if isDev-Key is not "true" or not set', function() {
             assert.strictEqual(RbutrUtils().isDev(), false);
-        });
-    });
-
-    describe('#RbutrUtils.getServerUrl()', function() {
-        afterEach(() => {
-            localStorage.clear();
-        });
-        it('should return https://russell.rbutr.com/rbutr/PluginServlet in dev mode', function() {
-            localStorage.setItem('rbutr.isDev', 'true');
-            assert.strictEqual(RbutrUtils().getServerUrl(), 'https://russell.rbutr.com/rbutr/PluginServlet');
-        });
-        it('should return http://rbutr.com/rbutr/PluginServlet in productive mode', function() {
-            assert.strictEqual(RbutrUtils().getServerUrl(), 'http://rbutr.com/rbutr/PluginServlet');
-        });
-    });
-
-    describe('#RbutrUtils.getServerUrl(true)', function() {
-        afterEach(() => {
-            localStorage.clear();
-        });
-        it('should return https://russell.rbutr.com in dev mode', function() {
-            localStorage.setItem('rbutr.isDev', 'true');
-            assert.strictEqual(RbutrUtils().getServerUrl(true), 'https://russell.rbutr.com');
-        });
-        it('should return http://rbutr.com in productive mode', function() {
-            assert.strictEqual(RbutrUtils().getServerUrl(true), 'http://rbutr.com');
         });
     });
 

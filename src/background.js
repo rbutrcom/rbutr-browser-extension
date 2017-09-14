@@ -57,9 +57,7 @@ const Rbutr = () => {
     };
 
     const ZERO = 0;
-    const ONE = 1;
     const FIRST_ARRAY_ELEMENT = 0;
-    const NO_MATCH_CODE = -1;
 
     const COLOR_VAL_ZERO  = 0;
     const COLOR_VAL_HALF  = 100;
@@ -298,67 +296,60 @@ const Rbutr = () => {
     const tabLoaded = (tabId, url) => {
 
         setProp('rebuttals', tabId, null);
-        let vote = false;
+        let canVote = false;
         let recordedClick = getRecordedClickByToUrl(getProp('canonicalUrls', tabId));
         // Don't show voting after you've voted
         if (recordedClick !== null && recordedClick.yourVote && recordedClick.yourVote === ZERO) {
-            vote = true;
+            canVote = true;
         }
 
 
-        $.get(api.getServerUrl(), {
-            getLinks: true,
-            fromPageUrlHash: b64_md5(url),
-            version: browser.runtime.getManifest().version,
-            cid: api.getCid()
-        }, (data) => {
-            rbutr.setProp('rebuttals', tabId, data);
-            rbutr.setProp('loggedIn', null, true);
+        rbutr.api.getRebuttals(b64_md5(url), (success, result) => {
+            if (success === true) {
+                let titleMessage = '';
 
-            let m = rbutr.getProp('rebuttals', tabId).match(/id="not-logged-in"/g);
-            let titleMessage = '';
+                const hasRebuttals = result.match(/No Rebuttals/g) === null;
+                const isLoggedIn = result.match(/id="not-logged-in"/g) === null;
+                rbutr.setProp('loggedIn', null, isLoggedIn);
 
-            if (m !== null && m.length > ZERO) {
-                rbutr.setProp('loggedIn', null, false);
-            }
-            if (rbutr.getProp('rebuttals', tabId).indexOf('<h2 class="status">No Rebuttals</h2><br style="clear:left;">') !== NO_MATCH_CODE) {
-                rbutr.setProp('rebuttalCount', tabId, ZERO);
-                // No rebuttals
-                browser.browserAction.setBadgeText({text: '', tabId: tabId});
-                if (vote && rbutr.getProp('loggedIn')) {
-                    browser.browserAction.setBadgeText({text: 'Vote', tabId: tabId});
-                    browser.browserAction.setBadgeBackgroundColor({color: COLOR_MAGENTA, tabId: tabId});
-                    titleMessage = 'You can vote on this.';
-                    browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
+                rbutr.setProp('rebuttals', tabId, result);
+
+                if (hasRebuttals) {
+                    let matches = result.match(/class="thumbsUp"/g);
+                    let count = matches === null ? ZERO : matches.length;
+                    rbutr.setProp('rebuttalCount', tabId, count);
+
+                    if (canVote && isLoggedIn) {
+                        titleMessage = `You can vote on this, and there are also ${count} rebuttal(s).`;
+                        utils.setExtTitle(tabId, titleMessage);
+                        utils.setExtBadgeText(tabId, 'V ' + count);
+                        utils.setExtBadgeBg(tabId, COLOR_LIGHT_RED);
+                    } else {
+                        titleMessage = `This page has ${count} rebuttal(s).`;
+                        utils.setExtTitle(tabId, titleMessage);
+                        utils.setExtBadgeText(tabId, count);
+                        utils.setExtBadgeBg(tabId, COLOR_RED);
+                    }
+
                     rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.getProp('canonicalUrls', tabId)});
+
                 } else {
-                    browser.browserAction.setTitle({
-                        tabId: tabId,
-                        title: 'RbutR - There are no rebuttals to this page, do you know of one?'
-                    });
+                    rbutr.setProp('rebuttalCount', tabId, ZERO);
+
+                    if (canVote && isLoggedIn) {
+                        titleMessage = 'You can vote on this.';
+                        utils.setExtTitle(tabId, titleMessage);
+                        utils.setExtBadgeText(tabId, 'Vote');
+                        utils.setExtBadgeBg(tabId, COLOR_MAGENTA);
+                        rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.getProp('canonicalUrls', tabId)});
+                    } else {
+                        utils.setExtBadgeText(tabId, '');
+                        utils.setExtTitle(tabId, 'RbutR - There are no rebuttals to this page, do you know of one?');
+                    }
                 }
             } else {
-                let matches = rbutr.getProp('rebuttals', tabId).match(/class="thumbsUp"/g);
-                let count = Number(matches === null ? ZERO : matches.length);
-                rbutr.setProp('rebuttalCount', tabId, count);
-                let rebuttal_plural = count === ONE ? 'rebuttal' : 'rebuttals';
-
-                if (vote && rbutr.getProp('loggedIn')) {
-                    browser.browserAction.setBadgeText({text: 'V ' + count.toString(), tabId: tabId});
-                    browser.browserAction.setBadgeBackgroundColor({color: COLOR_LIGHT_RED, tabId: tabId});
-                    titleMessage = 'You can vote on this, and there is also ' + count + ' ' + rebuttal_plural + '.';
-                    browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
-                } else {
-                    browser.browserAction.setBadgeText({text: count.toString(), tabId: tabId});
-                    browser.browserAction.setBadgeBackgroundColor({color: COLOR_RED, tabId: tabId});
-                    titleMessage = 'This page has ' + count + ' ' + rebuttal_plural + '.';
-                    browser.browserAction.setTitle({tabId: tabId, title: titleMessage});
-                }
-
-                rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.getProp('canonicalUrls', tabId)});
+                getPopup().msg.add('error', result);
             }
-        }).error((msg) => {
-            rbutr.setProp('rebuttals', tabId, msg.responseText);
         });
     };
 
