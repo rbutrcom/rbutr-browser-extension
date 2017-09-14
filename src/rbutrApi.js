@@ -6,7 +6,6 @@
  * Licensed under LGPL-3.0
  */
 
-/*global browser*/
 /*exported RbutrApi*/
 /*jslint browser:true,esnext:true */
 
