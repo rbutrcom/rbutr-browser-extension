@@ -6,7 +6,7 @@
  * Licensed under LGPL-3.0
  */
 
-/*global browser,console,$,b64_md5,RbutrUtils,RbutrApi*/
+/*global browser,b64_md5,RbutrUtils,RbutrApi*/
 /*jslint browser:true,esnext:true */
 
 
