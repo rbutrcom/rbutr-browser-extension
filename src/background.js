@@ -286,14 +286,14 @@ const Rbutr = () => {
 
 
     /**
-     * @method tabLoaded
+     * @method getRebuttals
      * @description Load data on tab switch
      *
      * @param {Number} tabId - Browser tab id
      * @param {String} url - Browser tab URL
      * @return {void}
      */
-    const tabLoaded = (tabId, url) => {
+    const getRebuttals = (tabId, url) => {
 
         setProp('rebuttals', tabId, null);
         let canVote = false;
@@ -397,7 +397,7 @@ const Rbutr = () => {
                 rbutr.displayMessage('<strong>' + result.result + '</strong>');
                 window.open(result.redirectUrl);
                 rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
-                rbutr.tabLoaded(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
+                rbutr.getRebuttals(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
             } else {
                 rbutr.displayMessage('Failed to submit : ' + result.responseText);
                 utils.log('debug', 'Submit rebuttal fail:', result);
@@ -538,7 +538,7 @@ const Rbutr = () => {
     };
 
 
-    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, tabLoaded, submitRebuttals, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
+    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getRebuttals, submitRebuttals, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
 };
 
 
@@ -571,7 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 rbutr.setProp('plainUrls', tab.id, tab.url);
 
                 rbutr.setProp('pageTitle', url, tab.title);
-                rbutr.tabLoaded(tab.id, url);
+                rbutr.getRebuttals(tab.id, url);
 
             } else if (request.action === 'setClick') {
                 let click = request.click;
