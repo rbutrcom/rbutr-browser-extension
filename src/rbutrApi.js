@@ -82,8 +82,10 @@ const RbutrApi = (utils) => {
 
         return domain + apiPath;
     };
+
+
+
 /*
-    const postRebuttals = () => {};
     const requestRebuttals = () => {};
     const getTags = () => {};
     const updateVote = () => {};
@@ -102,18 +104,18 @@ const RbutrApi = (utils) => {
 
         const url = utils.buildUrl(getServerUrl(false), {
             getMenu: true,
-            version: utils.getExtVersion,
+            version: utils.getExtVersion(),
             cid: getCid()
         });
 
-        makeRequest(url, 'POST', callback);
+        makeRequest(url, 'POST', 'text', callback);
     };
 
 
 
     /**
      * @method getRebuttals
-     * @description Load menu from server and show message afterwards
+     * @description Get rebuttals for given (hashed) URL
      *
      * @param {String} urlHash - MD5 Hash of the desired rebuttal URL
      * @param {Function} callback - Callback function to execute
@@ -124,11 +126,36 @@ const RbutrApi = (utils) => {
         const url = utils.buildUrl(getServerUrl(), {
             getLinks: true,
             fromPageUrlHash: urlHash,
-            version: utils.getExtVersion,
+            version: utils.getExtVersion(),
             cid: getCid()
         });
 
-        makeRequest(url, 'GET', callback);
+        makeRequest(url, 'GET', 'text', callback);
+    };
+
+
+
+
+    /**
+     * @method postRebuttals
+     * @description Submit rebuttal(s)
+     *
+     * @param {Object} submitParameters - Data to submit
+     * @param {Function} callback - Callback function to execute
+     * @return {void}
+     */
+    const postRebuttals = (submitParameters, callback) => {
+
+        const url = utils.buildUrl(getServerUrl(), Object.assign({},
+            {
+                submitLinks: true,
+                version: utils.getExtVersion(),
+                cid: getCid()
+            },
+            submitParameters
+        ));
+
+        makeRequest(url, 'POST', 'json', callback);
     };
 
 
@@ -139,19 +166,20 @@ const RbutrApi = (utils) => {
      *
      * @param {String} url - Request URL
      * @param {String} method - Request method, either "GET" or "POST"
+     * @param {String} responseType - Type of response, either "json" or "text" (includes HTML)
      * @param {Function} callback - Callback function to execute
      * @return {void}
      */
-    const makeRequest = (url, method, callback) => {
+    const makeRequest = (url, method, responseType, callback) => {
 
-        fetch(url, {method: 'POST'}).then((response) => {
+        fetch(url, {method: method}).then((response) => {
             if (response.ok) {
-                return response.text();
+                return responseType === 'json' ? response.json() : response.text();
             } else {
                 throw new Error('Network response was not OK.');
             }
-        }).then((html) => {
-            callback(true, html);
+        }).then((result) => {
+            callback(true, result);
         }).catch((error) => {
             callback(false, error.message);
             utils.log('error', 'There has been a problem with your fetch operation: ', error.message);
@@ -159,5 +187,5 @@ const RbutrApi = (utils) => {
     };
 
 
-    return {getCid, getServerUrl, getMenu, getRebuttals, makeRequest};
+    return {getCid, getServerUrl, getMenu, getRebuttals, postRebuttals, makeRequest};
 };
