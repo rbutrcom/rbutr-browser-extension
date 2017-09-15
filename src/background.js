@@ -379,8 +379,7 @@ const Rbutr = () => {
             canonicalFromPages[j] = getProp('urlIsCanonical', getProp('fromUrls', j));
         }
 
-        $.post(api.getServerUrl(), {
-            submitLinks: true,
+        const submitParameters = {
             fromUrls: getProp('fromUrls'),
             toUrls: getProp('toUrls'),
             fromPageTitles: fromPageTitles,
@@ -390,18 +389,19 @@ const Rbutr = () => {
             canonicalToPages: canonicalToPages,
             direct: getProp('direct'),
             tags: getProp('tags'),
-            cid: api.getCid()
-        }, (data) => {
-            utils.log('debug', 'Submit rebuttal success:', data.status);
-            rbutr.displayMessage('<strong>' + data.result + '</strong>');
-            window.open(data.redirectUrl);
-            rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
-            rbutr.tabLoaded(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
-        }, 'json').done((msg) => {
-            utils.log('debug', 'Submit rebuttal done:', msg.status);
-        }).fail((msg) => {
-            rbutr.displayMessage('Failed to submit : ' + msg.responseText);
-            utils.log('debug', 'Submit rebuttal fail:', msg);
+        };
+
+        api.postRebuttals(submitParameters, (success, result) => {
+            if (success === true) {
+                utils.log('debug', 'Submit rebuttal success:', result.status);
+                rbutr.displayMessage('<strong>' + result.result + '</strong>');
+                window.open(result.redirectUrl);
+                rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
+                rbutr.tabLoaded(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
+            } else {
+                rbutr.displayMessage('Failed to submit : ' + result.responseText);
+                utils.log('debug', 'Submit rebuttal fail:', result);
+            }
         });
     };
 
