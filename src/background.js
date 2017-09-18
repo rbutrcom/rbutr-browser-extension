@@ -104,7 +104,7 @@ const Rbutr = () => {
             result = properties[name];
         }
 
-        return result;
+        return result === undefined ? null : result;
     };
 
 
@@ -230,17 +230,18 @@ const Rbutr = () => {
      * @method displayMessage
      * @description Display a message in the popup
      *
+     * @param {String} type - The message type
      * @param {String} message - The message to be displayed
      * @return {void}
      */
-    const displayMessage = (message) => {
+    const displayMessage = (type, message) => {
 
         let popup = getPopup();
 
         if (popup === null) {
             utils.log('error', 'Popup was null, couldn\'t display:', message);
         } else {
-            popup.displayMessage(message);
+            popup.msg.add(type, message);
         }
     };
 
@@ -286,8 +287,26 @@ const Rbutr = () => {
 
 
     /**
+     * @method getMenu
+     * @description Submit rebuttal data to server
+     *
+     * @return {void}
+     */
+    const getMenu = () => {
+        api.getMenu((success, result) => {
+            if (success === true) {
+                popupPort.postMessage({response: 'getMenu', status: 'success', result: result});
+            } else {
+                popupPort.postMessage({response: 'getMenu', status: 'error', result: 'Menu could not be loaded.'});
+            }
+        });
+    };
+
+
+
+    /**
      * @method getRebuttals
-     * @description Load data on tab switch
+     * @description Load rebuttal data via API
      *
      * @param {Number} tabId - Browser tab id
      * @param {String} url - Browser tab URL
@@ -304,7 +323,7 @@ const Rbutr = () => {
         }
 
 
-        rbutr.api.getRebuttals(b64_md5(url), (success, result) => {
+        api.getRebuttals(b64_md5(url), (success, result) => {
             if (success === true) {
                 let titleMessage = '';
 
@@ -347,8 +366,11 @@ const Rbutr = () => {
                         utils.setExtTitle(tabId, 'RbutR - There are no rebuttals to this page, do you know of one?');
                     }
                 }
+
+                popupPort.postMessage({response: 'getRebuttals', status: 'success', result: result});
+
             } else {
-                getPopup().msg.add('error', result);
+                popupPort.postMessage({response: 'getRebuttals', status: 'error', result: 'Rebuttals could not be loaded.'});
             }
         });
     };
@@ -394,12 +416,12 @@ const Rbutr = () => {
         api.postRebuttals(submitParameters, (success, result) => {
             if (success === true) {
                 utils.log('debug', 'Submit rebuttal success:', result.status);
-                rbutr.displayMessage('<strong>' + result.result + '</strong>');
+                rbutr.displayMessage('success', '<strong>' + result.result + '</strong>');
                 window.open(result.redirectUrl);
                 rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
                 rbutr.getRebuttals(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
             } else {
-                rbutr.displayMessage('Failed to submit : ' + result.responseText);
+                rbutr.displayMessage('error', 'Failed to submit : ' + result.responseText);
                 utils.log('debug', 'Submit rebuttal fail:', result);
             }
         });
@@ -538,13 +560,14 @@ const Rbutr = () => {
     };
 
 
-    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getRebuttals, submitRebuttals, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
+    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getMenu, getRebuttals, submitRebuttals, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
 };
 
 
 
 // Necessary usage of 'var' because popup will not get variable if it's 'const' or 'let' in Chrome
 var rbutr = Rbutr();
+let popupPort = null;
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -557,10 +580,12 @@ document.addEventListener('DOMContentLoaded', () => {
         'use strict';
 
         if (request.action) {
+
+            let tab = request.tab || sender.tab;
+            let canonicalUrl = rbutr.getCanonicalUrl(tab.url);
+            let url = canonicalUrl || tab.url;
+
             if (request.action === 'setCanonical') {
-                let tab = request.tab || sender.tab;
-                let canonicalUrl = rbutr.getCanonicalUrl(tab.url);
-                let url = canonicalUrl || tab.url;
 
                 if (!/^http/.test(canonicalUrl)) {
                     return;
@@ -571,21 +596,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 rbutr.setProp('plainUrls', tab.id, tab.url);
 
                 rbutr.setProp('pageTitle', url, tab.title);
-                rbutr.getRebuttals(tab.id, url);
+                return true;
 
             } else if (request.action === 'setClick') {
                 let click = request.click;
                 rbutr.recordLinkClick(click);
                 rbutr.utils.log('debug', 'Click recorded:', click.linkToUrl);
+
             } else if (request.action === 'getCid') {
                 sendResponse(rbutr.api.getCid());
                 return true;
+
             } else if (request.action === 'getServerUrl') {
                 sendResponse(rbutr.api.getServerUrl());
                 return true;
+
             } else if (request.action === 'getServerDomain') {
                 sendResponse(rbutr.api.getServerUrl(true));
                 return true;
+
             } else if (request.action === 'getVersion') {
                 sendResponse(browser.runtime.getManifest().version);
                 return true;
@@ -625,5 +654,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
+
+    browser.runtime.onConnect.addListener(function(port) {
+        port.onMessage.addListener(function(msg) {
+            if (port.name === 'popup-background') {
+                popupPort = port;
+
+                if (msg.request === 'getRebuttals') {
+                    let canonicalUrl = rbutr.getCanonicalUrl(msg.tab.url);
+                    let url = canonicalUrl || msg.tab.url;
+                    rbutr.getRebuttals(msg.tab.id, url);
+                } else if (msg.request === 'getMenu') {
+                    rbutr.getMenu();
+                }
+            }
+        });
+    });
 
 });
