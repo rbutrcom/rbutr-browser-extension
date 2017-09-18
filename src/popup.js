@@ -850,7 +850,7 @@ portBg.onMessage.addListener((msg) => {
             popup.msg.add('error', msg.result);
         }
 
-    } else if (msg.response === 'postRebuttals') {
+    } else if (msg.response === 'submitRebuttals') {
         if (msg.status === 'success') {
             window.open(msg.result.redirectUrl);
             popup.cancelSubmission(); // Clear the data now that it's submitted.

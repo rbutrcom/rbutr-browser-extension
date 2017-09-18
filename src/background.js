@@ -413,13 +413,13 @@ const Rbutr = () => {
             tags: getProp('tags'),
         };
 
-        api.postRebuttals(submitParameters, (success, result) => {
+        api.submitRebuttals(submitParameters, (success, result) => {
             if (success === true) {
                 rbutr.getRebuttals(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
-                popupPort.postMessage({response: 'postRebuttals', status: 'success', result: result});
+                popupPort.postMessage({response: 'submitRebuttals', status: 'success', result: result});
             } else {
                 utils.log('error', 'Rebuttal could not be submitted:', result);
-                popupPort.postMessage({response: 'postRebuttals', status: 'error', result: `Rebuttal could not be submitted: ${result}`});
+                popupPort.postMessage({response: 'submitRebuttals', status: 'error', result: `Rebuttal could not be submitted: ${result}`});
             }
         });
     };

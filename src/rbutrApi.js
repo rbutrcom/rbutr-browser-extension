@@ -136,14 +136,14 @@ const RbutrApi = (utils) => {
 
 
     /**
-     * @method postRebuttals
+     * @method submitRebuttals
      * @description Submit rebuttal(s)
      *
      * @param {Object} submitParameters - Data to submit
      * @param {Function} callback - Callback function to execute
      * @return {void}
      */
-    const postRebuttals = (submitParameters, callback) => {
+    const submitRebuttals = (submitParameters, callback) => {
 
         const url = utils.buildUrl(getServerUrl(), Object.assign({},
             {
@@ -209,5 +209,5 @@ const RbutrApi = (utils) => {
     };
 
 
-    return {getCid, getServerUrl, getMenu, getRebuttals, postRebuttals, submitIdea, makeRequest};
+    return {getCid, getServerUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, makeRequest};
 };
