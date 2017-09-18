@@ -488,6 +488,7 @@ const Popup = () => {
 
         rbutr.stopSubmission();
         view.show('rebuttals');
+        view.show('action');
     };
 
 
@@ -563,7 +564,7 @@ const Popup = () => {
 
     /**
      * @method fromTagged
-     * @description Add canonical url to stored fromUrl list and reresh data
+     * @description Add canonical url to stored fromUrl list and refresh data
      *
      * @return {void}
      */
@@ -743,6 +744,7 @@ const Popup = () => {
                 menu.innerHTML = 'Menu';
                 view.hide('menu');
                 view.show('rebuttals');
+                view.show('action');
             }
         })
         .on('submit', '#idea-form', submitIdea)
@@ -778,6 +780,7 @@ const Popup = () => {
         .on('click', '#btn-capture-src', fromTagged)
         .on('click', '#thanks', () => {
             view.show('rebuttals');
+            view.show('action');
         });
 
 
