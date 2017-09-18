@@ -834,7 +834,7 @@ browser.runtime.getBackgroundPage((background) => {
 
 const portBg = browser.runtime.connect({name: 'popup-background'});
 
-portBg.onMessage.addListener(function(msg) {
+portBg.onMessage.addListener((msg) => {
     if (msg.response === 'getRebuttals') {
 
         //TODO: Fix this

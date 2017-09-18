@@ -16,10 +16,10 @@ var utils = rewire('../src/utils.js');
 var RbutrUtils = utils.__get__('RbutrUtils');
 
 
-describe('Utils', function() {
+describe('Utils', () => {
 
-    describe('#RbutrUtils()', function() {
-        it('should return an object', function() {
+    describe('#RbutrUtils()', () => {
+        it('should return an object', () => {
             assert.strictEqual(typeof RbutrUtils(), 'object');
         });
         it('should return an object containing 9 properties', () => {
@@ -27,28 +27,28 @@ describe('Utils', function() {
         });
     });
 
-    describe('#RbutrUtils.isDev()', function() {
+    describe('#RbutrUtils.isDev()', () => {
         beforeEach(() => {
             localStorage.clear();
         });
-        it('should return true if isDev-Key is "true"', function() {
+        it('should return true if isDev-Key is "true"', () => {
             localStorage.setItem('rbutr.isDev', 'true');
             assert.strictEqual(RbutrUtils().isDev(), true);
         });
-        it('should return false if isDev-Key is not "true" or not set', function() {
+        it('should return false if isDev-Key is not "true" or not set', () => {
             assert.strictEqual(RbutrUtils().isDev(), false);
         });
     });
 
-    describe('#RbutrUtils.url2Domain()', function() {
-        it('should extract domain from url', function() {
+    describe('#RbutrUtils.url2Domain()', () => {
+        it('should extract domain from url', () => {
             var url = 'https://www.google.com/search?q=rbutr';
             assert.strictEqual(RbutrUtils().url2Domain(url), 'google.com');
         });
     });
 
-    describe('#RbutrUtils.unicode2String()', function() {
-        it('should decode unicode characters', function() {
+    describe('#RbutrUtils.unicode2String()', () => {
+        it('should decode unicode characters', () => {
             var string = 'This is just a \u0074\u0065\u0073\u0074.';
             assert.strictEqual(RbutrUtils().unicode2String(string), 'This is just a test.');
         });
