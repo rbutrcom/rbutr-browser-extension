@@ -10,8 +10,9 @@
 /*jslint browser:true,esnext:true */
 
 
+const FIRST_ARRAY_ELEMENT = 0;
 let waitCount;
-let tabId;
+let tab;
 
 
 /**
@@ -205,7 +206,6 @@ const Popup = () => {
 
     const ZERO = 0;
     const ONE = 1;
-    const FIRST_ARRAY_ELEMENT = 0;
     const MAX_TAG_COUNT = 6;
     const MAX_URL_COUNT = 3;
 
@@ -234,15 +234,20 @@ const Popup = () => {
             </a> to login or register.
         `;
 
-        view.setContent('rebuttals', rbutr.getProp('rebuttals', tabId));
+        // Request Menu from Server
+        portBg.postMessage({request: 'getMenu'});
 
-        rbutr.api.getMenu((success, result) => {
-            if (success === true) {
-                view.setContent('menu', result);
-            } else {
-                msg.add('error', result);
-            }
-        });
+        // Request rebuttals from Server
+        let rebuttals = rbutr.getProp('rebuttals', tab.id);
+        rbutr.utils.log('debug', rebuttals + ' Rebuttals');
+
+        if (rebuttals === null) {
+            view.setContent('rebuttals', 'Loading...');
+            portBg.postMessage({request: 'getRebuttals', tab: tab});
+        } else {
+            view.setContent('rebuttals', rebuttals);
+        }
+
     };
 
 
@@ -466,7 +471,7 @@ const Popup = () => {
         if (!rbutr.getProp('loggedIn')) {
             msg.add('warning', notLoggedInMsg);
         } else {
-            rbutr.startSubmission(tabId, fromTo);
+            rbutr.startSubmission(tab.id, fromTo);
             displaySubmissionForm();
         }
     };
@@ -501,7 +506,7 @@ const Popup = () => {
             view.hide('all');
             view.show('request');
             setupTagTypeahead();
-            $('#request-url').val(rbutr.getProp('canonicalUrls', tabId));
+            $('#request-url').val(rbutr.getProp('canonicalUrls', tab.id));
         }
     };
 
@@ -522,10 +527,10 @@ const Popup = () => {
         }
 
         $.post(rbutr.api.getServerUrl(), {
-            subscribeToPage: rbutr.getProp('canonicalUrls', tabId),
-            title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tabId)),
+            subscribeToPage: rbutr.getProp('canonicalUrls', tab.id),
+            title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tab.id)),
             tags: rbutr.getProp('tags'),
-            pageIsCanonical: rbutr.getProp('urlIsCanonical', rbutr.getProp('canonicalUrls', tabId)),
+            pageIsCanonical: rbutr.getProp('urlIsCanonical', rbutr.getProp('canonicalUrls', tab.id)),
             cid: rbutr.api.getCid()
         }, (data) => {
             rbutr.utils.log('debug', 'Submit request success:', data);
@@ -546,10 +551,10 @@ const Popup = () => {
      */
     const toTagged = () => {
 
-        if (rbutr.getProp('canonicalUrls', tabId) === undefined || rbutr.alreadyExists(rbutr.getProp('canonicalUrls', tabId))) {
+        if (rbutr.getProp('canonicalUrls', tab.id) === undefined || rbutr.alreadyExists(rbutr.getProp('canonicalUrls', tab.id))) {
             return;
         } else {
-            rbutr.setProp('toUrls', rbutr.getPropLen('toUrls'), rbutr.getProp('canonicalUrls', tabId));
+            rbutr.setProp('toUrls', rbutr.getPropLen('toUrls'), rbutr.getProp('canonicalUrls', tab.id));
             refreshSubmissionData();
         }
     };
@@ -564,10 +569,10 @@ const Popup = () => {
      */
     const fromTagged = () => {
 
-        if (rbutr.getProp('canonicalUrls', tabId) === undefined || rbutr.alreadyExists(rbutr.getProp('canonicalUrls', tabId))) {
+        if (rbutr.getProp('canonicalUrls', tab.id) === undefined || rbutr.alreadyExists(rbutr.getProp('canonicalUrls', tab.id))) {
             return;
         } else {
-            rbutr.setProp('fromUrls', rbutr.getPropLen('fromUrls'), rbutr.getProp('canonicalUrls', tabId));
+            rbutr.setProp('fromUrls', rbutr.getPropLen('fromUrls'), rbutr.getProp('canonicalUrls', tab.id));
             refreshSubmissionData();
         }
     };
@@ -605,44 +610,8 @@ const Popup = () => {
             rbutr.setProp('submitError', null, 'Please enter at least one tag for this rebuttal.');
             return false;
         }
-        browser.tabs.get(tabId, (tab) => {
-            rbutr.submitRebuttals(tab);
-        });
-    };
 
-
-
-    /**
-     * @method handleDelayOnLoadOfRebuttals
-     * @description Recursively sleep until the rebuttal data is ready
-     *
-     * @return {void}
-     */
-    const handleDelayOnLoadOfRebuttals = () => {
-
-        const DELAY = 50;
-        const TIMEOUT = 100;
-
-        setTimeout(() => {
-            // not yet ready.
-            if (rbutr.getProp('rebuttals', tabId) === null) {
-                waitCount++;
-                if (waitCount < DELAY) {
-                    // Recurse
-                    handleDelayOnLoadOfRebuttals();
-                    return;
-                }
-                if (!rbutr.getProp('canonicalUrls', tabId)) {
-                    msg.add('error', 'This doesn\'t look like a real web page.');
-                    return;
-                }
-                msg.add('error', 'Server connection timed out, try again.');
-            } else {
-                view.hide('all');
-                view.show('rebuttals');
-                view.show('action');
-            }
-        }, TIMEOUT);
+        rbutr.submitRebuttals(tab.id);
     };
 
 
@@ -656,7 +625,7 @@ const Popup = () => {
     const loadData = () => {
 
         // Loads the data from the background tab, which has likely already retrieved it.
-        let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
+        let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tab.id));
         if (rbutr.getProp('submittingRebuttal') === true) {
             displaySubmissionForm();
 
@@ -665,13 +634,6 @@ const Popup = () => {
             $('.voting-rebutted-url').attr('href', recordedClick.linkFromUrl);
             $('#current-score').html(recordedClick.score);
             displayVoteForm(recordedClick);
-        }
-
-        // Don't show current rebuttals if adding, too messy.
-        if (!rbutr.getProp('submittingRebuttal')) {
-            // Needs to be set for following call which is recursive
-            waitCount = ZERO;
-            handleDelayOnLoadOfRebuttals();
         }
     };
 
@@ -686,7 +648,7 @@ const Popup = () => {
      */
     const vote = (voteScore) => {
 
-        let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tabId));
+        let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tab.id));
 
         if(recordedClick !== null) {
             $.get(rbutr.api.getServerUrl(), {
@@ -741,8 +703,8 @@ const Popup = () => {
         document.forms['idea-form'].submitLink.value = 'Please wait..';
         document.forms['idea-form'].submitLink.disabled = true;
         $.post(rbutr.api.getServerUrl(), {
-            url: rbutr.getProp('canonicalUrls', tabId),
-            title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tabId)),
+            url: rbutr.getProp('canonicalUrls', tab.id),
+            title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tab.id)),
             idea: document.forms['idea-form'].idea.value,
             cid: rbutr.api.getCid()
         }).success((data) => {
@@ -831,21 +793,25 @@ const Popup = () => {
         /**
          * @description Set canonical url in background
          */
-        browser.tabs.query({currentWindow: true, active: true}, (tab) => {
 
-            // This happens AFTER document.ready, so I'll do everything here, which means I get access to the URL
-            tabId = tab[FIRST_ARRAY_ELEMENT].id;
+        if (!rbutr.getProp('canonicalUrls', tab.id)) {
+            browser.runtime.sendMessage({action: 'setCanonical', tab: tab});
+        }
 
-            if (!rbutr.getProp('canonicalUrls', tabId)) {
-                browser.runtime.sendMessage({action: 'setCanonical', tab: tab[FIRST_ARRAY_ELEMENT]});
-            }
-
-            loadData();
-        });
+        loadData();
     };
 
-    return {initialize, msg, execute};
+    return {initialize, msg, view, execute};
 };
+
+
+
+/**
+ * @description Make current tab context globally available
+ */
+browser.tabs.query({currentWindow: true, active: true}, (currentTab) => {
+    tab = currentTab[FIRST_ARRAY_ELEMENT];
+});
 
 
 
@@ -855,9 +821,41 @@ const Popup = () => {
 const popup = Popup();
 let rbutr = {};
 
+
 browser.runtime.getBackgroundPage((background) => {
     rbutr = background.rbutr;
 
     popup.initialize();
     popup.execute();
+});
+
+
+const portBg = browser.runtime.connect({name: 'popup-background'});
+
+portBg.onMessage.addListener(function(msg) {
+    if (msg.response === 'getRebuttals') {
+
+        //TODO: Fix this
+        if (!rbutr.getProp('canonicalUrls', tab.id)) {
+            msg.add('error', 'This doesn\'t look like a real web page.');
+            return;
+        }
+
+        if (msg.status === 'success') {
+            popup.view.setContent('rebuttals', msg.result);
+            popup.view.hide('all');
+            popup.view.show('rebuttals');
+            popup.view.show('action');
+        } else if (msg.status === 'error') {
+            popup.view.setContent('rebuttals', '');
+            popup.msg.add('error', msg.result);
+        }
+    } else if (msg.response === 'getMenu') {
+        if (msg.status === 'success') {
+            popup.view.setContent('menu', msg.result);
+        } else if (msg.status === 'error') {
+            popup.view.setContent('menu', '');
+            popup.msg.add('error', msg.result);
+        }
+    }
 });
