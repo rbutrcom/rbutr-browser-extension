@@ -33,8 +33,8 @@ describe('Rbutr', function() {
         it('should return an object', function() {
             assert.strictEqual(typeof Rbutr(), 'object');
         });
-        it('should return an object containing 20 properties', () => {
-            assert.strictEqual(Object.keys(Rbutr()).length, 20);
+        it('should return an object containing 21 properties', () => {
+            assert.strictEqual(Object.keys(Rbutr()).length, 21);
         });
     });
 
