@@ -656,8 +656,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    browser.runtime.onConnect.addListener(function(port) {
-        port.onMessage.addListener(function(msg) {
+    browser.runtime.onConnect.addListener((port) => {
+        port.onMessage.addListener((msg) => {
             if (port.name === 'popup-background') {
                 popupPort = port;
 
