@@ -89,7 +89,6 @@ const RbutrApi = (utils) => {
     const requestRebuttals = () => {};
     const getTags = () => {};
     const updateVote = () => {};
-    const postIdea = () => {};
 */
 
 
@@ -161,6 +160,29 @@ const RbutrApi = (utils) => {
 
 
     /**
+     * @method submitIdea
+     * @description Submit rebuttal(s)
+     *
+     * @param {Object} submitParameters - Data to submit
+     * @param {Function} callback - Callback function to execute
+     * @return {void}
+     */
+    const submitIdea = (submitParameters, callback) => {
+
+        const url = utils.buildUrl(getServerUrl(), Object.assign({},
+            {
+                version: utils.getExtVersion(),
+                cid: getCid()
+            },
+            submitParameters
+        ));
+
+        makeRequest(url, 'POST', 'text', callback);
+    };
+
+
+
+    /**
      * @method makeRequest
      * @description Make a request to the server
      *
@@ -181,11 +203,11 @@ const RbutrApi = (utils) => {
         }).then((result) => {
             callback(true, result);
         }).catch((error) => {
-            callback(false, error.message);
+            callback(false, `<pre> ${error.message}</pre>`);
             utils.log('error', 'There has been a problem with your fetch operation: ', error.message);
         });
     };
 
 
-    return {getCid, getServerUrl, getMenu, getRebuttals, postRebuttals, makeRequest};
+    return {getCid, getServerUrl, getMenu, getRebuttals, postRebuttals, submitIdea, makeRequest};
 };

@@ -297,7 +297,7 @@ const Rbutr = () => {
             if (success === true) {
                 popupPort.postMessage({response: 'getMenu', status: 'success', result: result});
             } else {
-                popupPort.postMessage({response: 'getMenu', status: 'error', result: 'Menu could not be loaded.'});
+                popupPort.postMessage({response: 'getMenu', status: 'error', result: `Menu could not be loaded: ${result}`});
             }
         });
     };
@@ -370,7 +370,7 @@ const Rbutr = () => {
                 popupPort.postMessage({response: 'getRebuttals', status: 'success', result: result});
 
             } else {
-                popupPort.postMessage({response: 'getRebuttals', status: 'error', result: 'Rebuttals could not be loaded.'});
+                popupPort.postMessage({response: 'getRebuttals', status: 'error', result: `Rebuttals could not be loaded: ${result}`});
             }
         });
     };
@@ -415,14 +415,37 @@ const Rbutr = () => {
 
         api.postRebuttals(submitParameters, (success, result) => {
             if (success === true) {
-                utils.log('debug', 'Submit rebuttal success:', result.status);
-                rbutr.displayMessage('success', '<strong>' + result.result + '</strong>');
-                window.open(result.redirectUrl);
-                rbutr.getPopup().cancelSubmission(); // Clear the data now that it's submitted.
                 rbutr.getRebuttals(tabId, getProp('canonicalUrls', tabId)); // This will reload the data for the tab, and set the badge.
+                popupPort.postMessage({response: 'postRebuttals', status: 'success', result: result});
             } else {
-                rbutr.displayMessage('error', 'Failed to submit : ' + result.responseText);
-                utils.log('debug', 'Submit rebuttal fail:', result);
+                utils.log('error', 'Rebuttal could not be submitted:', result);
+                popupPort.postMessage({response: 'postRebuttals', status: 'error', result: `Rebuttal could not be submitted: ${result}`});
+            }
+        });
+    };
+
+
+
+    /**
+     * @method submitIdea
+     * @description Submit rebuttal data to server
+     *
+     * @param {Integer} tabId - ID of the popup's tab
+     * @param {String} data - Value of the idea input in popup
+     * @return {void}
+     */
+    const submitIdea = (tabId, data) => {
+        const submitParameters = {
+            url: getProp('canonicalUrls', tabId),
+            title: getProp('pageTitle', getProp('canonicalUrls', tabId)),
+            idea: data,
+        };
+
+        api.submitIdea(submitParameters, (success, result) => {
+            if (success === true) {
+                popupPort.postMessage({response: 'submitIdea', status: 'success', result: result});
+            } else {
+                popupPort.postMessage({response: 'submitIdea', status: 'error', result: `Idea could not be submitted: ${result}`});
             }
         });
     };
@@ -560,7 +583,7 @@ const Rbutr = () => {
     };
 
 
-    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getMenu, getRebuttals, submitRebuttals, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
+    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
 };
 
 
@@ -667,6 +690,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     rbutr.getRebuttals(msg.tab.id, url);
                 } else if (msg.request === 'getMenu') {
                     rbutr.getMenu();
+                } else if (msg.request === 'submitIdea') {
+                    rbutr.submitIdea(msg.tab.id, msg.data);
                 }
             }
         });

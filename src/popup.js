@@ -238,7 +238,6 @@ const Popup = () => {
 
         // Request rebuttals from Server
         let rebuttals = rbutr.getProp('rebuttals', tab.id);
-        rbutr.utils.log('debug', rebuttals + ' Rebuttals');
 
         if (rebuttals === null) {
             view.setContent('rebuttals', 'Loading...');
@@ -700,17 +699,15 @@ const Popup = () => {
      */
     const submitIdea = () => {
 
-        document.forms['idea-form'].submitLink.value = 'Please wait..';
-        document.forms['idea-form'].submitLink.disabled = true;
-        $.post(rbutr.api.getServerUrl(), {
-            url: rbutr.getProp('canonicalUrls', tab.id),
-            title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tab.id)),
-            idea: document.forms['idea-form'].idea.value,
-            cid: rbutr.api.getCid()
-        }).success((data) => {
-            msg.add('info', data);
-        }).error((msg) => {
-            msg.add('error', msg.responseText);
+        const $ideaForm = document.forms['idea-form'];
+
+        $ideaForm.submitLink.value = 'Please wait..';
+        $ideaForm.submitLink.disabled = true;
+
+        portBg.postMessage({
+            request: 'submitIdea',
+            tab: tab,
+            data: $ideaForm.idea.value,
         });
     };
 
@@ -852,11 +849,27 @@ portBg.onMessage.addListener((msg) => {
             popup.view.setContent('rebuttals', '');
             popup.msg.add('error', msg.result);
         }
+
+    } else if (msg.response === 'postRebuttals') {
+        if (msg.status === 'success') {
+            window.open(msg.result.redirectUrl);
+            popup.cancelSubmission(); // Clear the data now that it's submitted.
+        } else if (msg.status === 'error') {
+            popup.msg.add('error', msg.result);
+        }
+
     } else if (msg.response === 'getMenu') {
         if (msg.status === 'success') {
             popup.view.setContent('menu', msg.result);
         } else if (msg.status === 'error') {
             popup.view.setContent('menu', '');
+            popup.msg.add('error', msg.result);
+        }
+
+    } else if (msg.response === 'submitIdea') {
+        if (msg.status === 'success') {
+            popup.msg.add('info', msg.result);
+        } else if (msg.status === 'error') {
             popup.msg.add('error', msg.result);
         }
     }
