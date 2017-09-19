@@ -132,6 +132,33 @@ const RbutrUtils = () => {
 
 
     /**
+     * @method getCanonicalUrl
+     * @description Generate an absolute url (protocol, host, path) from a canonicalValue that might be relative
+     *
+     * @param {String} canonicalValue - URL that should be made absolute
+     * @return {(String|Boolean)} Returns either the found URL or false
+     */
+    const getCanonicalUrl = (canonicalValue) => {
+
+        if (canonicalValue) {
+            if (canonicalValue.match('^[a-zA-Z]+://.*')) {
+                // canonicalValue is a full url
+                return canonicalValue;
+            } else if (canonicalValue.match('^/.*')) {
+                // canonicalValue is an absolute url in the current host
+                return location.protocol + '//' + location.host + canonicalValue;
+            } else {
+                log('error', 'The canonical URL is relative and does not start with "/". Not supported.');
+                return false;
+            }
+        } else {
+            return false;
+        }
+    };
+
+
+
+    /**
      * @method unicode2String
      * @description Convert Unicode escaped string to regular string, see http://stackoverflow.com/questions/7885096/how-do-i-decode-a-string-with-escaped-unicode
      *
@@ -216,5 +243,5 @@ const RbutrUtils = () => {
 
 
 
-    return {log, getExtVersion, isDev, url2Domain, unicode2String, buildUrl, setExtBadgeText, setExtBadgeBg, setExtTitle};
+    return {log, getExtVersion, isDev, url2Domain, getCanonicalUrl, unicode2String, buildUrl, setExtBadgeText, setExtBadgeBg, setExtTitle};
 };

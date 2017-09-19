@@ -22,8 +22,8 @@ describe('Utils', () => {
         it('should return an object', () => {
             assert.strictEqual(typeof RbutrUtils(), 'object');
         });
-        it('should return an object containing 9 properties', () => {
-            assert.strictEqual(Object.keys(RbutrUtils()).length, 9);
+        it('should return an object containing 10 properties', () => {
+            assert.strictEqual(Object.keys(RbutrUtils()).length, 10);
         });
     });
 
@@ -44,6 +44,24 @@ describe('Utils', () => {
         it('should extract domain from url', () => {
             var url = 'https://www.google.com/search?q=rbutr';
             assert.strictEqual(RbutrUtils().url2Domain(url), 'google.com');
+        });
+    });
+
+    describe('#RbutrUtils.getCanonicalUrl()', () => {
+        it('should return false on empty URL', () => {
+            assert.strictEqual(RbutrUtils().getCanonicalUrl(), false);
+        });
+        it('should return false on relative url without leading /', () => {
+            var url = 'test.html';
+            assert.strictEqual(RbutrUtils().getCanonicalUrl(url), false);
+        });
+        it('should return full URL on relative URL', () => {
+            var url = '/test.html';
+            assert.strictEqual(RbutrUtils().getCanonicalUrl(url), 'about://' + url);
+        });
+        it('should return full URL if it is absolute', () => {
+            var url = 'https://www.google.com/search?q=rbutr';
+            assert.strictEqual(RbutrUtils().getCanonicalUrl(url), url);
         });
     });
 
