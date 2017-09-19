@@ -556,34 +556,7 @@ const Rbutr = () => {
     };
 
 
-
-    /**
-     * @method getCanonicalUrl
-     * @description Generate an absolute url (protocol, host, path) from a canonicalValue that might be relative
-     *
-     * @param {String} canonicalValue - URL that should be made absolute
-     * @return {(String|Boolean)} Returns either the found URL or false
-     */
-    const getCanonicalUrl = (canonicalValue) => {
-
-        if (canonicalValue) {
-            if (canonicalValue.match('^[a-zA-Z]+://.*')) {
-                // canonicalValue is a full url
-                return canonicalValue;
-            } else if (canonicalValue.match('^/.*')) {
-                // canonicalValue is an absolute url in the current host
-                return location.protocol + '//' + location.host + canonicalValue;
-            } else {
-                utils.log('error', 'The canonical URL is relative and does not start with "/". Not supported.');
-                return false;
-            }
-        } else {
-            return false;
-        }
-    };
-
-
-    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick, getCanonicalUrl};
+    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick};
 };
 
 
@@ -605,7 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (request.action) {
 
             let tab = request.tab || sender.tab;
-            let canonicalUrl = rbutr.getCanonicalUrl(tab.url);
+            let canonicalUrl = rbutr.utils.getCanonicalUrl(tab.url);
             let url = canonicalUrl || tab.url;
 
             if (request.action === 'setCanonical') {
@@ -685,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 popupPort = port;
 
                 if (msg.request === 'getRebuttals') {
-                    let canonicalUrl = rbutr.getCanonicalUrl(msg.tab.url);
+                    let canonicalUrl = rbutr.utils.getCanonicalUrl(msg.tab.url);
                     let url = canonicalUrl || msg.tab.url;
                     rbutr.getRebuttals(msg.tab.id, url);
                 } else if (msg.request === 'getMenu') {
