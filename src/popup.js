@@ -261,11 +261,10 @@ const Popup = () => {
         const HTTP_LENGTH = 4;
 
         if (rbutr.getPropLen('fromUrls') > ONE) {
-            $('#submit-sources').html('<h3 class="source-heading">Rebut these sources</h3><div class="menu-wrap"><div class="menu">Menu</div></div>');
+            $('#submit-sources').html('<h3 class="source-heading">Rebut these sources</h3>');
         } else {
-            $('#submit-sources').html('<h3 class="source-heading">Rebut this source</h3><div class="menu-wrap"><div class="menu">Menu</div></div>');
+            $('#submit-sources').html('<h3 class="source-heading">Rebut this source</h3>');
         }
-        // This data lives in the background so it can be shared between tabs (popups are one per tab)
 
         for (let i = 0; i < rbutr.getPropLen('fromUrls'); i++) {
             let url = rbutr.getProp('fromUrls', i);
