@@ -46,7 +46,7 @@ describe('Rbutr', () => {
 
     describe('#Rbutr.getProp()', () => {
         it('should return an array', () => {
-            assert.strictEqual(Array.isArray(rbutrObj.getProp('fromUrls')), true);
+            assert.strictEqual(Array.isArray(rbutrObj.getProp('sourceUrls')), true);
         });
         it('should return a boolean', () => {
             assert.strictEqual(rbutrObj.getProp('loggedIn'), false);
@@ -62,21 +62,21 @@ describe('Rbutr', () => {
             assert.strictEqual(rbutrObj.getProp('submittingRebuttal'), true);
         });
         it('should add an element to array', () => {
-            rbutrObj.setProp('fromUrls', 0, 'abc');
-            assert.strictEqual(rbutrObj.getProp('fromUrls').length, 1);
+            rbutrObj.setProp('sourceUrls', 0, 'abc');
+            assert.strictEqual(rbutrObj.getProp('sourceUrls').length, 1);
         });
         it('should delete an element from array', () => {
-            rbutrObj.setProp('fromUrls', 0, null);
-            assert.strictEqual(rbutrObj.getProp('fromUrls').length, 0);
+            rbutrObj.setProp('sourceUrls', 0, null);
+            assert.strictEqual(rbutrObj.getProp('sourceUrls').length, 0);
         });
     });
 
     describe('#Rbutr.getPropLen()', () => {
         it('should return the length of an array', () => {
-            rbutrObj.setProp('fromUrls', 0, '-');
-            rbutrObj.setProp('fromUrls', 123, 'abc');
-            rbutrObj.setProp('fromUrls', 999, 'xyz');
-            assert.strictEqual(rbutrObj.getPropLen('fromUrls'), 3);
+            rbutrObj.setProp('sourceUrls', 0, '-');
+            rbutrObj.setProp('sourceUrls', 123, 'abc');
+            rbutrObj.setProp('sourceUrls', 999, 'xyz');
+            assert.strictEqual(rbutrObj.getPropLen('sourceUrls'), 3);
         });
         it('should return the length of a string', () => {
             rbutrObj.setProp('submitError', null, 'Lorem ipsum.');
@@ -86,7 +86,7 @@ describe('Rbutr', () => {
 
     describe('#Rbutr.alreadyExists()', () => {
         it('should return true', () => {
-            rbutrObj.setProp('toUrls', 0, 'http://google.com');
+            rbutrObj.setProp('rebuttalUrls', 0, 'http://google.com');
             assert.ok(rbutrObj.alreadyExists('http://google.com'));
         });
     });

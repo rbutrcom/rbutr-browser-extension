@@ -260,43 +260,43 @@ const Popup = () => {
 
         const HTTP_LENGTH = 4;
 
-        if (rbutr.getPropLen('fromUrls') > ONE) {
+        if (rbutr.getPropLen('sourceUrls') > ONE) {
             $('#submit-sources').html('<h3 class="source-heading">Rebut these sources</h3>');
         } else {
             $('#submit-sources').html('<h3 class="source-heading">Rebut this source</h3>');
         }
 
-        for (let i = 0; i < rbutr.getPropLen('fromUrls'); i++) {
-            let url = rbutr.getProp('fromUrls', i);
+        for (let i = 0; i < rbutr.getPropLen('sourceUrls'); i++) {
+            let sourceUrl = rbutr.getProp('sourceUrls', i);
             let source = $('<div class="link-block" id="source_' + i +
-                '"><span class="link-title">' + rbutr.getPageTitle(url) + '</span><br>' +
-                '<span class="link-url">' + url + '</span></div>').appendTo('#submit-sources');
+                '"><span class="link-title">' + rbutr.getPageTitle(sourceUrl) + '</span><br>' +
+                '<span class="link-url">' + sourceUrl + '</span></div>').appendTo('#submit-sources');
             $('<img class="close" src="http://rbutr.com/images/button-removetag.png" id="s_x_' + i + '"/>').click((event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                rbutr.setProp('fromUrls', i, null);
+                rbutr.setProp('sourceUrls', i, null);
                 refreshSubmissionData();
             }).appendTo(source);
         }
 
-        if (rbutr.getPropLen('fromUrls') > ZERO) {
+        if (rbutr.getPropLen('sourceUrls') > ZERO) {
             $('#submit-sources').append('<div id="btn-capture-src" class="fake-link">+ add another source</div>');
         } else {
             $('#submit-sources').append('<div id="btn-capture-src" class="btn">Click to capture current page as source link.</div>');
         }
 
-        if (rbutr.getPropLen('toUrls') > ONE) {
+        if (rbutr.getPropLen('rebuttalUrls') > ONE) {
             $('#submit-rebuttals').html('<h3 class="rebuttalHeading">With these pages</h3><div style="clear:both"></div>');
         } else {
             $('#submit-rebuttals').html('<h3 class="rebuttalHeading">With this page</h3><div style="clear:both"></div>');
         }
 
-        for (let j = 0; j < rbutr.getPropLen('toUrls'); j++) {
-            let toUrl = rbutr.getProp('toUrls', j);
+        for (let j = 0; j < rbutr.getPropLen('rebuttalUrls'); j++) {
+            let rebuttalUrl = rbutr.getProp('rebuttalUrls', j);
             let rebuttal = $(
                 '<div class="link-block" id="rebuttal_' + j +
-                '"><span class="link-title">' + rbutr.getPageTitle(toUrl) + '</span><br>' +
-                '<span class="link-url">' + toUrl + '</span><br>' +
+                '"><span class="link-title">' + rbutr.getPageTitle(rebuttalUrl) + '</span><br>' +
+                '<span class="link-url">' + rebuttalUrl + '</span><br>' +
                 '</div>').appendTo('#submit-rebuttals');
             $('<input id="c_x_' + j +
                 '" size="60" type="text" placeholder="Optional : Describe the relationship between these two pages in a few words" ' +
@@ -309,29 +309,29 @@ const Popup = () => {
             $('<img class="close" src="http://rbutr.com/images/button-removetag.png" id="r_x_' + j + '">').click((event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                rbutr.setProp('toUrls', j, null);
+                rbutr.setProp('rebuttalUrls', j, null);
                 refreshSubmissionData();
             }).appendTo(rebuttal);
         }
 
-        if (rbutr.getPropLen('toUrls') >= MAX_URL_COUNT) {
+        if (rbutr.getPropLen('rebuttalUrls') >= MAX_URL_COUNT) {
             $('#btn-capture-rebuttal').disable();
-        } else if (rbutr.getPropLen('toUrls') > ZERO) {
+        } else if (rbutr.getPropLen('rebuttalUrls') > ZERO) {
             $('#submit-rebuttals').append('<div id="btn-capture-rebuttal" class="fake-link">+ add another rebuttal</div>');
         } else {
             $('#submit-rebuttals').append('<div id="btn-capture-rebuttal" class="button">Click to capture current page as rebuttal link.</div>');
         }
 
         $('#btn-capture-rebuttal').click(() => {
-            toTagged();
+            addRebuttalUrl();
         });
 
         $('#submission-error').text(rbutr.getProp('submitError'));
 
-        if (rbutr.getPropLen('fromUrls') > ZERO &&
-            rbutr.getProp('fromUrls', FIRST_ARRAY_ELEMENT).substring(ZERO, HTTP_LENGTH).toLowerCase() === 'http' &&
-            rbutr.getPropLen('toUrls') > ZERO &&
-            rbutr.getProp('toUrls', FIRST_ARRAY_ELEMENT).substring(ZERO, HTTP_LENGTH).toLowerCase() === 'http' &&
+        if (rbutr.getPropLen('sourceUrls') > ZERO &&
+            rbutr.getProp('sourceUrls', FIRST_ARRAY_ELEMENT).substring(ZERO, HTTP_LENGTH).toLowerCase() === 'http' &&
+            rbutr.getPropLen('rebuttalUrls') > ZERO &&
+            rbutr.getProp('rebuttalUrls', FIRST_ARRAY_ELEMENT).substring(ZERO, HTTP_LENGTH).toLowerCase() === 'http' &&
             rbutr.getPropLen('tags') > ZERO) {
             document.forms['data'].submitLink.title = 'Submit this rebuttal';
             document.forms['data'].submitLink.disabled = false;
@@ -542,17 +542,17 @@ const Popup = () => {
 
 
     /**
-     * @method toTagged
-     * @description Add canonical url to stored toUrl list and reresh data
+     * @method addRebuttalUrl
+     * @description Add canonical url to stored rebuttalUrl list and reresh data
      *
      * @return {void}
      */
-    const toTagged = () => {
+    const addRebuttalUrl = () => {
 
         if (rbutr.getProp('canonicalUrls', tab.id) === undefined || rbutr.alreadyExists(rbutr.getProp('canonicalUrls', tab.id))) {
             return;
         } else {
-            rbutr.setProp('toUrls', rbutr.getPropLen('toUrls'), rbutr.getProp('canonicalUrls', tab.id));
+            rbutr.setProp('rebuttalUrls', rbutr.getPropLen('rebuttalUrls'), rbutr.getProp('canonicalUrls', tab.id));
             refreshSubmissionData();
         }
     };
@@ -560,17 +560,17 @@ const Popup = () => {
 
 
     /**
-     * @method fromTagged
-     * @description Add canonical url to stored fromUrl list and refresh data
+     * @method addSourceUrl
+     * @description Add canonical url to stored sourceUrls and refresh data
      *
      * @return {void}
      */
-    const fromTagged = () => {
+    const addSourceUrl = () => {
 
         if (rbutr.getProp('canonicalUrls', tab.id) === undefined || rbutr.alreadyExists(rbutr.getProp('canonicalUrls', tab.id))) {
             return;
         } else {
-            rbutr.setProp('fromUrls', rbutr.getPropLen('fromUrls'), rbutr.getProp('canonicalUrls', tab.id));
+            rbutr.setProp('sourceUrls', rbutr.getPropLen('sourceUrls'), rbutr.getProp('canonicalUrls', tab.id));
             refreshSubmissionData();
         }
     };
@@ -716,8 +716,8 @@ const Popup = () => {
      * @description Set up event listeners
      */
     $(document)
-        .on('click', '#tagTo', toTagged)
-        .on('click', '#tagFrom', fromTagged)
+        .on('click', '#tagTo', addRebuttalUrl)
+        .on('click', '#tagFrom', addSourceUrl)
         .on('click', '.btn-rebuttal', () => {
             showSubmissionPopup('to');
         })
@@ -772,7 +772,7 @@ const Popup = () => {
             $('#generalShower').show();
             return false;
         })
-        .on('click', '#btn-capture-src', fromTagged)
+        .on('click', '#btn-capture-src', addSourceUrl)
         .on('click', '#thanks', () => {
             view.show('rebuttals');
             view.show('action');

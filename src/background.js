@@ -37,8 +37,10 @@ const Rbutr = () => {
 
     let properties = {
 
-        fromUrls : [],
-        toUrls : [],
+        // The to-be-rebutted URLs
+        sourceUrls : [],
+        // The rebuttal URLs
+        rebuttalUrls : [],
         comment : [],
         tags : [],
         recordedClicks : [],
@@ -174,13 +176,13 @@ const Rbutr = () => {
      */
     const alreadyExists = (url) => {
 
-        for (let i = 0; i < getPropLen('fromUrls'); i++) {
-            if (getProp('fromUrls', i) === url) {
+        for (let i = 0; i < getPropLen('sourceUrls'); i++) {
+            if (getProp('sourceUrls', i) === url) {
                 return true;
             }
         }
-        for (let j = 0; j < getPropLen('toUrls'); j++) {
-            if (getProp('toUrls', j) === url) {
+        for (let j = 0; j < getPropLen('rebuttalUrls'); j++) {
+            if (getProp('rebuttalUrls', j) === url) {
                 return true;
             }
         }
@@ -273,14 +275,14 @@ const Rbutr = () => {
 
     /**
      * @method getRecordedClickByToUrl
-     * @description Get recorded click object by given toUrl
+     * @description Get recorded click object by given rebuttalUrl
      *
-     * @param {String} toUrl - Rebuttal page URL
+     * @param {String} rebuttalUrl - Rebuttal page URL
      * @return {?Object} Return click object for URL or null
      */
-    const getRecordedClickByToUrl = (toUrl) => {
+    const getRecordedClickByToUrl = (rebuttalUrl) => {
 
-        let recClicks = getProp('recordedClicks', toUrl);
+        let recClicks = getProp('recordedClicks', rebuttalUrl);
         return recClicks ? recClicks : null;
     };
 
@@ -386,29 +388,29 @@ const Rbutr = () => {
      */
     const submitRebuttals = (tabId) => {
 
-        let fromPageTitles = [];
-        let toPageTitles = [];
-        let canonicalFromPages = [];
-        let canonicalToPages = [];
+        let sourcePageTitles = [];
+        let rebuttalPageTitles = [];
+        let canonicalSourcePages = [];
+        let canonicalRebuttalPages = [];
 
-        for (let i = 0; i < getPropLen('toUrls'); i++) {
-            toPageTitles[i] = getProp('pageTitle', getProp('toUrls', i));
-            canonicalToPages[i] = getProp('urlIsCanonical', getProp('toUrls', i));
+        for (let i = 0; i < getPropLen('rebuttalUrls'); i++) {
+            rebuttalPageTitles[i] = getProp('pageTitle', getProp('rebuttalUrls', i));
+            canonicalRebuttalPages[i] = getProp('urlIsCanonical', getProp('rebuttalUrls', i));
         }
 
-        for (let j = 0; j < getPropLen('fromUrls'); j++) {
-            fromPageTitles[j] = getProp('pageTitle', getProp('fromUrls', j));
-            canonicalFromPages[j] = getProp('urlIsCanonical', getProp('fromUrls', j));
+        for (let j = 0; j < getPropLen('sourceUrls'); j++) {
+            sourcePageTitles[j] = getProp('pageTitle', getProp('sourceUrls', j));
+            canonicalSourcePages[j] = getProp('urlIsCanonical', getProp('sourceUrls', j));
         }
 
         const submitParameters = {
-            fromUrls: getProp('fromUrls'),
-            toUrls: getProp('toUrls'),
-            fromPageTitles: fromPageTitles,
-            toPageTitles: toPageTitles,
+            fromUrls: getProp('sourceUrls'),
+            toUrls: getProp('rebuttalUrls'),
+            fromPageTitles: sourcePageTitles,
+            toPageTitles: rebuttalPageTitles,
             comments: getProp('comment'),
-            canonicalFromPages: canonicalFromPages,
-            canonicalToPages: canonicalToPages,
+            canonicalFromPages: canonicalSourcePages,
+            canonicalToPages: canonicalRebuttalPages,
             direct: getProp('direct'),
             tags: getProp('tags'),
         };
@@ -467,11 +469,9 @@ const Rbutr = () => {
         setProp('submittingRebuttal', true);
 
         if (fromTo === 'from') {
-            setProp('fromUrls', FIRST_ARRAY_ELEMENT, canonUrlByTab);
-            // toUrl = 'Please navigate to the rebuttal page and select using above link';
+            setProp('sourceUrls', FIRST_ARRAY_ELEMENT, canonUrlByTab);
         } else if (fromTo === 'to') {
-            setProp('toUrls', FIRST_ARRAY_ELEMENT, canonUrlByTab);
-            // fromUrl = 'Please navigate to the source page and select using above link';
+            setProp('rebuttalUrls', FIRST_ARRAY_ELEMENT, canonUrlByTab);
         }
 
         setProp('comment', []);
@@ -490,8 +490,8 @@ const Rbutr = () => {
     const stopSubmission = () => {
 
         setProp('submittingRebuttal', false);
-        setProp('fromUrls', []);
-        setProp('toUrls', []);
+        setProp('sourceUrls', []);
+        setProp('rebuttalUrls', []);
         setProp('comment', []);
         setProp('tags', []);
     };
