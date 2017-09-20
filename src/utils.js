@@ -190,58 +190,44 @@ const RbutrUtils = () => {
 
 
     /**
-     * @method setExtBadgeText
-     * @description Display a small badge on extension button with a given text
-     *
-     * @param {Integer} tabId - Current browser tab ID
-     * @param {*} text - Text to be displayed in the badge
-     * @return {void}
-     */
-    const setExtBadgeText = (tabId, text) => {
-
-        browser.browserAction.setBadgeText({
-            tabId: tabId,
-            text: text.toString(),
-        });
-    };
-
-
-
-    /**
-     * @method setExtBadgeBg
-     * @description Set badge background color
-     *
-     * @param {Integer} tabId - Current browser tab ID
-     * @param {Array} color - An array containing RGBA values
-     * @return {void}
-     */
-    const setExtBadgeBg = (tabId, color) => {
-
-        browser.browserAction.setBadgeBackgroundColor({
-            tabId: tabId,
-            color: color,
-        });
-    };
-
-
-
-    /**
-     * @method setExtTitle
+     * @method updateExtBadge
      * @description Set Hover-Text on extension button
      *
      * @param {Integer} tabId - Current browser tab ID
      * @param {String} title - Text to be displayed on hover
+     * @param {*} text - Text to be displayed in the badge
+     * @param {String} color - An array containing RGBA values
      * @return {void}
      */
-    const setExtTitle = (tabId, title) => {
+    const updateExtBadge = (tabId, title, text, color) => {
+
+        const COLOR_VAL_ZERO  = 0;
+        const COLOR_VAL_HALF  = 100;
+        const COLOR_VAL_FULL  = 255;
+        const COLOR = {
+            red : [COLOR_VAL_FULL, COLOR_VAL_ZERO, COLOR_VAL_ZERO, COLOR_VAL_FULL],
+            pink : [COLOR_VAL_FULL, COLOR_VAL_FULL, COLOR_VAL_ZERO, COLOR_VAL_FULL],
+            rose : [COLOR_VAL_FULL, COLOR_VAL_HALF, COLOR_VAL_HALF, COLOR_VAL_FULL],
+            transparent : [COLOR_VAL_ZERO, COLOR_VAL_ZERO, COLOR_VAL_ZERO, COLOR_VAL_ZERO]
+        };
 
         browser.browserAction.setTitle({
             tabId: tabId,
             title: title,
         });
+
+        browser.browserAction.setBadgeText({
+            tabId: tabId,
+            text: text.toString(),
+        });
+
+        browser.browserAction.setBadgeBackgroundColor({
+            tabId: tabId,
+            color: color === '' ? COLOR.transparent : COLOR[color],
+        });
     };
 
 
 
-    return {log, getExtVersion, isDev, url2Domain, getCanonicalUrl, unicode2String, buildUrl, setExtBadgeText, setExtBadgeBg, setExtTitle};
+    return {log, getExtVersion, isDev, url2Domain, getCanonicalUrl, unicode2String, buildUrl, updateExtBadge};
 };
