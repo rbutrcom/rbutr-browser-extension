@@ -61,14 +61,6 @@ const Rbutr = () => {
     const ZERO = 0;
     const FIRST_ARRAY_ELEMENT = 0;
 
-    const COLOR_VAL_ZERO  = 0;
-    const COLOR_VAL_HALF  = 100;
-    const COLOR_VAL_FULL  = 255;
-    const COLOR_RED       = [COLOR_VAL_FULL, COLOR_VAL_ZERO, COLOR_VAL_ZERO, COLOR_VAL_FULL];
-    const COLOR_MAGENTA   = [COLOR_VAL_FULL, COLOR_VAL_FULL, COLOR_VAL_ZERO, COLOR_VAL_FULL];
-    const COLOR_LIGHT_RED = [COLOR_VAL_FULL, COLOR_VAL_HALF, COLOR_VAL_HALF, COLOR_VAL_FULL];
-
-
 
 
     /**
@@ -330,42 +322,32 @@ const Rbutr = () => {
                 let titleMessage = '';
 
                 const hasRebuttals = result.match(/No Rebuttals/g) === null;
-                const isLoggedIn = result.match(/id="not-logged-in"/g) === null;
-                rbutr.setProp('loggedIn', null, isLoggedIn);
-
+                rbutr.setProp('loggedIn', null, result.match(/id="not-logged-in"/g) === null);
                 rbutr.setProp('rebuttals', tabId, result);
 
-                if (hasRebuttals) {
-                    let matches = result.match(/class="thumbsUp"/g);
-                    let count = matches === null ? ZERO : matches.length;
-                    rbutr.setProp('rebuttalCount', tabId, count);
+                let matches = result.match(/class="thumbsUp"/g);
+                let count = matches === null ? ZERO : matches.length;
+                rbutr.setProp('rebuttalCount', tabId, count);
 
-                    if (canVote && isLoggedIn) {
+                if (hasRebuttals) {
+                    if (canVote && rbutr.getProp('loggedIn')) {
                         titleMessage = `You can vote on this, and there are also ${count} rebuttal(s).`;
-                        utils.setExtTitle(tabId, titleMessage);
-                        utils.setExtBadgeText(tabId, 'V ' + count);
-                        utils.setExtBadgeBg(tabId, COLOR_LIGHT_RED);
+                        utils.updateExtBadge(tabId, titleMessage, 'V ' + count, 'rose');
                     } else {
                         titleMessage = `This page has ${count} rebuttal(s).`;
-                        utils.setExtTitle(tabId, titleMessage);
-                        utils.setExtBadgeText(tabId, count);
-                        utils.setExtBadgeBg(tabId, COLOR_RED);
+                        utils.updateExtBadge(tabId, titleMessage, count, 'red');
                     }
 
                     rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.getProp('canonicalUrls', tabId)});
 
                 } else {
-                    rbutr.setProp('rebuttalCount', tabId, ZERO);
-
-                    if (canVote && isLoggedIn) {
+                    if (canVote && rbutr.getProp('loggedIn')) {
                         titleMessage = 'You can vote on this.';
-                        utils.setExtTitle(tabId, titleMessage);
-                        utils.setExtBadgeText(tabId, 'Vote');
-                        utils.setExtBadgeBg(tabId, COLOR_MAGENTA);
+                        utils.updateExtBadge(tabId, titleMessage, 'Vote', 'pink');
                         rbutr.postMessage('showMessageBox', {message: titleMessage, url: rbutr.getProp('canonicalUrls', tabId)});
                     } else {
-                        utils.setExtBadgeText(tabId, '');
-                        utils.setExtTitle(tabId, 'RbutR - There are no rebuttals to this page, do you know of one?');
+                        titleMessage = 'RbutR - There are no rebuttals to this page, do you know of one?';
+                        utils.updateExtBadge(tabId, titleMessage, '', '');
                     }
                 }
 
