@@ -84,8 +84,6 @@ describe('RbutrApi', () => {
         });
     });
 
-    /*
-    // Disable for now
     describe('#RbutrApi.getMenu(function)', () => {
         it('should call the passed callback function', () => {
             RbutrApi(utilsObj).getMenu((success, result) => {
@@ -93,6 +91,37 @@ describe('RbutrApi', () => {
             });
         });
     });
-    */
+
+    describe('#RbutrApi.getRebuttals(string, function)', () => {
+        it('should call the passed callback function', () => {
+            RbutrApi(utilsObj).getRebuttals('', (success, result) => {
+                assert.strictEqual(typeof success, 'boolean');
+            });
+        });
+    });
+
+    describe('#RbutrApi.submitRebuttals(object, function)', () => {
+        it('should call the passed callback function', () => {
+            RbutrApi(utilsObj).submitRebuttals({}, (success, result) => {
+                assert.strictEqual(typeof success, 'boolean');
+            });
+        });
+    });
+
+    describe('#RbutrApi.submitIdea(object, function)', () => {
+        it('should call the passed callback function', () => {
+            RbutrApi(utilsObj).submitIdea({}, (success, result) => {
+                assert.strictEqual(typeof success, 'boolean');
+            });
+        });
+    });
+
+    describe('#RbutrApi.submitRebuttalRequest(object, function)', () => {
+        it('should call the passed callback function', () => {
+            RbutrApi(utilsObj).submitRebuttalRequest({}, (success, result) => {
+                assert.strictEqual(typeof success, 'boolean');
+            });
+        });
+    });
 
 });
