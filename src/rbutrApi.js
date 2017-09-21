@@ -86,7 +86,6 @@ const RbutrApi = (utils) => {
 
 
 /*
-    const requestRebuttals = () => {};
     const getTags = () => {};
     const updateVote = () => {};
 */
@@ -183,6 +182,29 @@ const RbutrApi = (utils) => {
 
 
     /**
+     * @method submitRebuttalRequest
+     * @description Submit a request for rebuttals
+     *
+     * @param {Object} submitParameters - Data to submit
+     * @param {Function} callback - Callback function to execute
+     * @return {void}
+     */
+    const submitRebuttalRequest = (submitParameters, callback) => {
+
+        const url = utils.buildUrl(getServerUrl(), Object.assign({},
+            {
+                version: utils.getExtVersion(),
+                cid: getCid()
+            },
+            submitParameters
+        ));
+
+        makeRequest(url, 'POST', 'text', callback);
+    };
+
+
+
+    /**
      * @method makeRequest
      * @description Make a request to the server
      *
@@ -209,5 +231,5 @@ const RbutrApi = (utils) => {
     };
 
 
-    return {getCid, getServerUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, makeRequest};
+    return {getCid, getServerUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, submitRebuttalRequest, makeRequest};
 };

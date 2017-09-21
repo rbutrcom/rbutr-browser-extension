@@ -511,31 +511,22 @@ const Popup = () => {
 
 
     /**
-     * @method submitRequestData
+     * @method submitRebuttalRequest
      * @description Submit rebuttal request data to server
      *
      * @return {Boolean} Returns false if preconditions are not correct
      */
-    const submitRequestData = () => {
+    const submitRebuttalRequest = () => {
 
         if (rbutr.getPropLen('tags') > MAX_TAG_COUNT) {
-            document.forms['request-rebuttal'].submitLink.value = 'Maximum of 6 tags, please fix before submitting.';
+            msg.add('error', 'Maximum of 6 tags, please fix before submitting.');
             document.forms['request-rebuttal'].submitLink.disabled = false;
             return false;
         }
 
-        $.post(rbutr.api.getServerUrl(), {
-            subscribeToPage: rbutr.getProp('canonicalUrls', tab.id),
-            title: rbutr.getProp('pageTitle', rbutr.getProp('canonicalUrls', tab.id)),
-            tags: rbutr.getProp('tags'),
-            pageIsCanonical: rbutr.getProp('urlIsCanonical', rbutr.getProp('canonicalUrls', tab.id)),
-            cid: rbutr.api.getCid()
-        }, (data) => {
-            rbutr.utils.log('debug', 'Submit request success:', data);
-            msg.add('info', data);
-        }).fail((msg) => {
-            rbutr.utils.log('debug', 'Submit request fail:', msg);
-            msg.add('error', msg.responseText);
+        portBg.postMessage({
+            request: 'submitRebuttalRequest',
+            tab: tab
         });
     };
 
@@ -744,7 +735,7 @@ const Popup = () => {
         })
         .on('submit', '#idea-form', submitIdea)
         .on('submit', '#data', submitData)
-        .on('submit', '#request-rebuttal', submitRequestData)
+        .on('submit', '#request-rebuttal', submitRebuttalRequest)
         .on('click', '#cancel-submission', cancelSubmission)
         .on('click', '#cancel-rebuttal-request', cancelRequestSubmission)
         .on('change', '#direct', () => {
@@ -866,6 +857,13 @@ portBg.onMessage.addListener((msg) => {
         }
 
     } else if (msg.response === 'submitIdea') {
+        if (msg.status === 'success') {
+            popup.msg.add('info', msg.result);
+        } else if (msg.status === 'error') {
+            popup.msg.add('error', msg.result);
+        }
+
+    } else if (msg.response === 'submitRebuttalRequest') {
         if (msg.status === 'success') {
             popup.msg.add('info', msg.result);
         } else if (msg.status === 'error') {
