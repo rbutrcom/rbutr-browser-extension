@@ -437,6 +437,34 @@ const Rbutr = () => {
 
 
     /**
+     * @method submitRebuttalRequest
+     * @description Submit rebuttal request data to server
+     *
+     * @param {Integer} tabId - ID of the popup's tab
+     * @return {void}
+     */
+    const submitRebuttalRequest = (tabId) => {
+
+        const submitParameters = {
+            subscribeToPage: getProp('canonicalUrls', tabId),
+            title: getProp('pageTitle', getProp('canonicalUrls', tabId)),
+            tags: getProp('tags'),
+            pageIsCanonical: getProp('urlIsCanonical', getProp('canonicalUrls', tabId)),
+        };
+
+        api.submitRebuttalRequest(submitParameters, (success, result) => {
+            if (success === true) {
+                popupPort.postMessage({response: 'submitRebuttalRequest', status: 'success', result: result});
+            } else {
+                popupPort.postMessage({response: 'submitRebuttalRequest', status: 'error', result: `Rebuttal request could not be submitted: ${result}`});
+            }
+        });
+
+    };
+
+
+
+    /**
      * @method startSubmission
      * @description Prepare data submission
      *
@@ -538,7 +566,7 @@ const Rbutr = () => {
     };
 
 
-    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick};
+    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, submitRebuttalRequest, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick};
 };
 
 
@@ -647,6 +675,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     rbutr.getMenu();
                 } else if (msg.request === 'submitIdea') {
                     rbutr.submitIdea(msg.tab.id, msg.data);
+                } else if (msg.request === 'submitRebuttalRequest') {
+                    rbutr.submitRebuttalRequest(msg.tab.id, msg.data);
                 }
             }
         });
