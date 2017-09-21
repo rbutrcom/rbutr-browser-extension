@@ -78,13 +78,12 @@ const RbutrUtils = () => {
      * @return {String} Extension version
      */
     const getExtVersion = () => {
-        const runtime = browser.runtime;
 
-        if (typeof runtime === 'object') {
-            return runtime.getManifest().version;
-        } else {
-            return '0.1';
+        if (typeof browser === 'object' && browser.hasOwnProperty('runtime') && typeof browser.runtime === 'object') {
+            return browser.runtime.getManifest().version;
         }
+
+        return '0.1';
     };
 
 
@@ -182,7 +181,10 @@ const RbutrUtils = () => {
      */
     const buildUrl = (urlStr, params) => {
         let url = new URL(urlStr);
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+        if (typeof url === 'object' && url.hasOwnProperty('searchParams')) {
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+        }
 
         return url;
     };

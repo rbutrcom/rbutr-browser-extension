@@ -216,18 +216,27 @@ const RbutrApi = (utils) => {
      */
     const makeRequest = (url, method, responseType, callback) => {
 
-        fetch(url, {method: method}).then((response) => {
-            if (response.ok) {
-                return responseType === 'json' ? response.json() : response.text();
+        try {
+            if (fetch) {
+                fetch(url, {method: method}).then((response) => {
+                    if (response.ok) {
+                        return responseType === 'json' ? response.json() : response.text();
+                    } else {
+                        throw new Error('Network response was not OK.');
+                    }
+                }).then((result) => {
+                    callback(true, result);
+                }).catch((error) => {
+                    callback(false, `<pre> ${error.message}</pre>`);
+                    utils.log('error', 'There has been a problem with your fetch operation: ', error.message);
+                });
+
             } else {
-                throw new Error('Network response was not OK.');
+                throw new Error('Fetch is not implemented');
             }
-        }).then((result) => {
-            callback(true, result);
-        }).catch((error) => {
-            callback(false, `<pre> ${error.message}</pre>`);
-            utils.log('error', 'There has been a problem with your fetch operation: ', error.message);
-        });
+        } catch (msg) {
+            utils.log('error', msg);
+        }
     };
 
 
