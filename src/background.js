@@ -465,6 +465,41 @@ const Rbutr = () => {
 
 
     /**
+     * @method updateVotes
+     * @description Update votes for current page
+     *
+     * @param {Integer} tabId - ID of the popup's tab
+     * @param {Integer} voteScore - Upvote or downvote
+     * @return {void}
+     */
+    const updateVotes = (tabId, voteScore) => {
+
+        let recordedClick = getRecordedClickByToUrl(getProp('canonicalUrls', tabId));
+        const submitParameters = {
+            linkId: recordedClick.linkId,
+            vote: voteScore,
+        };
+
+        if(recordedClick !== null) {
+            api.updateVotes(submitParameters, (success, result) => {
+                if (success === true) {
+                    recordedClick.score += voteScore;
+                    recordedClick.yourVote = voteScore;
+                    popupPort.postMessage({response: 'updateVotes', status: 'success', result: result});
+                } else {
+                    popupPort.postMessage({response: 'updateVotes', status: 'error', result: `Votes could not be updated: ${result}`});
+                }
+            });
+
+        } else {
+            popupPort.postMessage({response: 'updateVotes', status: 'error', result: 'Votes could not be updated: No recorded click'});
+        }
+
+    };
+
+
+
+    /**
      * @method startSubmission
      * @description Prepare data submission
      *
@@ -566,7 +601,7 @@ const Rbutr = () => {
     };
 
 
-    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, submitRebuttalRequest, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick};
+    return {utils, api, getProp, setProp, getPropLen, initialize, alreadyExists, getPageTitle, getPopup, displayMessage, postMessage, getRecordedClickByToUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, submitRebuttalRequest, updateVotes, startSubmission, stopSubmission, removeTag, addTag, recordLinkClick};
 };
 
 
@@ -677,6 +712,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     rbutr.submitIdea(msg.tab.id, msg.data);
                 } else if (msg.request === 'submitRebuttalRequest') {
                     rbutr.submitRebuttalRequest(msg.tab.id, msg.data);
+                } else if (msg.request === 'updateVotes') {
+                    rbutr.updateVotes(msg.tab.id, msg.data);
                 }
             }
         });
