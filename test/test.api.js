@@ -37,8 +37,8 @@ describe('RbutrApi', () => {
         it('should return an object', () => {
             assert.strictEqual(typeof RbutrApi(), 'object');
         });
-        it('should return an object containing 8 properties', () => {
-            assert.strictEqual(Object.keys(RbutrApi()).length, 8);
+        it('should return an object containing 9 properties', () => {
+            assert.strictEqual(Object.keys(RbutrApi()).length, 9);
         });
     });
 
@@ -123,5 +123,13 @@ describe('RbutrApi', () => {
             });
         });
     });
+
+        describe('#RbutrApi.updateVotes(object, function)', () => {
+            it('should call the passed callback function', () => {
+                RbutrApi(utilsObj).updateVotes({}, (success, result) => {
+                    assert.strictEqual(typeof success, 'boolean');
+                });
+            });
+        });
 
 });

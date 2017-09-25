@@ -87,7 +87,6 @@ const RbutrApi = (utils) => {
 
 /*
     const getTags = () => {};
-    const updateVote = () => {};
 */
 
 
@@ -205,6 +204,29 @@ const RbutrApi = (utils) => {
 
 
     /**
+     * @method updateVote
+     * @description Update votes for current page
+     *
+     * @param {Object} submitParameters - Data to submit
+     * @param {Function} callback - Callback function to execute
+     * @return {void}
+     */
+    const updateVotes = (submitParameters, callback) => {
+
+        const url = utils.buildUrl(getServerUrl(), Object.assign({},
+            {
+                version: utils.getExtVersion(),
+                cid: getCid()
+            },
+            submitParameters
+        ));
+
+        makeRequest(url, 'GET', 'text', callback);
+    };
+
+
+
+    /**
      * @method makeRequest
      * @description Make a request to the server
      *
@@ -240,5 +262,5 @@ const RbutrApi = (utils) => {
     };
 
 
-    return {getCid, getServerUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, submitRebuttalRequest, makeRequest};
+    return {getCid, getServerUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, submitRebuttalRequest, updateVotes, makeRequest};
 };

@@ -637,20 +637,11 @@ const Popup = () => {
      */
     const vote = (voteScore) => {
 
-        let recordedClick = rbutr.getRecordedClickByToUrl(rbutr.getProp('canonicalUrls', tab.id));
-
-        if(recordedClick !== null) {
-            $.get(rbutr.api.getServerUrl(), {
-                'linkId': recordedClick.linkId,
-                'vote': voteScore,
-                'cid': rbutr.api.getCid()
-            }, (data) => {
-                $('#current-score').html(data);
-            });
-            recordedClick.score += voteScore;
-            recordedClick.yourVote = voteScore;
-            view.show('thankyou');
-        }
+        portBg.postMessage({
+            request: 'updateVotes',
+            tab: tab,
+            data: voteScore
+        });
     };
 
 
@@ -866,6 +857,14 @@ portBg.onMessage.addListener((msg) => {
     } else if (msg.response === 'submitRebuttalRequest') {
         if (msg.status === 'success') {
             popup.msg.add('info', msg.result);
+        } else if (msg.status === 'error') {
+            popup.msg.add('error', msg.result);
+        }
+
+    } else if (msg.response === 'submitRebuttalRequest') {
+        if (msg.status === 'success') {
+            $('#current-score').html(msg.result);
+            popup.view.show('thankyou');
         } else if (msg.status === 'error') {
             popup.msg.add('error', msg.result);
         }
