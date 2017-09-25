@@ -182,7 +182,7 @@ const RbutrUtils = () => {
     const buildUrl = (urlStr, params) => {
         let url = new URL(urlStr);
 
-        if (typeof url === 'object' && url.hasOwnProperty('searchParams')) {
+        if (typeof url === 'object' && url['searchParams'] !== undefined) {
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
         }
 
