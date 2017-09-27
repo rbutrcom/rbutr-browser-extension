@@ -85,11 +85,6 @@ const RbutrApi = (utils) => {
 
 
 
-/*
-    const getTags = () => {};
-*/
-
-
     /**
      * @method loadMenu
      * @description Load menu from server and show message afterwards
@@ -227,6 +222,27 @@ const RbutrApi = (utils) => {
 
 
     /**
+     * @method getTags
+     * @description Fetch tags
+     *
+     * @param {Function} callback - Callback function to execute
+     * @return {void}
+     */
+    const getTags = (callback) => {
+        const url = utils.buildUrl(getServerUrl(), Object.assign({},
+            {
+                getPlainTagsJson: true,
+                version: utils.getExtVersion(),
+                cid: getCid()
+            }
+        ));
+
+        makeRequest(url, 'GET', 'json', callback);
+    };
+
+
+
+    /**
      * @method makeRequest
      * @description Make a request to the server
      *
@@ -262,5 +278,5 @@ const RbutrApi = (utils) => {
     };
 
 
-    return {getCid, getServerUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, submitRebuttalRequest, updateVotes, makeRequest};
+    return {getCid, getServerUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, submitRebuttalRequest, updateVotes, getTags, makeRequest};
 };

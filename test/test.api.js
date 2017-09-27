@@ -37,8 +37,8 @@ describe('RbutrApi', () => {
         it('should return an object', () => {
             assert.strictEqual(typeof RbutrApi(), 'object');
         });
-        it('should return an object containing 9 properties', () => {
-            assert.strictEqual(Object.keys(RbutrApi()).length, 9);
+        it('should return an object containing 10 properties', () => {
+            assert.strictEqual(Object.keys(RbutrApi()).length, 10);
         });
     });
 
@@ -124,12 +124,20 @@ describe('RbutrApi', () => {
         });
     });
 
-        describe('#RbutrApi.updateVotes(object, function)', () => {
-            it('should call the passed callback function', () => {
-                RbutrApi(utilsObj).updateVotes({}, (success, result) => {
-                    assert.strictEqual(typeof success, 'boolean');
-                });
+    describe('#RbutrApi.updateVotes(object, function)', () => {
+        it('should call the passed callback function', () => {
+            RbutrApi(utilsObj).updateVotes({}, (success, result) => {
+                assert.strictEqual(typeof success, 'boolean');
             });
         });
+    });
+
+    describe('#RbutrApi.getTags(function)', () => {
+        it('should call the passed callback function', () => {
+            RbutrApi(utilsObj).getTags((success, result) => {
+                assert.strictEqual(typeof success, 'boolean');
+            });
+        });
+    });
 
 });
