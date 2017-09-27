@@ -6,6 +6,7 @@
  * Licensed under LGPL-3.0
  */
 
+/*global browser*/
 /*exported RbutrApi*/
 /*jslint browser:true,esnext:true */
 
@@ -68,6 +69,23 @@ const RbutrApi = (utils) => {
 
 
     /**
+     * @method getExtVersion
+     * @description Get extension version. Moved to separate method to make testing possible
+     *
+     * @return {String} Extension version
+     */
+    const getExtVersion = () => {
+
+        if (typeof browser === 'object' && browser.hasOwnProperty('runtime') && typeof browser.runtime === 'object') {
+            return browser.runtime.getManifest().version;
+        }
+
+        return '0.1';
+    };
+
+
+
+    /**
      * @method getServerUrl
      * @description Get server url or just domain
      *
@@ -86,6 +104,42 @@ const RbutrApi = (utils) => {
 
 
     /**
+     * @method buildRequestUrl
+     * @description Builds a URL from URL string and parameters object
+     * @see https://fetch.spec.whatwg.org/#fetch-api
+     *
+     * @param {String} urlStr - A string containing the basic URL
+     * @param {Object} params - An object containing all parameters
+     * @return {(String|Boolean)} Built URL or false on invalid URL
+     */
+    const buildRequestUrl = (urlStr, params) => {
+
+        const mergedParams = Object.assign({},
+            params,
+            {
+                version: getExtVersion(),
+                cid: getCid()
+            }
+        );
+
+        try {
+            let url = new URL(urlStr);
+
+            if (typeof url === 'object' && url['searchParams'] !== undefined) {
+                Object.keys(mergedParams).forEach(key => url.searchParams.append(key, mergedParams[key]));
+            }
+
+            return typeof url === 'object' ? url.href : url;
+
+        } catch (msg) {
+            utils.log('error', msg);
+            return false;
+        }
+    };
+
+
+
+    /**
      * @method loadMenu
      * @description Load menu from server and show message afterwards
      *
@@ -94,11 +148,7 @@ const RbutrApi = (utils) => {
      */
     const getMenu = (callback) => {
 
-        const url = utils.buildUrl(getServerUrl(false), {
-            getMenu: true,
-            version: utils.getExtVersion(),
-            cid: getCid()
-        });
+        const url = buildRequestUrl(getServerUrl(), {getMenu: true});
 
         makeRequest(url, 'POST', 'text', callback);
     };
@@ -115,11 +165,9 @@ const RbutrApi = (utils) => {
      */
     const getRebuttals = (urlHash, callback) => {
 
-        const url = utils.buildUrl(getServerUrl(), {
+        const url = buildRequestUrl(getServerUrl(), {
             getLinks: true,
-            fromPageUrlHash: urlHash,
-            version: utils.getExtVersion(),
-            cid: getCid()
+            fromPageUrlHash: urlHash
         });
 
         makeRequest(url, 'GET', 'text', callback);
@@ -138,14 +186,7 @@ const RbutrApi = (utils) => {
      */
     const submitRebuttals = (submitParameters, callback) => {
 
-        const url = utils.buildUrl(getServerUrl(), Object.assign({},
-            {
-                submitLinks: true,
-                version: utils.getExtVersion(),
-                cid: getCid()
-            },
-            submitParameters
-        ));
+        const url = buildRequestUrl(getServerUrl(), submitParameters);
 
         makeRequest(url, 'POST', 'json', callback);
     };
@@ -162,13 +203,7 @@ const RbutrApi = (utils) => {
      */
     const submitIdea = (submitParameters, callback) => {
 
-        const url = utils.buildUrl(getServerUrl(), Object.assign({},
-            {
-                version: utils.getExtVersion(),
-                cid: getCid()
-            },
-            submitParameters
-        ));
+        const url = buildRequestUrl(getServerUrl(), submitParameters);
 
         makeRequest(url, 'POST', 'text', callback);
     };
@@ -185,13 +220,7 @@ const RbutrApi = (utils) => {
      */
     const submitRebuttalRequest = (submitParameters, callback) => {
 
-        const url = utils.buildUrl(getServerUrl(), Object.assign({},
-            {
-                version: utils.getExtVersion(),
-                cid: getCid()
-            },
-            submitParameters
-        ));
+        const url = buildRequestUrl(getServerUrl(), submitParameters);
 
         makeRequest(url, 'POST', 'text', callback);
     };
@@ -208,13 +237,7 @@ const RbutrApi = (utils) => {
      */
     const updateVotes = (submitParameters, callback) => {
 
-        const url = utils.buildUrl(getServerUrl(), Object.assign({},
-            {
-                version: utils.getExtVersion(),
-                cid: getCid()
-            },
-            submitParameters
-        ));
+        const url = buildRequestUrl(getServerUrl(), submitParameters);
 
         makeRequest(url, 'GET', 'text', callback);
     };
@@ -229,13 +252,8 @@ const RbutrApi = (utils) => {
      * @return {void}
      */
     const getTags = (callback) => {
-        const url = utils.buildUrl(getServerUrl(), Object.assign({},
-            {
-                getPlainTagsJson: true,
-                version: utils.getExtVersion(),
-                cid: getCid()
-            }
-        ));
+
+        const url = buildRequestUrl(getServerUrl(), {getPlainTagsJson: true});
 
         makeRequest(url, 'GET', 'json', callback);
     };
@@ -278,5 +296,5 @@ const RbutrApi = (utils) => {
     };
 
 
-    return {getCid, getServerUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, submitRebuttalRequest, updateVotes, getTags, makeRequest};
+    return {getCid, getExtVersion, getServerUrl, buildRequestUrl, getMenu, getRebuttals, submitRebuttals, submitIdea, submitRebuttalRequest, updateVotes, getTags, makeRequest};
 };

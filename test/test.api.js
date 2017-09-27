@@ -37,8 +37,8 @@ describe('RbutrApi', () => {
         it('should return an object', () => {
             assert.strictEqual(typeof RbutrApi(), 'object');
         });
-        it('should return an object containing 10 properties', () => {
-            assert.strictEqual(Object.keys(RbutrApi()).length, 10);
+        it('should return an object containing 12 properties', () => {
+            assert.strictEqual(Object.keys(RbutrApi()).length, 12);
         });
     });
 
@@ -81,6 +81,29 @@ describe('RbutrApi', () => {
         });
         it('should return http://rbutr.com in productive mode', () => {
             assert.strictEqual(RbutrApi(utilsObj).getServerUrl(true), 'http://rbutr.com');
+        });
+    });
+
+    describe('#RbutrApi.buildRequestUrl(url, params)', () => {
+        /*
+        // Skip these until there's a way to mock URL objects
+        beforeEach(() => {
+            localStorage.setItem('rbutr.cid', 1231231231231231);
+        });
+        afterEach(() => {
+            localStorage.clear();
+        });
+        it('should return URL with standard params', () => {
+            const expected = 'http://rbutr.com/rbutr/PluginServlet?isTest=true&version=0.1&cid=1231231231231231';
+            assert.strictEqual(RbutrApi(utilsObj).buildRequestUrl('http://rbutr.com/rbutr/PluginServlet', {isTest:true}), expected);
+        });
+        it('should return URL with given params and standard params', () => {
+            const expected = 'http://rbutr.com/rbutr/PluginServlet?version=0.1&cid=1231231231231231';
+            assert.strictEqual(RbutrApi(utilsObj).buildRequestUrl('http://rbutr.com/rbutr/PluginServlet', {}), expected);
+        });
+        */
+        it('should return false on invalid URL', () => {
+            assert.strictEqual(RbutrApi(utilsObj).buildRequestUrl('', {}), false);
         });
     });
 
