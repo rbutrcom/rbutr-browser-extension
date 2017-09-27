@@ -72,23 +72,6 @@ const RbutrUtils = () => {
 
 
     /**
-     * @method getExtVersion
-     * @description Get extension version. Moved to separate method to make testing possible
-     *
-     * @return {String} Extension version
-     */
-    const getExtVersion = () => {
-
-        if (typeof browser === 'object' && browser.hasOwnProperty('runtime') && typeof browser.runtime === 'object') {
-            return browser.runtime.getManifest().version;
-        }
-
-        return '0.1';
-    };
-
-
-
-    /**
      * @method isDev
      * @description Determine, wether development mode is enabled or not
      *
@@ -171,27 +154,6 @@ const RbutrUtils = () => {
 
 
     /**
-     * @method buildUrl
-     * @description Builds a URL from URL string and parameters object
-     * @see https://fetch.spec.whatwg.org/#fetch-api
-     *
-     * @param {String} urlStr - A string containing the basic URL
-     * @param {Object} params - An object containing all parameters
-     * @return {String} Built URL
-     */
-    const buildUrl = (urlStr, params) => {
-        let url = new URL(urlStr);
-
-        if (typeof url === 'object' && url['searchParams'] !== undefined) {
-            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-        }
-
-        return url;
-    };
-
-
-
-    /**
      * @method updateExtBadge
      * @description Set Hover-Text on extension button
      *
@@ -231,5 +193,5 @@ const RbutrUtils = () => {
 
 
 
-    return {log, getExtVersion, isDev, url2Domain, getCanonicalUrl, unicode2String, buildUrl, updateExtBadge};
+    return {log, isDev, url2Domain, getCanonicalUrl, unicode2String, updateExtBadge};
 };

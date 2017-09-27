@@ -386,6 +386,7 @@ const Rbutr = () => {
         }
 
         const submitParameters = {
+            submitLinks: true,
             fromUrls: getProp('sourceUrls'),
             toUrls: getProp('rebuttalUrls'),
             fromPageTitles: sourcePageTitles,
