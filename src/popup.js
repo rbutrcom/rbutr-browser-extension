@@ -323,7 +323,7 @@ const Popup = () => {
         }
 
         $('#btn-capture-rebuttal').click(() => {
-            addRebuttalUrl();
+            addUrl('rebuttalUrls');
         });
 
         $('#submission-error').text(rbutr.getProp('submitError'));
@@ -533,35 +533,18 @@ const Popup = () => {
 
 
     /**
-     * @method addRebuttalUrl
-     * @description Add canonical url to stored rebuttalUrl list and reresh data
-     *
-     * @return {void}
-     */
-    const addRebuttalUrl = () => {
-
-        if (rbutr.getProp('canonicalUrls', tab.id) === undefined || rbutr.alreadyExists(rbutr.getProp('canonicalUrls', tab.id))) {
-            return;
-        } else {
-            rbutr.setProp('rebuttalUrls', rbutr.getPropLen('rebuttalUrls'), rbutr.getProp('canonicalUrls', tab.id));
-            refreshSubmissionData();
-        }
-    };
-
-
-
-    /**
-     * @method addSourceUrl
+     * @method addUrl
      * @description Add canonical url to stored sourceUrls and refresh data
      *
+     * @param {String} type - Either `rebuttalUrls` or `sourceUrls`
      * @return {void}
      */
-    const addSourceUrl = () => {
+    const addUrl = (type) => {
 
         if (rbutr.getProp('canonicalUrls', tab.id) === undefined || rbutr.alreadyExists(rbutr.getProp('canonicalUrls', tab.id))) {
             return;
         } else {
-            rbutr.setProp('sourceUrls', rbutr.getPropLen('sourceUrls'), rbutr.getProp('canonicalUrls', tab.id));
+            rbutr.setProp(type, rbutr.getPropLen(type), rbutr.getProp('canonicalUrls', tab.id));
             refreshSubmissionData();
         }
     };
@@ -698,8 +681,12 @@ const Popup = () => {
      * @description Set up event listeners
      */
     $(document)
-        .on('click', '#tagTo', addRebuttalUrl)
-        .on('click', '#tagFrom', addSourceUrl)
+        .on('click', '#tagTo', () => {
+            addUrl('rebuttalUrls');
+        })
+        .on('click', '#tagFrom', () => {
+            addUrl('sourceUrls');
+        })
         .on('click', '.btn-rebuttal', () => {
             showSubmissionPopup('to');
         })
@@ -754,7 +741,9 @@ const Popup = () => {
             $('#generalShower').show();
             return false;
         })
-        .on('click', '#btn-capture-src', addSourceUrl)
+        .on('click', '#btn-capture-src', () => {
+            addUrl('sourceUrls');
+        })
         .on('click', '#thanks', () => {
             view.show('rebuttals');
             view.show('action');
