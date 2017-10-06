@@ -1,5 +1,5 @@
 /*!
- * Rbutr Browser Extension v0.10.0
+ * Rbutr Browser Extension v0.12.0
  * https://github.com/rbutrcom/rbutr-browser-extension
  *
  * Copyright 2012-2017 The Rbutr Community
