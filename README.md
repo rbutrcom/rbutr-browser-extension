@@ -49,7 +49,9 @@ If you are using Windows, you need to use the Linux subsystem in order to execut
 
 `$ yarn install`
 
-### 3. Build
+### 3. Run tests & build
+
+`$ yarn run test`
 
 `$ yarn run build`
 
